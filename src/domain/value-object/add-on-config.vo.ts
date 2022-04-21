@@ -1,4 +1,4 @@
-interface Property {
+export interface Property {
   key: string;
   propertyTye: string;
 }
