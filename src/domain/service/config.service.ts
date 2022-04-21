@@ -4,26 +4,17 @@ import { IConfigService } from "./i_config.service";
 import fs from 'fs';
 import path from 'path';
 import { defaultConfig } from "src/config/constants/default_config";
-import { Config } from "../entity/config.entity";
 
 export class ConfigService implements IConfigService{
-  private config: Config = defaultConfig;
-  private fikaConfigFilePath: string = '';
-  updateNotionWorkspace(notionWorkspace: NotionWorkspace): void {
-    this.config = {
-      notionWorkspace: notionWorkspace,
-      ...this.config
-    }
-    const configString = JSON.stringify(this.config);
-    fs.writeFileSync(this.fikaConfigFilePath, configString);
+  updateNotionWorkspace(notionWorkspace: NotionWorkspace): Promise<void> {
+    throw new Error("Method not implemented.");
   }
-  createConfig(currentPath: string): void {
-    this.config = defaultConfig;
+  async createConfig(currentPath: string): Promise<void> {
     const fikaPath = path.join(currentPath, FIKA_PATH);
     fs.mkdirSync(fikaPath);
-    this.fikaConfigFilePath  = path.join(fikaPath, CONFIG_FILE_NAME);
+    const fikaConfigFilePath  = path.join(fikaPath, CONFIG_FILE_NAME);
     const configString = JSON.stringify(defaultConfig);
-    fs.writeFileSync(this.fikaConfigFilePath, configString);
+    fs.writeFileSync(fikaConfigFilePath, configString);
   }
   readConfig(): Promise<void> {
     throw new Error("Method not implemented.");
