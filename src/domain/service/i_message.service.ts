@@ -1,5 +1,5 @@
 
 export interface IMessageService {
-  showSuccess(): void;
-  showError(): void;
+  showSuccess(message: string): void;
+  showError(message: string): void;
 }
