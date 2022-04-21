@@ -1,6 +1,6 @@
 import { program } from 'commander';
-import { pushCommand } from './command/push';
-import { initCommand } from './command/init';
+import { initCommand } from 'src/command/init';
+import { pushCommand } from 'src/command/push';
 
 
 
