@@ -1,6 +1,8 @@
 {
   "dependencies": {
-    "commander": "^9.2.0"
+    "commander": "^9.2.0",
+    "inversify": "^6.0.1",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/node": "^17.0.25"
