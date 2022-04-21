@@ -1,7 +1,7 @@
 import { NotionUser, NotionWorkspace, WorkspaceLevel } from "src/domain/entity/notion_workspace.entity";
 import { BaseDto } from "./base_dto";
 
-interface CreateNotionWorkspaceDtoType{
+export interface CreateNotionWorkspaceDtoType{
   id: string;
   accessToken: string;
   workspaceId: string;
