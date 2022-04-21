@@ -1,0 +1,1 @@
+const FIKA_PATH = '.fika'
