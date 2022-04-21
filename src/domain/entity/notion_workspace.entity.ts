@@ -1,3 +1,5 @@
+
+export type NotConnected = "NOT_CONNECTED";
 export interface NotionUser {
   object: "user",
   id: string,
