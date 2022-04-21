@@ -2,7 +2,7 @@ import { DevObject } from "../entity/dev_object.entity";
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
 
 export interface IConnectService {
-  guideNotionAuthentication(): void;
+  guideNotionAuthentication(): Promise<void>;
   requestNotionWorkspace(botId: string): NotionWorkspace;
   create(devObj: DevObject): Promise<string>;
   update(devObj: DevObject): Promise<string>;
