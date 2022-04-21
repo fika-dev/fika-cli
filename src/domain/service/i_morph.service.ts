@@ -1,4 +1,4 @@
 
 export interface IMorphService {
-  addFikaUri(): void;
+  addFikaUri(uri: string): void;
 }
