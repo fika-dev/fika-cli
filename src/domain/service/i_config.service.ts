@@ -1,8 +1,8 @@
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
-import { AddOnConfig } from "../value_object/add-on-config.vo";
+import { AddOnConfig } from "../value_object/add_on_config.vo";
 
 export interface IConfigService {
-  createConfig(): Promise<void>;
+  createConfig(currentPath: string): Promise<void>;
   readConfig(): Promise<void>;
   updateConfig(): Promise<void>;
   getAnalyzerConfigs(): AddOnConfig[];
