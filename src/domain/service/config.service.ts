@@ -1,5 +1,5 @@
-import { AddOnConfig } from "../value-object/add-on-config.vo";
-import { IConfigService } from "./i-config.service";
+import { AddOnConfig } from "../value_object/add-on-config.vo";
+import { IConfigService } from "./i_config.service";
 
 export class ConfigService implements IConfigService{
   createConfig(): Promise<void> {

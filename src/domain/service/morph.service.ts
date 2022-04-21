@@ -1,5 +1,5 @@
 import { Morpher } from "../entity/morpher.entity";
-import { IMorphService } from "./i-morph.service";
+import { IMorphService } from "./i_morph.service";
 
 export class MorphService implements IMorphService{
   private _morpher: Morpher | undefined;

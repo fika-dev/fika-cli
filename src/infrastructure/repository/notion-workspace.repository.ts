@@ -1,4 +1,4 @@
-import { NotionWorkspace } from "src/domain/entity/notion-workspace.entity";
+import { NotionWorkspace } from "src/domain/entity/notion_workspace.entity";
 import { BaseRepository } from "src/domain/repository/base-repository";
 
 export class NotionWorkspaceRepository implements BaseRepository<NotionWorkspace>{
