@@ -11,6 +11,7 @@ export interface WorkspaceLevel {
 }
 export class NotionWorkspace {
   id: string;
+  botId: string;
   name: string;
   icon: string;
   owner: WorkspaceLevel | NotionUser;
