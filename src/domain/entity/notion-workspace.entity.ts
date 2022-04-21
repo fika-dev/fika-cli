@@ -1,4 +1,4 @@
-interface NotionUser {
+export interface NotionUser {
   object: "user",
   id: string,
   type: string,
@@ -6,10 +6,10 @@ interface NotionUser {
   avatar_url: string,
 }
 
-interface WorkspaceLevel {
+export interface WorkspaceLevel {
   workspace: true,
 }
-class NotionWorkspace {
+export class NotionWorkspace {
   id: string;
   name: string;
   icon: string;
