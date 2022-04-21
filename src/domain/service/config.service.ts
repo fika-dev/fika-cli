@@ -8,7 +8,7 @@ import { Config } from "../entity/config.entity";
 
 export class ConfigService implements IConfigService{
   private config: Config = defaultConfig;
-  private fikaConfigFilePath: string = '';
+  private fikaConfigFilePath?: string;
   updateNotionWorkspace(notionWorkspace: NotionWorkspace): void {
     this.config = {
       notionWorkspace: notionWorkspace,
@@ -25,14 +25,19 @@ export class ConfigService implements IConfigService{
     const configString = JSON.stringify(defaultConfig);
     fs.writeFileSync(this.fikaConfigFilePath, configString);
   }
-  readConfig(): Promise<void> {
-    throw new Error("Method not implemented.");
+  readConfig():void {
+    if (this.fikaConfigFilePath){
+      const configString = fs.readFileSync(this.fikaConfigFilePath, 'utf-8');
+      this.config = JSON.parse(configString) as Config;
+    }else{
+      throw new Error("Fika config file path is not set");
+    }
   }
-  updateConfig(): Promise<void> {
+  updateConfig(): void {
     throw new Error("Method not implemented.");
   }
   getAnalyzerConfigs(): AddOnConfig[] {
-    throw new Error("Method not implemented.");
+    return this.config.addOns.filter((addOn)=>addOn.type === 'analyzer');
   }
 
 }
