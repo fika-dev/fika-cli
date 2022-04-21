@@ -1,5 +1,6 @@
 export enum AddOnType {
-  analyzer = 'analyzer'
+  analyzer = 'analyzer',
+  morpher = 'morpher',
 }
 
 export class AddOn {
