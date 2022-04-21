@@ -1,5 +1,5 @@
 
-export class NotionDevElement {
+export class Component {
   id: string;
   type: string;
   tags?: string[];
