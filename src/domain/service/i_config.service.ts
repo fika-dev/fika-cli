@@ -6,5 +6,5 @@ export interface IConfigService {
   readConfig(): void;
   updateConfig(): void;
   getAnalyzerConfigs(): AddOnConfig[];
-  updateNotionWorkspace(notionWorkspace: NotionWorkspace): void;
+  updateNotionWorkspace(notionWorkspace: NotionWorkspace): Promise<void>;
 }
