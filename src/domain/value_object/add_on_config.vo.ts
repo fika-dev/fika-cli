@@ -8,7 +8,7 @@ export interface Property {
 
 export interface AddOnConfig {
   name: string;
-  type: string;
+  type: AddOnType;
   objectType?: ObjectType;
   databaseName?: string;
   additionalProperties?: Property[]; 
