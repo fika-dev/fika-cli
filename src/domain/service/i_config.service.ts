@@ -6,5 +6,6 @@ export interface IConfigService {
   readConfig(): void;
   updateConfig(): void;
   getAnalyzerConfigs(): AddOnConfig[];
+  getMorpherConfig(): AddOnConfig;
   updateNotionWorkspace(notionWorkspace: NotionWorkspace): void;
 }

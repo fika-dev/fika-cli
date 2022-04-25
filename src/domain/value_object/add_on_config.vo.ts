@@ -1,5 +1,6 @@
-export type ObjectType = "repo" | "component"
-export type AddOnType = "analyzer" | "morpher"
+import { AddOnType } from "../entity/add_on.entity";
+import { ObjectType } from "../entity/dev_object.entity";
+
 
 export interface Property {
   key: string;

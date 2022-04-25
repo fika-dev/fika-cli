@@ -1,8 +1,8 @@
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 
 export enum AddOnType {
-  analyzer,
-  morpher,
+  Analyzer,
+  Morpher,
 }
 
 export class AddOn {
