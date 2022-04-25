@@ -5,8 +5,10 @@ import fs from 'fs';
 import path from 'path';
 import { defaultConfig } from "src/config/constants/default_config";
 import { Config } from "../entity/config.entity";
+import { AddOnType } from "../entity/add_on.entity";
 
 export class ConfigService implements IConfigService{
+  
   private config: Config = defaultConfig;
   private fikaConfigFilePath?: string;
   updateNotionWorkspace(notionWorkspace: NotionWorkspace): void {
@@ -37,7 +39,17 @@ export class ConfigService implements IConfigService{
     throw new Error("Method not implemented.");
   }
   getAnalyzerConfigs(): AddOnConfig[] {
-    return this.config.addOns.filter((addOn)=>addOn.type === 'analyzer');
+    return this.config.addOns.filter((addOn)=>addOn.type === AddOnType.Analyzer);
+  }
+
+  getMorpherConfig(): AddOnConfig {
+    const [morpherConfig] = this.config.addOns.filter((addOn)=>addOn.type === AddOnType.Morpher);
+    if (morpherConfig){
+      return morpherConfig;
+    }else{
+      throw Error("Morpher Config is not found");
+    }
+    
   }
 
 }
