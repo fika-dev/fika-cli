@@ -5,7 +5,7 @@ export enum ComponentType {
 }
 
 export class Component extends DevObject{
-  protected objectType: ObjectType = ObjectType.Component;
+  objectType: ObjectType = ObjectType.Component;
   componentType: ComponentType;
   tags?: string[];
 

@@ -5,7 +5,7 @@ export enum ObjectType {
 
 export class DevObject {
   botId: string;
-  protected objectType: ObjectType;
+  objectType: ObjectType;
   id?: string;
   title: string;
   pageUrl?: string;
