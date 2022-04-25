@@ -1,6 +1,7 @@
-import { DevObject } from "./dev_object.entity";
+import { DevObject, ObjectType } from "./dev_object.entity";
 
 export class Repo extends DevObject{
+  protected objectType: ObjectType = ObjectType.Repo;
   repoUrl?: string;
   latestVersion?: string;
   createdDate?: Date;

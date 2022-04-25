@@ -1,6 +1,11 @@
+export enum ObjectType {
+  Repo,
+  Component
+}
+
 export class DevObject {
   botId: string;
-  objectType: string;
+  protected objectType: ObjectType;
   id?: string;
   title: string;
   pageUrl?: string;

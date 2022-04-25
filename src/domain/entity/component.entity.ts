@@ -1,7 +1,12 @@
-import { DevObject } from "./dev_object.entity";
+import { DevObject, ObjectType } from "./dev_object.entity";
+
+export enum ComponentType {
+  ReactComponent
+}
 
 export class Component extends DevObject{
-  componentType: string;
+  protected objectType: ObjectType = ObjectType.Component;
+  componentType: ComponentType;
   tags?: string[];
 
   filePath: string;
@@ -10,5 +15,7 @@ export class Component extends DevObject{
   props?: string[];
 
   repoId: string;
+
+  nodeIndex: number;
 }
 
