@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "axios": "^0.26.1",
     "commander": "^9.2.0",
     "inversify": "^6.0.1",
     "open": "^8.4.0",
