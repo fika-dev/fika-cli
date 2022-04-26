@@ -9,5 +9,13 @@ export class Repo extends DevObject{
   commitCount?: number;
   activeDays?: number;
   fileCount?: number;
+
+  static getEmptyRepo(): Repo{
+    return {
+      title: '',
+      botId: '',
+      objectType: ObjectType.Repo,
+    }
+  }
 }
 
