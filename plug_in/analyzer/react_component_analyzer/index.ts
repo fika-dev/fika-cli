@@ -4,7 +4,7 @@ import { DevObject } from "src/domain/entity/dev_object.entity";
 import { Morpher } from "src/domain/entity/morpher.entity";
 import { AddOnConfig } from "src/domain/value_object/add_on_config.vo";
 
-class ReactComponentAnalyzer extends Analyzer{
+export class ReactComponentAnalyzer extends Analyzer{
   constructor(config: AddOnConfig){
     super(config);
     this.addonType = AddOnType.Analyzer;
