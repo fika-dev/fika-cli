@@ -10,8 +10,8 @@ export class DevObject {
   title: string;
   pageUrl?: string;
   syncedCommitId?: string;
-  lastSyncedDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  lastSyncedDate?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
