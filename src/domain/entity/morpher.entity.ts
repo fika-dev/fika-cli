@@ -7,9 +7,9 @@ export interface MorpherConfig extends AddOnConfig{
 
 }
 export abstract class Morpher extends AddOn{
-  nodeStore: Map<ComponentType, INode[]>
   constructor(morpherConfig: MorpherConfig){
     super(morpherConfig);
-    this.nodeStore = new Map<ComponentType, INode[]>();
   }
+  protected abstract findFikaNodes(): void;
+  abstract getFikaNodes(componentType: ComponentType): INode[];
 }
