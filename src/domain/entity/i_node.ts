@@ -5,4 +5,5 @@ export abstract class INode {
   protected _node: any;
   abstract getId(): string;
   abstract setId(id: string): void;
+  abstract getNode(): any;
 }
