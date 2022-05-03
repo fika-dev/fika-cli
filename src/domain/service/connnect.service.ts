@@ -4,7 +4,9 @@ import { IConnectService } from "./i_connect.service";
 import open from 'open';
 import axios, { AxiosError } from "axios";
 import { CreateNotionWorkspaceDto, CreateNotionWorkspaceDtoType } from "src/infrastructure/dto/create_notion_workspace.dto";
+import { injectable } from "inversify";
 
+@injectable()
 export class ConnectService implements IConnectService {
   create(devObj: DevObject): Promise<string> {
     throw new Error("Method not implemented.");
