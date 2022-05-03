@@ -14,5 +14,8 @@
     "@types/node": "^17.0.25",
     "babel-jest": "^28.0.3",
     "jest": "^28.0.3"
+  },
+  "scripts": {
+    "test": "jest"
   }
 }
