@@ -12,4 +12,8 @@ export abstract class Morpher extends AddOn{
   }
   protected abstract findFikaNodes(): void;
   abstract getFikaNodes(componentType: ComponentType): INode[];
+  abstract getSymbolText(node: INode): string;
+  abstract getTypeText(node: INode): string;
+  abstract getFilePath(iNode: INode): string;
+  abstract getProps(iNode: INode): string[];
 }
