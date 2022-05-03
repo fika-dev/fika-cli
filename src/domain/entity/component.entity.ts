@@ -6,16 +6,24 @@ export enum ComponentType {
 
 export class Component extends DevObject{
   objectType: ObjectType = ObjectType.Component;
-  componentType: ComponentType;
+  componentType?: ComponentType;
   tags?: string[];
 
-  filePath: string;
+  filePath?: string;
   description?: string;
   methods?: string[];
   props?: string[];
 
-  repoId: string;
+  repoId?: string;
 
-  nodeIndex: number;
+  nodeIndex?: number;
+
+  static getEmptyComponent(): Component{
+    return {
+      title: '',
+      botId: '',
+      objectType: ObjectType.Component,
+    }
+  }
 }
 

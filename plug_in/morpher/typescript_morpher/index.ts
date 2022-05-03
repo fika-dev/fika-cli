@@ -1,5 +1,5 @@
 import { Morpher, MorpherConfig } from "src/domain/entity/morpher.entity";
-import { Node, Project } from 'ts-morph';
+import { ArrowFunction, Node, Project, SyntaxKind, VariableDeclaration } from 'ts-morph';
 import path from 'path';
 import fs from 'fs';
 import { INode } from "src/domain/entity/i_node";
@@ -27,6 +27,10 @@ class TSNode extends INode{
     this._id = id;
   }
 
+  public getNode() {
+    return this._node;
+  }
+
   private _generateId(node: Node):string {
     const fileName: string = node.getSourceFile().getBaseName();
     const position: number = node.getPos();
@@ -36,6 +40,7 @@ class TSNode extends INode{
 
 const pattern = /["']([A-Z]\w+\.[A-Z]\w+)["']/g
 export class TypescriptMorpher extends Morpher {
+  
   
 
   private _project: Project;
@@ -77,6 +82,38 @@ export class TypescriptMorpher extends Morpher {
     return this._tsNodes.filter(node=>node.componentType === componentType);
   }
 
+  public getSymbolText(iNode: INode): string {
+    const node = iNode.getNode() as Node;
+    return node.getSymbol().getName();
+  }
+
+  public getTypeText(iNode: INode): string {
+    const node = iNode.getNode() as Node;
+    const type = node.getType();
+    return type.getText();
+  }
+
+  public getArguementsFromAF(iNode: INode): string[] {
+    const node = iNode.getNode() as Node;
+    const type = node.getType();
+    if (isVC(node)){
+      const vc = toVC(node);
+      const initializer = vc.getInitializer();
+      if (isAF(initializer)){
+        const arrowFunction =  toAF(initializer);
+        return arrowFunction.getParameters()
+          .map((parameter)=>({ name: parameter.getName(), typeName: parameter.getType().getText()}))
+          .map((parameter)=> `${parameter.name} : ${parameter.typeName}`);
+      }
+    }
+    return [];
+  }
+
+
+  public getFilePath(iNode: INode): string{
+    const node = iNode.getNode() as Node;
+    return  node.getSourceFile().getDirectoryPath() as string;
+  }
 
   addCommentedDecorator(){
     const sc = this._project.addSourceFileAtPath('/Users/wonmojung/M1/fika/tool/src/utils/__test__/comment-decorator.test.data.ts')
@@ -112,5 +149,23 @@ export class TypescriptMorpher extends Morpher {
     }
     return false;
   }
+
   
+}
+
+
+function toVC(node: Node):VariableDeclaration{
+  return node.asKind(SyntaxKind.VariableDeclaration);
+}
+
+function isVC(node: Node):boolean{
+  return node.getKind()==-SyntaxKind.VariableDeclaration;
+}
+
+function toAF(node: Node):ArrowFunction{
+  return node.asKind(SyntaxKind.ArrowFunction);
+}
+
+function isAF(node: Node):boolean{
+  return node.getKind()==-SyntaxKind.ArrowFunction;
 }
