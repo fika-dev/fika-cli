@@ -6,7 +6,11 @@ import path from 'path';
 import { defaultConfig } from "src/config/constants/default_config";
 import { Config } from "../entity/config.entity";
 import { AddOnType } from "../entity/add_on.entity";
+import { injectable } from "inversify";
+import { CONFIG_FILE_NAME, FIKA_PATH } from "src/config/constants/path";
+import { FikaPathExistsError } from "../exceptions";
 
+@injectable()
 export class ConfigService implements IConfigService{
   
   private config: Config = defaultConfig;
@@ -18,14 +22,19 @@ export class ConfigService implements IConfigService{
     }
     const configString = JSON.stringify(this.config);
     fs.writeFileSync(this.fikaConfigFilePath, configString);
-
   }
   async createConfig(currentPath: string): Promise<void> {
     const fikaPath = path.join(currentPath, FIKA_PATH);
-    fs.mkdirSync(fikaPath);
+    if (!fs.existsSync(fikaPath)){
+      fs.mkdirSync(fikaPath);
+    }
     const fikaConfigFilePath  = path.join(fikaPath, CONFIG_FILE_NAME);
-    const configString = JSON.stringify(defaultConfig);
-    fs.writeFileSync(fikaConfigFilePath, configString);
+    if (!fs.existsSync(fikaConfigFilePath)){
+      const configString = JSON.stringify(defaultConfig, undefined, 4);
+      fs.writeFileSync(fikaConfigFilePath, configString);
+    }else{
+      throw new FikaPathExistsError();
+    }
   }
   readConfig():void {
     if (this.fikaConfigFilePath){
