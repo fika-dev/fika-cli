@@ -1,16 +1,18 @@
 import { initAction } from "src/command/init/init.action";
-import { clearTestFikaPath } from "test/test-utils";
+import { clearTestFikaPath, readTestFikaConfig } from "test/test-utils";
 
 
 beforeAll(() => {
-  // clearTestFikaPath(process.cwd());
+  clearTestFikaPath(process.cwd());
 });
 
 afterAll(() => {
-  // clearTestFikaPath(process.cwd());
+  clearTestFikaPath(process.cwd());
 });
 
-test('create config', () => { 
+test('1. create config', () => { 
   const testRoot = process.cwd() + '/test';
   initAction(testRoot);
+  const config = readTestFikaConfig(process.cwd());
+  expect(config.notionWorkspace).toBe("NOT_CONNECTED");
 });
