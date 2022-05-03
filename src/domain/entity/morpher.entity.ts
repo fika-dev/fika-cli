@@ -15,5 +15,5 @@ export abstract class Morpher extends AddOn{
   abstract getSymbolText(node: INode): string;
   abstract getTypeText(node: INode): string;
   abstract getFilePath(iNode: INode): string;
-  abstract getProps(iNode: INode): string[];
+  abstract getArguementsFromAF(iNode: INode): string[];
 }

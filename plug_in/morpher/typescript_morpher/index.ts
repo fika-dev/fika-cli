@@ -93,7 +93,7 @@ export class TypescriptMorpher extends Morpher {
     return type.getText();
   }
 
-  public getProps(iNode: INode): string[] {
+  public getArguementsFromAF(iNode: INode): string[] {
     const node = iNode.getNode() as Node;
     const type = node.getType();
     if (isVC(node)){

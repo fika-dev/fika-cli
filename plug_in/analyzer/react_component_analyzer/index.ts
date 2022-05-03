@@ -22,7 +22,7 @@ export class ReactComponentAnalyzer extends Analyzer{
     let component: Component = Component.getEmptyComponent();
     component.title = morpher.getSymbolText(node);
     component.filePath = morpher.getFilePath(node);
-    component.props = morpher.getProps(node);
+    component.props = morpher.getArguementsFromAF(node);
     return component;
   }
 }
