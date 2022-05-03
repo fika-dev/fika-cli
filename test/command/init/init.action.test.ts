@@ -10,7 +10,7 @@ afterAll(() => {
   clearTestFikaPath(process.cwd());
 });
 
-test('1. create config', () => { 
+test('1. create config & check notion workspace', () => { 
   const testRoot = process.cwd() + '/test';
   initAction(testRoot);
   const config = readTestFikaConfig(process.cwd());
