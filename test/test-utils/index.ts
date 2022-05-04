@@ -2,7 +2,9 @@ import fs from "fs"
 import { Config } from "src/domain/entity/config.entity";
 
 export const clearTestFikaPath = (currentPath: string)=>{
-  fs.rmdirSync(currentPath + '/test/.fika', {
+  const fikaPath = currentPath + '/test/.fika';
+  if (fs.existsSync(fikaPath))
+  fs.rmSync(fikaPath, {
     recursive: true,
   });
 }
