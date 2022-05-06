@@ -5,6 +5,13 @@ export enum ComponentType {
 }
 
 export class Component extends DevObject{
+  needUpdate(devObj: Component): boolean {
+    return devObj.componentType === this.componentType
+      && devObj.filePath === this.filePath
+      && devObj.description === this.description
+      && JSON.stringify(devObj.methods.sort()) === JSON.stringify(this.methods.sort())
+      && JSON.stringify(devObj.props.sort()) === JSON.stringify(this.props.sort())
+  }
   objectType: ObjectType = ObjectType.Component;
   componentType?: ComponentType;
   tags?: string[];
@@ -16,14 +23,8 @@ export class Component extends DevObject{
 
   repoId?: string;
 
-  nodeIndex?: number;
-
   static getEmptyComponent(): Component{
-    return {
-      title: '',
-      botId: '',
-      objectType: ObjectType.Component,
-    }
+    return new Component();
   }
 }
 

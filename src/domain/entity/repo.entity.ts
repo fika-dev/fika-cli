@@ -10,12 +10,18 @@ export class Repo extends DevObject{
   activeDays?: number;
   fileCount?: number;
 
+  needUpdate(devObj: Repo): boolean {
+    return devObj.repoUrl === this.repoUrl
+      && devObj.latestVersion === this.latestVersion
+      && devObj.createdDate === this.createdDate
+      && devObj.commitCount === this.commitCount
+      && devObj.activeDays === this.activeDays
+      && devObj.fileCount === this.fileCount
+      && JSON.stringify(devObj.authors.sort()) === JSON.stringify(this.authors.sort())
+  }
+
   static getEmptyRepo(): Repo{
-    return {
-      title: '',
-      botId: '',
-      objectType: ObjectType.Repo,
-    }
+    return new Repo();
   }
 }
 
