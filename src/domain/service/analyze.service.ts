@@ -36,12 +36,9 @@ export class AnalyzeService implements IAnalyzeService{
         (analyzer)=> analyzer.analyze(morpher)
       )
     )).flat();
-    const [repo] = devObjs.filter(devObj=>devObj.objectType===ObjectType.Repo) as Repo[];
+    const repoList = devObjs.filter(devObj=>devObj.objectType===ObjectType.Repo) as Repo[];
     const components = devObjs.filter(devObj=>devObj.objectType===ObjectType.Component) as Component[];
-    const snapshot: Snapshot = {
-      repo,
-      components,
-    }
+    const snapshot = new Snapshot(repoList.concat(components));
     return snapshot;
   }
 }
