@@ -17,11 +17,11 @@ export class ConnectService implements IConnectService {
   remove(devObj: DevObject): Promise<string> {
     throw new Error("Method not implemented.");
   }
-  async guideNotionAuthentication(): Promise<void> {
+  getNotionAuthenticationUri(): string {
     const redirectUri = encodeURIComponent(fikaCallbackUri);
     const params= `client_id=${fikaNotionClientId}&redirect_uri=${redirectUri}&response_type=code&owner=user&state=init`;
     const targetUri = `${notionAuthorizeUri}?${params}`;
-    await open(targetUri);
+    return targetUri;
   }
   async requestNotionWorkspace(): Promise<NotionWorkspace> {
     try{
