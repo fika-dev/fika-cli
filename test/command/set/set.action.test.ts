@@ -8,7 +8,7 @@ import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import { IConfigService } from "src/domain/service/i_config.service";
 
 beforeAll(()=>{
-  clearTestFikaPath(process.cwd());
+  clearTestFikaPath(process.cwd()+'/test');
   initAction(process.cwd()+'/test');
 });
 
