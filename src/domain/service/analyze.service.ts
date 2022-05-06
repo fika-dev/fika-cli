@@ -1,3 +1,4 @@
+import { injectable } from "inversify";
 import { GitRepoAnalyzer } from "plug_in/analyzer/git_repo_analyzer";
 import { ReactComponentAnalyzer } from "plug_in/analyzer/react_component_analyzer";
 import { Analyzer } from "../entity/analyzer.entity";
@@ -9,6 +10,7 @@ import { Snapshot } from "../entity/snapshot.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { IAnalyzeService } from "./i_analyze.service";
 
+@injectable()
 export class AnalyzeService implements IAnalyzeService{
   constructor(){
     this.registerAnalyzers = this.registerAnalyzers.bind(this);
