@@ -188,6 +188,20 @@ export class TypescriptMorpher extends Morpher {
     return false;
   }
 
+  public async addFikaUri(uri: string, nodeId: string){
+    const foundNode = this._tsNodes.find((tsNode)=>tsNode.getId()===nodeId);
+    if (foundNode){
+      const fikaNode = foundNode.getNode();
+      const beforeText = fikaNode.getText();
+      const afterText = `// @FikaUri(${uri})\n` + beforeText;
+      fikaNode.replaceWithText(afterText);
+      await this._project.save();
+    }else{
+      throw new Error(`Can Not Find with Node with ID: ${nodeId}`);
+    }
+
+  }
+
   
 }
 

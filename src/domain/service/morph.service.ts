@@ -27,7 +27,7 @@ export class MorphService implements IMorphService{
     }
   }
   
-  public addFikaUri(uri: string): void {
-    throw new Error("Method not implemented.");
+  public async addFikaUri(uri: string, nodeId: string): Promise<void> {
+    await this._morpher.addFikaUri(uri, nodeId);
   }
 }

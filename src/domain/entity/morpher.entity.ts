@@ -16,4 +16,5 @@ export abstract class Morpher extends AddOn{
   abstract getTypeText(node: INode): string;
   abstract getFilePath(iNode: INode): string;
   abstract getArguementsFromAF(iNode: INode): string[];
+  abstract addFikaUri(uri: string, nodeId :string): Promise<void>;
 }

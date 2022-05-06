@@ -5,20 +5,25 @@ import { SyncedSnapshot } from "../entity/synced_snapshot.entity";
 import { Difference, ISnapshotService } from "./i_snapshot.service";
 import fs from 'fs';
 import { DevObject } from "../entity/dev_object.entity";
+import { injectable } from "inversify";
 
+@injectable()
 export class SnapshotService implements ISnapshotService{
   private _recentSnapshot: SyncedSnapshot | undefined;
   private _snapshotFileName: string;
 
   loadSnapshot(currentPath: string): Snapshot {
     const snapshotFileName = path.join(currentPath, FIKA_PATH, SNAPSHOT_FILE_NAME);
+    this._snapshotFileName = snapshotFileName;
     if (fs.existsSync(snapshotFileName)){
       const snapshotString = fs.readFileSync(snapshotFileName, 'utf-8');
       const snapshot = JSON.parse(snapshotString) as SyncedSnapshot;
       this._recentSnapshot = snapshot;
       return this._recentSnapshot;
     }else{
-      return new Snapshot([]);
+      const emptySnapshot = new Snapshot([]);
+      this._recentSnapshot = new SyncedSnapshot(emptySnapshot);
+      return emptySnapshot;
     }
   }
   
@@ -36,15 +41,18 @@ export class SnapshotService implements ISnapshotService{
     const toBeRemoved: DevObject[] = [];
     const toBeUpdated: DevObject[] = [];
     const currentObjects = this._recentSnapshot.getDevObjects();
-    analyzedSnapshot.getDevObjects().forEach((newObj)=>{
-      if (!newObj.id){
+    const analyzedObjects = analyzedSnapshot.getDevObjects();
+    analyzedObjects.forEach((newObj)=>{
+      if (newObj.id?.startsWith('unconnected')){
         toBeCreated.push(newObj);
       }else{
         const found = currentObjects.find((obj)=>obj.id === newObj.id);
-        if (found.needUpdate(newObj)){
-          toBeUpdated.push(newObj);
+        if (found){
+          if (found.needUpdate(newObj)){
+            toBeUpdated.push(newObj);
+          }
         }
-        if (!found){
+        else{
           toBeRemoved.push(newObj);
         }
       }

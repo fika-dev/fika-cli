@@ -23,7 +23,6 @@ describe('test sample_1', ()=>{
   });
   test('2. get components', async () => { 
     const snapshots = await analyzeAction();
-    console.log('🧪', ' in AnalyzeActionTest: ', ': ',snapshots.components);
     expect(snapshots.components.length).toBeGreaterThan(0);
   });
 })
