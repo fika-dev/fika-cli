@@ -2,12 +2,13 @@ import fs from "fs"
 import { Config } from "src/domain/entity/config.entity";
 
 export const clearTestFikaPath = (currentPath: string)=>{
-  const fikaPath = currentPath + '/test/.fika';
+  const fikaPath = currentPath + '/.fika';
   if (fs.existsSync(fikaPath))
   fs.rmSync(fikaPath, {
     recursive: true,
   });
 }
+
 
 export const readTestFikaConfig = (currentPath: string): Config=>{
   const fikaConfigFilePath = currentPath + '/test/.fika/fika.config.json';
