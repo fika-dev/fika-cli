@@ -3,11 +3,12 @@ import { setAction } from "src/command/set/set.action";
 import container from "src/config/ioc_config";
 import { NotionWorkspace } from "src/domain/entity/notion_workspace.entity";
 import { TEST_FIKA_BOT_ID } from "test/test-constants";
-import { readTestFikaConfig } from "test/test-utils";
+import { clearTestFikaPath, readTestFikaConfig } from "test/test-utils";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import { IConfigService } from "src/domain/service/i_config.service";
 
 beforeAll(()=>{
+  clearTestFikaPath(process.cwd());
   initAction(process.cwd()+'/test');
 });
 
@@ -30,6 +31,5 @@ test('1. set with correct bot id', async () => {
   await setAction(TEST_FIKA_BOT_ID);
   container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService).readConfig()
   const config = readTestFikaConfig(process.cwd());
-  console.log('🧪', ' in SetActionTest: ', 'config: ',config);
   expect((config.notionWorkspace as NotionWorkspace).botId).toEqual(TEST_FIKA_BOT_ID);
 });
