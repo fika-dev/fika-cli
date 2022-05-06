@@ -19,12 +19,12 @@ import SERVICE_IDENTIFIER from "./constants/identifiers";
 
 let container = new Container();
 
-container.bind<IAnalyzeService>(SERVICE_IDENTIFIER.AnalyzeService).to(AnalyzeService);
-container.bind<IConfigService>(SERVICE_IDENTIFIER.ConfigService).to(ConfigService);
-container.bind<IConnectService>(SERVICE_IDENTIFIER.ConnectService).to(ConnectService);
-container.bind<IMorphService>(SERVICE_IDENTIFIER.MorphService).to(MorphService);
-container.bind<IMessageService>(SERVICE_IDENTIFIER.MessageService).to(MessageService);
-container.bind<ISnapshotService>(SERVICE_IDENTIFIER.SnapshotService).to(SnapshotService);
+container.bind<IAnalyzeService>(SERVICE_IDENTIFIER.AnalyzeService).to(AnalyzeService).inSingletonScope();
+container.bind<IConfigService>(SERVICE_IDENTIFIER.ConfigService).to(ConfigService).inSingletonScope();
+container.bind<IConnectService>(SERVICE_IDENTIFIER.ConnectService).to(ConnectService).inSingletonScope();
+container.bind<IMorphService>(SERVICE_IDENTIFIER.MorphService).to(MorphService).inSingletonScope();
+container.bind<IMessageService>(SERVICE_IDENTIFIER.MessageService).to(MessageService).inSingletonScope();
+container.bind<ISnapshotService>(SERVICE_IDENTIFIER.SnapshotService).to(SnapshotService).inSingletonScope();
 
 
 export default container;

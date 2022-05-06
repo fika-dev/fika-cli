@@ -12,13 +12,18 @@ import { FikaPathExistsError } from "../exceptions";
 
 @injectable()
 export class ConfigService implements IConfigService{
+  constructor(){
+    this.updateNotionWorkspace = this.updateNotionWorkspace.bind(this);
+    this.createConfig = this.createConfig.bind(this);
+  }
   
   private config: Config = defaultConfig;
   private fikaConfigFilePath?: string;
   updateNotionWorkspace(notionWorkspace: NotionWorkspace): void {
+
     this.config = {
+      ...this.config,
       notionWorkspace: notionWorkspace,
-      ...this.config
     }
     const configString = JSON.stringify(this.config);
     fs.writeFileSync(this.fikaConfigFilePath, configString);
@@ -28,10 +33,10 @@ export class ConfigService implements IConfigService{
     if (!fs.existsSync(fikaPath)){
       fs.mkdirSync(fikaPath);
     }
-    const fikaConfigFilePath  = path.join(fikaPath, CONFIG_FILE_NAME);
-    if (!fs.existsSync(fikaConfigFilePath)){
+    this.fikaConfigFilePath  = path.join(fikaPath, CONFIG_FILE_NAME);
+    if (!fs.existsSync(this.fikaConfigFilePath)){
       const configString = JSON.stringify(defaultConfig, undefined, 4);
-      fs.writeFileSync(fikaConfigFilePath, configString);
+      fs.writeFileSync(this.fikaConfigFilePath, configString);
     }else{
       throw new FikaPathExistsError();
     }
