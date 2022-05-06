@@ -22,7 +22,7 @@ export class AnalyzeService implements IAnalyzeService{
         return new GitRepoAnalyzer(config);
       }
       if (config.objectType === ObjectType.Component){
-        if (config.name === "React.Component" ){
+        if (config.name === "React.Component.Analyzer" ){
           return new ReactComponentAnalyzer(config);
         }
       }else{
