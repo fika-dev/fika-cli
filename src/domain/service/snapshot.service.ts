@@ -8,6 +8,7 @@ import { DevObject } from "../entity/dev_object.entity";
 
 export class SnapshotService implements ISnapshotService{
   private _recentSnapshot: SyncedSnapshot | undefined;
+  private _snapshotFileName: string;
 
   loadSnapshot(currentPath: string): Snapshot {
     const snapshotFileName = path.join(currentPath, FIKA_PATH, SNAPSHOT_FILE_NAME);
@@ -17,11 +18,19 @@ export class SnapshotService implements ISnapshotService{
       this._recentSnapshot = snapshot;
       return this._recentSnapshot;
     }else{
-      return new Snapshot();
+      return new Snapshot([]);
     }
   }
   
-  public saveSyncedSnapshot(snapshot: Snapshot){}
+  public saveSyncedSnapshot(snapshot: Snapshot){
+    const syncedSnapshot = new SyncedSnapshot(snapshot);
+    const snapshotString = JSON.stringify(syncedSnapshot);
+    if (this._snapshotFileName){
+      fs.writeFileSync(this._snapshotFileName, snapshotString);
+    }else{
+      throw new Error("Snapshot File Name is Not Saved")
+    }
+  }
   public compare(analyzedSnapshot: Snapshot): Difference {
     const toBeCreated: DevObject[] = [];
     const toBeRemoved: DevObject[] = [];
