@@ -5,6 +5,7 @@ import open from 'open';
 import axios, { AxiosError } from "axios";
 import { CreateNotionWorkspaceDto, CreateNotionWorkspaceDtoType } from "src/infrastructure/dto/create_notion_workspace.dto";
 import { injectable } from "inversify";
+import { fikaCallbackUri, fikaNotionClientId, notionAuthorizeUri } from "src/config/constants/uri";
 
 @injectable()
 export class ConnectService implements IConnectService {
