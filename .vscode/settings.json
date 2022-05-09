@@ -1,0 +1,4 @@
+{
+  "jest.jestCommandLine": "jest",
+  "jest.autoRun": "off",
+}

@@ -6,7 +6,7 @@ import container from "src/config/ioc_config";
 import { DevObject } from "src/domain/entity/dev_object.entity";
 import { clearTestFikaPath, readTestSnapshot } from "test/test-utils";
 
-const SAMPLE_1_PATH =  process.cwd()+'/test/test-samples/sample_1'
+const SAMPLE_1_PATH =  process.cwd()+'/test/test-samples/sample_01'
 
 beforeEach(()=>{
   clearTestFikaPath(SAMPLE_1_PATH);

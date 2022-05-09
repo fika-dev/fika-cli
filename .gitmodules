@@ -1,0 +1,3 @@
+[submodule "test/test-samples"]
+	path = test/test-samples
+	url = https://github.com/fika-dev/fika-cli-test-samples.git
