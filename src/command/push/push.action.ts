@@ -15,13 +15,13 @@ export const pushAction = async (analyzedSnapshot: Snapshot, currentPath: string
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   const snapshot = snapshotService.loadSnapshot(currentPath);
   const difference = snapshotService.compare(analyzedSnapshot);
-  difference.toBeCreated.forEach(async (devObj)=> {
+  await Promise.all(difference.toBeCreated.map(async (devObj)=> {
     const uri = await connectService.create(devObj);
     if (devObj.objectType === ObjectType.Component){
-      morphService.addFikaUri(uri, devObj.id);
+      await morphService.addFikaUri(uri, devObj.id);
     }
     devObj.id = uri;
-  });
+  }));
   //[TODO] toBeUpdated, toBeRemoved
   snapshotService.saveSyncedSnapshot(new Snapshot(difference.toBeCreated));
   messageService.showSuccess(PUSH_SUCCESS_MESSAGE);
