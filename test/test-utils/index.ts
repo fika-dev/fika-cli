@@ -3,6 +3,8 @@ import path from "path";
 import { FIKA_PATH, SNAPSHOT_FILE_NAME } from "src/config/constants/path";
 import { Config } from "src/domain/entity/config.entity";
 import { SyncedSnapshot } from "src/domain/entity/synced_snapshot.entity";
+import {promisify} from 'util';
+import { exec } from 'child_process';
 
 export const clearTestFikaPath = (currentPath: string)=>{
   const fikaPath = currentPath + '/.fika';
@@ -33,4 +35,9 @@ export const readTestSnapshot = (currentPath: string): SyncedSnapshot=>{
   }else{
     throw new Error("Fika snapshot file path is not set");
   }
+}
+
+export const restoreGitRepo = async (repoPath: string) =>{
+  const execP =promisify(exec);
+  const {stdout, stderr} = await execP(`cd ${repoPath} && git restore . && git clean -f`);
 }
