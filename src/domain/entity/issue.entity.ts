@@ -3,5 +3,5 @@ export interface Issue{
   notionUrl: string
   title: string
   body?: string
-  labels?: string[]
+  labels: string[]
 }
