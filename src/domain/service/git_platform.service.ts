@@ -10,8 +10,12 @@ import { AddOnConfig } from "../value_object/add_on_config.vo";
 export class GitPlatformService implements IGitPlatformService{
   private _gitPlatform: GitPlatform;
 
-  createIssue(issue: Issue): Issue {
-    throw new Error("Method not implemented.");
+  async createIssue(issue: Issue): Promise<Issue> {
+    if (this._gitPlatform){
+      return await this._gitPlatform.createIssue(issue);
+    }else{
+      throw new Error("Git Platform is not defined, need to config first");
+    }
   }
   configGitPlatform(config: AddOnConfig) {
     if (config.type === AddOnType.GitPlatform){
