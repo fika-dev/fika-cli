@@ -3,12 +3,36 @@ import { NotionWorkspace } from "../entity/notion_workspace.entity";
 import { IConnectService } from "./i_connect.service";
 import open from 'open';
 import axios, { AxiosError } from "axios";
-import { CreateNotionWorkspaceDto, CreateNotionWorkspaceDtoType } from "src/infrastructure/dto/create_notion_workspace.dto";
+import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/create_issue.dto";
 import { injectable } from "inversify";
 import { fikaCallbackUri, fikaNotionClientId, notionAuthorizeUri } from "src/config/constants/uri";
+import { Issue } from "../entity/issue.entity";
+import { CreateNotionWorkspaceDto, CreateNotionWorkspaceDtoType } from "src/infrastructure/dto/create_notion_workspace.dto";
 
 @injectable()
 export class ConnectService implements IConnectService {
+  async getIssue(documentUrl: string): Promise<Issue> {
+    try{
+      const response = await axios.post('https://fikaapi.kkiri.app/notion/issue?id=0aefa0c0-ceed-4158-be40-6dfc3901770e');
+      const dto = new CreateIssueDto(response.data as CreateIssueDtoType);
+      return dto.toEntity();
+    }catch(e){
+      const axiosError = e as AxiosError;
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      throw new Error(axiosError.message);
+    }
+  }
+  async updateIssue(updatedIssue: Issue): Promise<Issue> {
+    try{
+      const response = await axios.post('https://fikaapi.kkiri.app/notion/issue?id=0aefa0c0-ceed-4158-be40-6dfc3901770e');
+      const dto = new CreateIssueDto(response.data as CreateIssueDtoType);
+      return dto.toEntity();
+    }catch(e){
+      const axiosError = e as AxiosError;
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      throw new Error(axiosError.message);
+    }
+  }
   create(devObj: DevObject): Promise<string> {
     throw new Error("Method not implemented.");
   }
