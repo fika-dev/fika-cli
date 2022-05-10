@@ -8,4 +8,5 @@ export interface IConfigService {
   getAnalyzerConfigs(): AddOnConfig[];
   getMorpherConfig(): AddOnConfig;
   updateNotionWorkspace(notionWorkspace: NotionWorkspace): void;
+  getGitPlatformConfig(): AddOnConfig;
 }

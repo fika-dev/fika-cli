@@ -17,6 +17,7 @@ export class ConfigService implements IConfigService{
     this.createConfig = this.createConfig.bind(this);
   }
   
+  
   private config: Config = defaultConfig;
   private fikaConfigFilePath?: string;
   updateNotionWorkspace(notionWorkspace: NotionWorkspace): void {
@@ -63,7 +64,15 @@ export class ConfigService implements IConfigService{
     }else{
       throw Error("Morpher Config is not found");
     }
-    
+  }
+
+  getGitPlatformConfig(): AddOnConfig {
+    const [gitPlatformConfig] = this.config.addOns.filter((addOn)=>addOn.type === AddOnType.GitPlatform);
+    if (gitPlatformConfig){
+      return gitPlatformConfig;
+    }else{
+      throw Error("Morpher Config is not found");
+    }
   }
 
 }
