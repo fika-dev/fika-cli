@@ -8,6 +8,6 @@ export interface IConnectService {
   create(devObj: DevObject): Promise<string>;
   update(devObj: DevObject): Promise<string>;
   remove(devObj: DevObject): Promise<string>;
-  getIssue(documentUrl: string) : Promise<Issue>;
-  updateIssue(updatedIssue: Issue): Promise<Issue>;
+  getIssue(documentUrl: string, botId: string) : Promise<Issue>;
+  updateIssue(updatedIssue: Issue, botId: string): Promise<Issue>;
 }

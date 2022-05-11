@@ -11,9 +11,19 @@ import { CreateNotionWorkspaceDto, CreateNotionWorkspaceDtoType } from "src/infr
 
 @injectable()
 export class ConnectService implements IConnectService {
-  async getIssue(documentUrl: string): Promise<Issue> {
+  async getIssue(documentUrl: string, botId: string): Promise<Issue> {
     try{
-      const response = await axios.post('https://fikaapi.kkiri.app/notion/issue?id=0aefa0c0-ceed-4158-be40-6dfc3901770e');
+      const response = await axios.post('https://fikaapi.kkiri.app/notion/issue',
+        {
+          botId: botId,
+          documentUrl: documentUrl,
+        },
+        {
+          headers: {
+            "content-type": "application/json",
+          }
+        },
+      );
       const dto = new CreateIssueDto(response.data as CreateIssueDtoType);
       return dto.toEntity();
     }catch(e){
@@ -22,11 +32,20 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async updateIssue(updatedIssue: Issue): Promise<Issue> {
+  async updateIssue(updatedIssue: Issue, botId: string): Promise<Issue> {
     try{
-      const response = await axios.post('https://fikaapi.kkiri.app/notion/issue?id=0aefa0c0-ceed-4158-be40-6dfc3901770e');
-      const dto = new CreateIssueDto(response.data as CreateIssueDtoType);
-      return dto.toEntity();
+      const response = await axios.post('https://fikaapi.kkiri.app/notion/issue',
+        {
+          ...updatedIssue,
+          botId
+        },
+        {
+          headers: {
+            "content-type": "application/json",
+          }
+        },
+      );
+      return updatedIssue;
     }catch(e){
       const axiosError = e as AxiosError;
       console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
