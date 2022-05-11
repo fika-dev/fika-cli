@@ -16,6 +16,13 @@ export class ConfigService implements IConfigService{
     this.updateNotionWorkspace = this.updateNotionWorkspace.bind(this);
     this.createConfig = this.createConfig.bind(this);
   }
+  getNotionBotId(): string {
+    if (this.config.notionWorkspace instanceof NotionWorkspace){
+      return this.config.notionWorkspace.botId
+    }else{
+      throw new Error("Notion bot ID is not configured");
+    }
+  }
   
   
   private config: Config = defaultConfig;
