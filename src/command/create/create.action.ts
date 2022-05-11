@@ -9,8 +9,9 @@ export const createAction = async (documentUrl: string)=>{
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const gitPlatformConfig = configService.getGitPlatformConfig();
   const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
-  const issue = await connectService.getIssue(documentUrl);
+  const botId = configService.getNotionBotId();
+  const issue = await connectService.getIssue(documentUrl, botId);
   gitPlatformService.configGitPlatform(gitPlatformConfig);
   const updatedIssue = await gitPlatformService.createIssue(issue)
-  await connectService.updateIssue(updatedIssue);
+  await connectService.updateIssue(updatedIssue, botId);
 }
