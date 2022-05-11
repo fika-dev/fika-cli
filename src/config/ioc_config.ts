@@ -1,8 +1,10 @@
 import { Container } from "inversify";
 import "reflect-metadata";
+import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
 import { AnalyzeService } from "src/domain/service/analyze.service";
 import { ConfigService } from "src/domain/service/config.service";
 import { ConnectService } from "src/domain/service/connnect.service";
+import { GitPlatformService } from "src/domain/service/git_platform.service";
 import { IAnalyzeService } from "src/domain/service/i_analyze.service";
 import { IConfigService } from "src/domain/service/i_config.service";
 import { IConnectService } from "src/domain/service/i_connect.service";
@@ -25,6 +27,7 @@ container.bind<IConnectService>(SERVICE_IDENTIFIER.ConnectService).to(ConnectSer
 container.bind<IMorphService>(SERVICE_IDENTIFIER.MorphService).to(MorphService).inSingletonScope();
 container.bind<IMessageService>(SERVICE_IDENTIFIER.MessageService).to(MessageService).inSingletonScope();
 container.bind<ISnapshotService>(SERVICE_IDENTIFIER.SnapshotService).to(SnapshotService).inSingletonScope();
+container.bind<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService).to(GitPlatformService).inSingletonScope();
 
 
 export default container;

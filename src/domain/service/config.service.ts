@@ -16,6 +16,14 @@ export class ConfigService implements IConfigService{
     this.updateNotionWorkspace = this.updateNotionWorkspace.bind(this);
     this.createConfig = this.createConfig.bind(this);
   }
+  getNotionBotId(): string {
+    if (this.config.notionWorkspace instanceof NotionWorkspace){
+      return this.config.notionWorkspace.botId
+    }else{
+      throw new Error("Notion bot ID is not configured");
+    }
+  }
+  
   
   private config: Config = defaultConfig;
   private fikaConfigFilePath?: string;
@@ -63,7 +71,15 @@ export class ConfigService implements IConfigService{
     }else{
       throw Error("Morpher Config is not found");
     }
-    
+  }
+
+  getGitPlatformConfig(): AddOnConfig {
+    const [gitPlatformConfig] = this.config.addOns.filter((addOn)=>addOn.type === AddOnType.GitPlatform);
+    if (gitPlatformConfig){
+      return gitPlatformConfig;
+    }else{
+      throw Error("Morpher Config is not found");
+    }
   }
 
 }
