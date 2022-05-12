@@ -1,4 +1,19 @@
 {
+  "name": "fika-cli",
+  "version": "0.1.0",
+  "description": "",
+  "author": {
+    "name": "Wonmo Jung",
+    "email": "wonmo.jung@kkiri.app",
+    "url": "https://fika.kkiri.app"
+  },
+  "files": [
+		"dist"
+	],
+  "publishConfig": {
+		"access": "public"
+	},
+  "bin": "dist/index.js",
   "dependencies": {
     "axios": "^0.27.2",
     "commander": "^9.2.0",
@@ -22,6 +37,8 @@
   },
   "scripts": {
     "test": "jest",
-    "tsnode": "ts-node -r tsconfig-paths/register ./src/index.ts"
+    "tsnode": "ts-node -r tsconfig-paths/register ./src/index.ts",
+    "build": "tsc -r tsconfig-paths/register",
+		"prepublishOnly": "npm run build"
   }
 }

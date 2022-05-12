@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { program } from 'commander';
 import { initCommand } from '@/command/init';
 import { pushCommand } from '@/command/push';
