@@ -8,11 +8,11 @@
     "url": "https://fika.kkiri.app"
   },
   "files": [
-		"dist"
-	],
+    "dist"
+  ],
   "publishConfig": {
-		"access": "public"
-	},
+    "access": "public"
+  },
   "bin": "dist/index.js",
   "dependencies": {
     "axios": "^0.27.2",
@@ -32,13 +32,14 @@
     "babel-jest": "^28.0.3",
     "jest": "^28.0.3",
     "ts-node": "^10.7.0",
+    "tsc-alias": "^1.6.7",
     "tsconfig-paths": "^4.0.0",
     "typescript": "^4.6.4"
   },
   "scripts": {
     "test": "jest",
     "tsnode": "ts-node -r tsconfig-paths/register ./src/index.ts",
-    "build": "tsc -r tsconfig-paths/register",
-		"prepublishOnly": "npm run build"
+    "build": "tsc && tsc-alias",
+    "prepublishOnly": "npm run build"
   }
 }
