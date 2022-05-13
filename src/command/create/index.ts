@@ -19,7 +19,7 @@ export const createCommand = new Command()
   .command('ci')
   .description('create issue in github')
   .argument('<document-url>')
-  .action( async ({argument}) => {
+  .action( async (argument) => {
     if (argument){
       createIssueAction(argument);
     }
@@ -29,7 +29,7 @@ export const createCommand = new Command()
   .command('cpr')
   .description('create PR in github')
   .argument('<document-url>')
-  .action( async ({argument}) => {
+  .action( async (argument) => {
     if (argument){
       createPRAction(argument);
     }
