@@ -1,8 +1,8 @@
 import fs from "fs"
 import path from "path";
-import { FIKA_PATH, SNAPSHOT_FILE_NAME } from "src/config/constants/path";
-import { Config } from "src/domain/entity/config.entity";
-import { SyncedSnapshot } from "src/domain/entity/synced_snapshot.entity";
+import { FIKA_PATH, SNAPSHOT_FILE_NAME } from "@/config/constants/path";
+import { Config } from "@/domain/entity/config.entity";
+import { SyncedSnapshot } from "@/domain/entity/synced_snapshot.entity";
 import {promisify} from 'util';
 import { exec } from 'child_process';
 
