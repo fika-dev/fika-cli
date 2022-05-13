@@ -1,11 +1,15 @@
 {
   "name": "fika-cli",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "",
   "author": {
     "name": "Wonmo Jung",
     "email": "wonmo.jung@kkiri.app",
     "url": "https://fika.kkiri.app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fika-dev/fika-cli.git"
   },
   "files": [
     "dist"
