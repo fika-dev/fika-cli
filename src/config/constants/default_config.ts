@@ -24,5 +24,9 @@ export const defaultConfig: Config = {
       name: "Typescript.Morpher",
       type: AddOnType.Morpher,
     },
+    {
+      name: "Github.GitPlatform",
+      type: AddOnType.GitPlatform,
+    },
   ]
 }
