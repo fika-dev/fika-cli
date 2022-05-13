@@ -6,5 +6,5 @@ export const setCommand = new Command()
   .description('set Notion bot id')
   .argument('<notion-bot-id>')
   .action( async (argument) => {
-    setAction(argument.notionBotId);
+    setAction(argument);
   });
