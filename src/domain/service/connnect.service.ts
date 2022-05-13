@@ -33,17 +33,14 @@ export class ConnectService implements IConnectService {
     }
   }
   async updateIssue(updatedIssue: Issue, botId: string): Promise<Issue> {
+    const updatedIssueWithBotId = {
+      ...updatedIssue,
+      botId
+    }
     try{
-      const response = await axios.post('https://fikaapi.kkiri.app/notion/issue',
-        {
-          ...updatedIssue,
-          botId
-        },
-        {
-          headers: {
-            "content-type": "application/json",
-          }
-        },
+      const response = await axios.post('https://fikaapi.kkiri.app/notion/issue/update',
+        updatedIssueWithBotId,
+        {headers: {"content-type": "application/json",}},
       );
       return updatedIssue;
     }catch(e){
@@ -67,9 +64,9 @@ export class ConnectService implements IConnectService {
     const targetUri = `${notionAuthorizeUri}?${params}`;
     return targetUri;
   }
-  async requestNotionWorkspace(): Promise<NotionWorkspace> {
+  async requestNotionWorkspace(botId: string): Promise<NotionWorkspace> {
     try{
-      const response = await axios.get('https://fikaapi.kkiri.app/notion/workspace?id=0aefa0c0-ceed-4158-be40-6dfc3901770e');
+      const response = await axios.get(`https://fikaapi.kkiri.app/notion/workspace?id=${botId}`);
       const dto = new CreateNotionWorkspaceDto(response.data as CreateNotionWorkspaceDtoType);
       return dto.toEntity();
     }catch(e){

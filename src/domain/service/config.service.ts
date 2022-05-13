@@ -16,28 +16,33 @@ export class ConfigService implements IConfigService{
     this.updateNotionWorkspace = this.updateNotionWorkspace.bind(this);
     this.createConfig = this.createConfig.bind(this);
   }
+
+  private config: Config = defaultConfig;
+  private fikaConfigFilePath?: string;
+
+
   getNotionBotId(): string {
-    if (this.config.notionWorkspace instanceof NotionWorkspace){
+    if  (this.config.notionWorkspace !== "NOT_CONNECTED"){
       return this.config.notionWorkspace.botId
     }else{
       throw new Error("Notion bot ID is not configured");
     }
   }
-  
-  
-  private config: Config = defaultConfig;
-  private fikaConfigFilePath?: string;
-  updateNotionWorkspace(notionWorkspace: NotionWorkspace): void {
 
+  
+  updateNotionWorkspace(notionWorkspace: NotionWorkspace): void {
     this.config = {
       ...this.config,
       notionWorkspace: notionWorkspace,
     }
     const configString = JSON.stringify(this.config);
+    if (!this.fikaConfigFilePath){
+      this.createConfig(require('os').homedir());
+    }
     fs.writeFileSync(this.fikaConfigFilePath, configString);
   }
-  async createConfig(currentPath: string): Promise<void> {
-    const fikaPath = path.join(currentPath, FIKA_PATH);
+  createConfig(homePath: string): void {
+    const fikaPath = path.join(homePath, FIKA_PATH);
     if (!fs.existsSync(fikaPath)){
       fs.mkdirSync(fikaPath);
     }
@@ -45,17 +50,14 @@ export class ConfigService implements IConfigService{
     if (!fs.existsSync(this.fikaConfigFilePath)){
       const configString = JSON.stringify(defaultConfig, undefined, 4);
       fs.writeFileSync(this.fikaConfigFilePath, configString);
-    }else{
-      throw new FikaPathExistsError();
     }
   }
-  readConfig():void {
-    if (this.fikaConfigFilePath){
-      const configString = fs.readFileSync(this.fikaConfigFilePath, 'utf-8');
-      this.config = JSON.parse(configString) as Config;
-    }else{
-      throw new Error("Fika config file path is not set");
+  readConfig(homePath: string):void {
+    if (!this.fikaConfigFilePath){
+      this.createConfig(homePath);
     }
+    const configString = fs.readFileSync(this.fikaConfigFilePath, 'utf-8');
+    this.config = JSON.parse(configString) as Config;
   }
   updateConfig(): void {
     throw new Error("Method not implemented.");
@@ -78,7 +80,7 @@ export class ConfigService implements IConfigService{
     if (gitPlatformConfig){
       return gitPlatformConfig;
     }else{
-      throw Error("Morpher Config is not found");
+      throw Error("Git Platform Config is not found");
     }
   }
 

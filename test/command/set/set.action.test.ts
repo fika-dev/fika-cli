@@ -22,6 +22,7 @@ afterEach(()=>{
 
 test('1. set with correct bot id', async () => { 
   container.unbind(SERVICE_IDENTIFIER.ConnectService);
+  const homePath = require('os').homedir();
   let connectionServiceMock = {
     requestNotionWorkspace: async (botId: string): Promise<NotionWorkspace>=>{
       return NotionWorkspace.getSample(botId);
@@ -29,7 +30,7 @@ test('1. set with correct bot id', async () => {
   }
   container.bind<any>(SERVICE_IDENTIFIER.ConnectService).toConstantValue(connectionServiceMock);
   await setAction(TEST_FIKA_BOT_ID);
-  container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService).readConfig()
+  container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService).readConfig(homePath);
   const config = readTestFikaConfig(process.cwd());
   expect((config.notionWorkspace as NotionWorkspace).botId).toEqual(TEST_FIKA_BOT_ID);
 });

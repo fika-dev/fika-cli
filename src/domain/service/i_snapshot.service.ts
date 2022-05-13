@@ -8,7 +8,7 @@ export interface Difference {
 }
 
 export interface ISnapshotService {
-  loadSnapshot(currentPath: string): Snapshot;
+  loadSnapshot(homePath: string): Snapshot;
   saveSyncedSnapshot(snapshot: Snapshot);
   compare(analyzedSnapshot: Snapshot): Difference;
 }

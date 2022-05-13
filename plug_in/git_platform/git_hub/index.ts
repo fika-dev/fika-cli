@@ -14,7 +14,7 @@ export class GitHub extends GitPlatform{
   async createIssue(issue: Issue): Promise<Issue> {
     const execP =promisify(exec);  
     const labelOptions = issue.labels.map((label)=>`--label "${label}" `).join(' ')
-    const {stdout, stderr} = await execP(`gh create issue --title "${issue.title}" --body "${issue.body}" ${labelOptions}`);
+    const {stdout, stderr} = await execP(`gh issue create  --title "${issue.title}" --body "${issue.body}" ${labelOptions}`);
     const updatedIssue: Issue = {
       ...issue,
       issueUrl: stdout.trim(),

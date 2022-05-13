@@ -12,8 +12,8 @@ export class SnapshotService implements ISnapshotService{
   private _recentSnapshot: SyncedSnapshot | undefined;
   private _snapshotFileName: string;
 
-  loadSnapshot(currentPath: string): Snapshot {
-    const snapshotFileName = path.join(currentPath, FIKA_PATH, SNAPSHOT_FILE_NAME);
+  loadSnapshot(homePath: string): Snapshot {
+    const snapshotFileName = path.join(homePath, FIKA_PATH, SNAPSHOT_FILE_NAME);
     this._snapshotFileName = snapshotFileName;
     if (fs.existsSync(snapshotFileName)){
       const snapshotString = fs.readFileSync(snapshotFileName, 'utf-8');

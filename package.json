@@ -1,11 +1,15 @@
 {
   "name": "fika-cli",
-  "version": "0.1.0",
+  "version": "0.1.12",
   "description": "",
   "author": {
     "name": "Wonmo Jung",
     "email": "wonmo.jung@kkiri.app",
     "url": "https://fika.kkiri.app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fika-dev/fika-cli.git"
   },
   "files": [
     "dist"
@@ -13,7 +17,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "bin": "dist/index.js",
+  "bin": {
+    "fika": "dist/src/index.js"
+  },
+  "main": "src/index.ts",
   "dependencies": {
     "axios": "^0.27.2",
     "commander": "^9.2.0",

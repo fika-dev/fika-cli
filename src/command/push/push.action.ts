@@ -8,12 +8,12 @@ import { IMessageService } from "src/domain/service/i_message.service";
 import { IMorphService } from "src/domain/service/i_morph.service";
 import { ISnapshotService } from "src/domain/service/i_snapshot.service";
 
-export const pushAction = async (analyzedSnapshot: Snapshot, currentPath: string)=>{
+export const pushAction = async (analyzedSnapshot: Snapshot, homePath: string)=>{
   const snapshotService = container.get<ISnapshotService>(SERVICE_IDENTIFIER.SnapshotService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const morphService = container.get<IMorphService>(SERVICE_IDENTIFIER.MorphService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  const snapshot = snapshotService.loadSnapshot(currentPath);
+  const snapshot = snapshotService.loadSnapshot(homePath);
   const difference = snapshotService.compare(analyzedSnapshot);
   await Promise.all(difference.toBeCreated.map(async (devObj)=> {
     const uri = await connectService.create(devObj);
