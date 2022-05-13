@@ -16,17 +16,20 @@ export class ConfigService implements IConfigService{
     this.updateNotionWorkspace = this.updateNotionWorkspace.bind(this);
     this.createConfig = this.createConfig.bind(this);
   }
+
+  private config: Config = defaultConfig;
+  private fikaConfigFilePath?: string;
+
+
   getNotionBotId(): string {
-    if (this.config.notionWorkspace instanceof NotionWorkspace){
+    if  (this.config.notionWorkspace !== "NOT_CONNECTED"){
       return this.config.notionWorkspace.botId
     }else{
       throw new Error("Notion bot ID is not configured");
     }
   }
+
   
-  
-  private config: Config = defaultConfig;
-  private fikaConfigFilePath?: string;
   updateNotionWorkspace(notionWorkspace: NotionWorkspace): void {
     this.config = {
       ...this.config,
@@ -47,8 +50,6 @@ export class ConfigService implements IConfigService{
     if (!fs.existsSync(this.fikaConfigFilePath)){
       const configString = JSON.stringify(defaultConfig, undefined, 4);
       fs.writeFileSync(this.fikaConfigFilePath, configString);
-    }else{
-      throw new FikaPathExistsError();
     }
   }
   readConfig(homePath: string):void {
