@@ -5,14 +5,14 @@ import { IMessageService } from "./i_message.service";
 @injectable()
 export class MessageService implements IMessageService{
   showSuccess(message: string): void {
-    console.log(`${message}`);
+    console.log(`\n\n🎉 ${message}\n\n`);
   }
 
   showCreateIssueSuccess(issue: Issue): void {
-    console.log(`이슈 생성에 성공하였습니다!  "${issue.title}"`);
+    console.log(`🎉 이슈 생성에 성공하였습니다!  "${issue.title}"`);
     console.log('');
-    console.log(`github issue url:  ${issue.issueUrl}`);
-    console.log(`notion url:  ${issue.notionUrl}`);
+    console.log(`🟢 github issue url:  ${issue.issueUrl}`);
+    console.log(`🟢 notion url:  ${issue.notionUrl}`);
     console.log('');
     console.log(`------------------------------------------------`);
     console.log('');
