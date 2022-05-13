@@ -36,7 +36,7 @@ export class ConfigService implements IConfigService{
     const configString = JSON.stringify(this.config);
     fs.writeFileSync(this.fikaConfigFilePath, configString);
   }
-  async createConfig(homePath: string): Promise<void> {
+  createConfig(homePath: string): void {
     const fikaPath = path.join(homePath, FIKA_PATH);
     if (!fs.existsSync(fikaPath)){
       fs.mkdirSync(fikaPath);
@@ -49,13 +49,12 @@ export class ConfigService implements IConfigService{
       throw new FikaPathExistsError();
     }
   }
-  readConfig():void {
-    if (this.fikaConfigFilePath){
-      const configString = fs.readFileSync(this.fikaConfigFilePath, 'utf-8');
-      this.config = JSON.parse(configString) as Config;
-    }else{
-      throw new Error("Fika config file path is not set");
+  readConfig(homePath: string):void {
+    if (!this.fikaConfigFilePath){
+      this.createConfig(homePath);
     }
+    const configString = fs.readFileSync(this.fikaConfigFilePath, 'utf-8');
+    this.config = JSON.parse(configString) as Config;
   }
   updateConfig(): void {
     throw new Error("Method not implemented.");

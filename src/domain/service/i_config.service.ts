@@ -4,7 +4,7 @@ import { AddOnConfig } from "../value_object/add_on_config.vo";
 export interface IConfigService {
   getNotionBotId(): string;
   createConfig(homePath: string): void;
-  readConfig(): void;
+  readConfig(homePath: string): void;
   updateConfig(): void;
   getAnalyzerConfigs(): AddOnConfig[];
   getMorpherConfig(): AddOnConfig;
