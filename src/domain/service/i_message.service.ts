@@ -4,4 +4,5 @@ export interface IMessageService {
   showSuccess(message: string): void;
   showError(message: string): void;
   showCreateIssueSuccess(issue: Issue): void;
+  showCreatePRSuccess(issue: Issue): void;
 }

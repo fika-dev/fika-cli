@@ -5,4 +5,5 @@ import { Morpher } from "./morpher.entity";
 
 export abstract class GitPlatform extends AddOn{
   abstract createIssue(issue: Issue): Promise<Issue>;
+  abstract createPR(issue: Issue): Promise<Issue>;
 }
