@@ -5,6 +5,7 @@ const SERVICE_IDENTIFIER = {
   MorphService: Symbol.for("MorphService"),
   MessageService: Symbol.for("MessageService"),
   SnapshotService: Symbol.for("SnapshotService"),
+  GitPlatformService: Symbol.for("GitPlatformService"),
 };
 
 export default SERVICE_IDENTIFIER;

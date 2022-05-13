@@ -40,11 +40,10 @@ export class GitRepoAnalyzer extends Analyzer{
         const {stdout: syncedCommitId} = await execP(`git rev-parse --short HEAD`);
         repo.syncedCommitId = syncedCommitId.trim();
         repo.lastSyncedDate = new Date(Date.now());
-        console.log(repo)
+        repo.id = 'unconnected:repo'
       }else{
         console.log('🧪', ' in Repo: ', 'stderr: ',stderr);
       }
-      console.log('🧪', ' in Repo: ', 'repo: ',repo);
       return repo;
     }catch(e){
       console.log('🧪', ' in Repo: ', 'e: ',e);

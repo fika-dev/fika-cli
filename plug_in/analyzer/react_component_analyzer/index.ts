@@ -20,6 +20,7 @@ export class ReactComponentAnalyzer extends Analyzer{
 
   private _analyzeNode(node: INode, morpher: Morpher): Component{
     let component: Component = Component.getEmptyComponent();
+    component.id = node.getId();
     component.title = morpher.getSymbolText(node);
     component.filePath = morpher.getFilePath(node);
     component.props = morpher.getArguementsFromAF(node);

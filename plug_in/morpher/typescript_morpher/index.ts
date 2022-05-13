@@ -1,5 +1,5 @@
 import { Morpher, MorpherConfig } from "src/domain/entity/morpher.entity";
-import { ArrowFunction, Node, Project, SyntaxKind, VariableDeclaration } from 'ts-morph';
+import { ArrowFunction, ClassDeclaration, Node, Project, SyntaxKind, VariableDeclaration, VariableStatement } from 'ts-morph';
 import path from 'path';
 import fs from 'fs';
 import { INode } from "src/domain/entity/i_node";
@@ -38,7 +38,7 @@ class TSNode extends INode{
   }
 }
 
-const pattern = /["']([A-Z]\w+\.[A-Z]\w+)["']/g
+const pattern = /["']([A-Z]\w+\.[A-Z]\w+)["']/
 export class TypescriptMorpher extends Morpher {
   
   
@@ -84,7 +84,23 @@ export class TypescriptMorpher extends Morpher {
 
   public getSymbolText(iNode: INode): string {
     const node = iNode.getNode() as Node;
-    return node.getSymbol().getName();
+    const symbol = node.getSymbol();
+    if (symbol){
+      return symbol.getName();
+    }
+    else{
+      if (isVS(node)){
+        const vc = fromVStoVD(node);
+        const symbol = vc.getSymbol();
+        if (symbol){
+          return symbol.getName();
+        }else{
+          return vc.getInitializer().getSymbol().getName();
+        }
+      }else{
+        return 'NotVS';
+      }
+    }
   }
 
   public getTypeText(iNode: INode): string {
@@ -95,16 +111,36 @@ export class TypescriptMorpher extends Morpher {
 
   public getArguementsFromAF(iNode: INode): string[] {
     const node = iNode.getNode() as Node;
-    const type = node.getType();
-    if (isVC(node)){
-      const vc = toVC(node);
-      const initializer = vc.getInitializer();
-      if (isAF(initializer)){
-        const arrowFunction =  toAF(initializer);
-        return arrowFunction.getParameters()
-          .map((parameter)=>({ name: parameter.getName(), typeName: parameter.getType().getText()}))
-          .map((parameter)=> `${parameter.name} : ${parameter.typeName}`);
-      }
+    let vc: VariableDeclaration;
+    if (isVS(node)){
+      vc = fromVStoVD(node); 
+    }
+    else if (isVD(node)){
+      vc = toVD(node);
+    }else if (isCD(node)){
+      const cd = toCD(node);
+      return cd.getProperties().map((property)=>`${property.getName()}: ${property.getType().getText()}`)
+    }else{
+      throw Error(`Not VD, VS, CD but ${node.getKindName()}`)
+    }
+    const initializer = vc.getInitializer();
+    if (isAF(initializer)){
+      const arrowFunction =  toAF(initializer);
+      return arrowFunction.getParameters()
+        .map((parameter)=>{
+          const type = parameter.getType();
+          const typeSymbol = type?.getSymbol();
+          if (typeSymbol && (typeSymbol.getMembers().length> 0)){
+            const members = typeSymbol.getMembers();
+            const membersString = members.map((symbol)=>{
+              const vd = symbol.getValueDeclaration();
+              return `${symbol.getName()}: ${vd.getType().getText()}`;
+            }).join(', ');
+            return { name: parameter.getName(), typeName: `{ ${membersString} }`}
+          }
+          return { name: parameter.getName(), typeName: parameter.getType().getText()}
+        })
+        .map((parameter)=> `${parameter.name} : ${parameter.typeName}`);
     }
     return [];
   }
@@ -112,7 +148,9 @@ export class TypescriptMorpher extends Morpher {
 
   public getFilePath(iNode: INode): string{
     const node = iNode.getNode() as Node;
-    return  node.getSourceFile().getDirectoryPath() as string;
+    const dir = node.getSourceFile().getDirectoryPath();
+    const fileName = node.getSourceFile().getBaseName();
+    return  (dir +'/' +fileName) as string;
   }
 
   addCommentedDecorator(){
@@ -144,22 +182,54 @@ export class TypescriptMorpher extends Morpher {
     if (commentsWithFikaDecorator.length>0){
       const fikaLine = commentsWithFikaDecorator[0];
       const match = pattern.exec(fikaLine);
-      const componentType = ComponentType[match[0]];
+      const componentType = ComponentType[match[1].replace('.', '')];
       return new TSNode(node, componentType);
     }
     return false;
+  }
+
+  public async addFikaUri(uri: string, nodeId: string){
+    const foundNode = this._tsNodes.find((tsNode)=>tsNode.getId()===nodeId);
+    if (foundNode){
+      const fikaNode = foundNode.getNode();
+      const beforeText = fikaNode.getText();
+      const afterText = `// @FikaUri(${uri})\n` + beforeText;
+      fikaNode.replaceWithText(afterText);
+      await this._project.save();
+    }else{
+      throw new Error(`Can Not Find with Node with ID: ${nodeId}`);
+    }
+
   }
 
   
 }
 
 
-function toVC(node: Node):VariableDeclaration{
+
+
+function toVD(node: Node):VariableDeclaration{
   return node.asKind(SyntaxKind.VariableDeclaration);
 }
 
-function isVC(node: Node):boolean{
-  return node.getKind()==-SyntaxKind.VariableDeclaration;
+function isVD(node: Node):boolean{
+  return node.getKind()===SyntaxKind.VariableDeclaration;
+}
+
+function toCD(node: Node):ClassDeclaration{
+  return node.asKind(SyntaxKind.ClassDeclaration);
+}
+
+function isCD(node: Node):boolean{
+  return node.getKind()===SyntaxKind.ClassDeclaration;
+}
+
+function toVS(node: Node):VariableStatement{
+  return node.asKind(SyntaxKind.VariableStatement);
+}
+
+function isVS(node: Node):boolean{
+  return node.getKind()===SyntaxKind.VariableStatement;
 }
 
 function toAF(node: Node):ArrowFunction{
@@ -167,5 +237,12 @@ function toAF(node: Node):ArrowFunction{
 }
 
 function isAF(node: Node):boolean{
-  return node.getKind()==-SyntaxKind.ArrowFunction;
+  return node.getKind()===SyntaxKind.ArrowFunction;
 }
+
+function fromVStoVD(node: Node):VariableDeclaration{
+  const vs = toVS(node);
+  const vcs = vs.getDeclarations();
+  return vcs[vcs.length-1];
+}
+

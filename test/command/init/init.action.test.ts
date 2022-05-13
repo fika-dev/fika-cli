@@ -3,14 +3,14 @@ import { clearTestFikaPath, readTestFikaConfig } from "test/test-utils";
 
 
 beforeAll(() => {
-  clearTestFikaPath(process.cwd());
+  clearTestFikaPath(process.cwd()+'/test');
 });
 
 afterAll(() => {
-  clearTestFikaPath(process.cwd());
+  clearTestFikaPath(process.cwd()+'/test');
 });
 
-test('1. create config', () => { 
+test('1. create config & check notion workspace', () => { 
   const testRoot = process.cwd() + '/test';
   initAction(testRoot);
   const config = readTestFikaConfig(process.cwd());

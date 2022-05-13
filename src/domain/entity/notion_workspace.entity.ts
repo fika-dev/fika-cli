@@ -17,4 +17,15 @@ export class NotionWorkspace {
   name: string;
   icon: string;
   owner: WorkspaceLevel | NotionUser;
+  static getSample = (botId: string): NotionWorkspace=>{
+    return {
+      id: 'sampleId',
+      botId,
+      icon: '🤟',
+      name: 'sampleWorkSpace',
+      owner: {
+        workspace: true,
+      }
+    }
+  }
 }
