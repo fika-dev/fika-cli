@@ -79,7 +79,7 @@ export class ConfigService implements IConfigService{
     if (gitPlatformConfig){
       return gitPlatformConfig;
     }else{
-      throw Error("Morpher Config is not found");
+      throw Error("Git Platform Config is not found");
     }
   }
 
