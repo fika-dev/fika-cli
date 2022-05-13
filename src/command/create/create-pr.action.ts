@@ -17,5 +17,5 @@ export const createPRAction = async (documentUrl: string)=>{
   gitPlatformService.configGitPlatform(gitPlatformConfig);
   const updatedIssue = await gitPlatformService.createPR(issue)
   await connectService.updateIssue(updatedIssue, botId);
-  messageService.showCreateIssueSuccess(updatedIssue);
+  messageService.showCreatePRSuccess(updatedIssue);
 }
