@@ -28,12 +28,14 @@ export class ConfigService implements IConfigService{
   private config: Config = defaultConfig;
   private fikaConfigFilePath?: string;
   updateNotionWorkspace(notionWorkspace: NotionWorkspace): void {
-
     this.config = {
       ...this.config,
       notionWorkspace: notionWorkspace,
     }
     const configString = JSON.stringify(this.config);
+    if (!this.fikaConfigFilePath){
+      this.createConfig(require('os').homedir());
+    }
     fs.writeFileSync(this.fikaConfigFilePath, configString);
   }
   createConfig(homePath: string): void {
