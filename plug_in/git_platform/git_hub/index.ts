@@ -26,6 +26,8 @@ export class GitHub extends GitPlatform{
   async createPR(issue: Issue): Promise<Issue> {
     const execP =promisify(exec);  
     const labelOptions = issue.labels.map((label)=>`--label "${label}" `).join(' ')
+    const {stdout: branchName, stderr: branchNameErr} = await execP('git rev-parse --abbrev-ref HEAD');
+    const {stdout: pushOut, stderr: pushErr} =await execP(`git push origin ${branchName}`);
     const {stdout, stderr} = await execP(`gh pr create  --title "${issue.title}" --body "${issue.body}" ${labelOptions} --base develop`);
     const updatedIssue: Issue = {
       ...issue,
