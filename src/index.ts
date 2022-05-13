@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { connectCommand } from '@/command/connect';
 import { pushCommand } from '@/command/push';
-import { createCommand, createIssueShortCommand } from '@/command/create';
+import { createCommand, createIssueShortCommand, createPRShortCommand } from '@/command/create';
 import { program } from 'commander';
 import { setCommand } from './command/set';
 
@@ -12,6 +12,7 @@ program.name('fika')
 program.addCommand(pushCommand);
 program.addCommand(createCommand);
 program.addCommand(createIssueShortCommand);
+program.addCommand(createPRShortCommand);
 program.addCommand(connectCommand);
 program.addCommand(setCommand);
 program.parse(process.argv);
