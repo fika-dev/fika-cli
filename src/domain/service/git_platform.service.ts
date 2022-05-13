@@ -8,6 +8,7 @@ import { AddOnConfig } from "../value_object/add_on_config.vo";
 
 @injectable()
 export class GitPlatformService implements IGitPlatformService{
+  
   private _gitPlatform: GitPlatform;
 
   async createIssue(issue: Issue): Promise<Issue> {
@@ -22,6 +23,14 @@ export class GitPlatformService implements IGitPlatformService{
       if (config.name === 'Github.GitPlatform'){
         this._gitPlatform = new GitHub(config);
       }
+    }
+  }
+
+  async createPR(issue: Issue): Promise<Issue> {
+    if (this._gitPlatform){
+      return await this._gitPlatform.createPR(issue);
+    }else{
+      throw new Error("Git Platform is not defined, need to config first");
     }
   }
 }
