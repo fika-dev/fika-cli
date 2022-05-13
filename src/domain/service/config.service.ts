@@ -36,8 +36,8 @@ export class ConfigService implements IConfigService{
     const configString = JSON.stringify(this.config);
     fs.writeFileSync(this.fikaConfigFilePath, configString);
   }
-  async createConfig(currentPath: string): Promise<void> {
-    const fikaPath = path.join(currentPath, FIKA_PATH);
+  async createConfig(homePath: string): Promise<void> {
+    const fikaPath = path.join(homePath, FIKA_PATH);
     if (!fs.existsSync(fikaPath)){
       fs.mkdirSync(fikaPath);
     }
