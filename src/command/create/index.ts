@@ -11,3 +11,13 @@ export const createCommand = new Command()
       createIssueAction(options.issue);
     }
   });
+
+  export const createIssueShortCommand = new Command()
+  .command('ci')
+  .description('create issue in github')
+  .argument('<document-url>')
+  .action( async ({argument}) => {
+    if (argument){
+      createIssueAction(argument);
+    }
+  });
