@@ -26,3 +26,9 @@ test('1. guide notion authentication', async () => {
   const response = await axios.get(uri);
   expect(response.status).toEqual(200);
 });
+
+
+test('2. get notion workspace', async () => { 
+  const notionWorkspace = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService).requestNotionWorkspace('80aecc8f-da82-4a8b-bb87-7c594be20c05');
+  expect(notionWorkspace).toBeDefined();
+});
