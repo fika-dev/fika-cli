@@ -22,6 +22,14 @@ export class MessageService implements IMessageService{
     console.log('');
     console.log('');
   }
+
+  showCreatePRSuccess(issue: Issue): void {
+    console.log(`🎉 Pull Request (PR) 생성에 성공하였습니다!  "${issue.title}"`);
+    console.log('');
+    console.log(`🟢 github issue url:  ${issue.prUrl}`);
+    console.log(`🟢 notion url:  ${issue.notionUrl}`);
+    console.log('');
+  }
   showError(message: string): void {
     throw new Error("Method not implemented.");
   }
