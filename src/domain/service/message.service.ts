@@ -1,6 +1,8 @@
 import { injectable } from "inversify";
 import { Issue } from "../entity/issue.entity";
-import { IMessageService } from "./i_message.service";
+import { ErrorMessage, IMessageService,  } from "./i_message.service";
+
+
 
 @injectable()
 export class MessageService implements IMessageService{
@@ -30,8 +32,16 @@ export class MessageService implements IMessageService{
     console.log(`🟢 notion url:  ${issue.notionUrl}`);
     console.log('');
   }
-  showError(message: string): void {
-    throw new Error("Method not implemented.");
+  showError(message: ErrorMessage): void {
+    console.log(`🚨 오류가 발생했습니다.  "${message.code}"`);
+    console.log('');
+    console.log(message.message);
+    if (message.guideUrl){
+      console.log('');
+      console.log(`🟢 아래 url 에서 더 많은 정보를 확인해 보세요`);
+      console.log(`${message.guideUrl}`);
+    }
+    console.log('');
   }
 
   _parseIssueNumber(issueUrl: string): string{
