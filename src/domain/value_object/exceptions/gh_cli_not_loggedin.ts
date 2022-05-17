@@ -1,10 +1,4 @@
+import BaseException from "./base_exception";
+
 export const NEED_LOGIN_STRING = 'gh auth login';
-export class GHCliNotLoggedin extends Error{
-  constructor(name?: string, message?: string){
-    super();
-    this.name = name;
-    if (message){
-      this.message = message;
-    }
-  }
-}
+export class GHCliNotLoggedin extends BaseException{}
