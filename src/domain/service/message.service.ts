@@ -26,7 +26,7 @@ export class MessageService implements IMessageService{
   showCreatePRSuccess(issue: Issue): void {
     console.log(`🎉 Pull Request (PR) 생성에 성공하였습니다!  "${issue.title}"`);
     console.log('');
-    console.log(`🟢 github issue url:  ${issue.prUrl}`);
+    console.log(`🟢 github PR url:  ${issue.prUrl}`);
     console.log(`🟢 notion url:  ${issue.notionUrl}`);
     console.log('');
   }
