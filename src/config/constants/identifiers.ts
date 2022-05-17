@@ -6,6 +6,7 @@ const SERVICE_IDENTIFIER = {
   MessageService: Symbol.for("MessageService"),
   SnapshotService: Symbol.for("SnapshotService"),
   GitPlatformService: Symbol.for("GitPlatformService"),
+  ErrorHandlingService: Symbol.for("ErrorHandlingService"),
 };
 
 export default SERVICE_IDENTIFIER;
