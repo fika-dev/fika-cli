@@ -8,15 +8,17 @@ import { injectable } from "inversify";
 import { fikaCallbackUri, fikaNotionClientId, notionAuthorizeUri } from "src/config/constants/uri";
 import { Issue } from "../entity/issue.entity";
 import { CreateNotionWorkspaceDto, CreateNotionWorkspaceDtoType } from "src/infrastructure/dto/create_notion_workspace.dto";
+import { Uuid } from "../value_object/uuid.vo";
+import { NotionUrl } from "../value_object/notion_url.vo";
 
 @injectable()
 export class ConnectService implements IConnectService {
-  async getIssue(documentUrl: string, botId: string): Promise<Issue> {
+  async getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue> {
     try{
       const response = await axios.post('https://fikaapi.kkiri.app/notion/issue',
         {
-          botId: botId,
-          documentUrl: documentUrl,
+          botId: botId.asString(),
+          documentUrl: documentUrl.asString(),
         },
         {
           headers: {
@@ -32,10 +34,10 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async updateIssue(updatedIssue: Issue, botId: string): Promise<Issue> {
+  async updateIssue(updatedIssue: Issue, botId: Uuid): Promise<Issue> {
     const updatedIssueWithBotId = {
       ...updatedIssue,
-      botId
+      botId: botId.asString(),
     }
     try{
       const response = await axios.post('https://fikaapi.kkiri.app/notion/issue/update',
@@ -64,9 +66,9 @@ export class ConnectService implements IConnectService {
     const targetUri = `${notionAuthorizeUri}?${params}`;
     return targetUri;
   }
-  async requestNotionWorkspace(botId: string): Promise<NotionWorkspace> {
+  async requestNotionWorkspace(botId: Uuid): Promise<NotionWorkspace> {
     try{
-      const response = await axios.get(`https://fikaapi.kkiri.app/notion/workspace?id=${botId}`);
+      const response = await axios.get(`https://fikaapi.kkiri.app/notion/workspace?id=${botId.asString()}`);
       const dto = new CreateNotionWorkspaceDto(response.data as CreateNotionWorkspaceDtoType);
       return dto.toEntity();
     }catch(e){

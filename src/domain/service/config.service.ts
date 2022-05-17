@@ -8,6 +8,7 @@ import { Config } from "../entity/config.entity";
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { NotionNotConnected } from "../value_object/exceptions/notion_not_connected";
+import { Uuid } from '../value_object/uuid.vo';
 import { IConfigService } from "./i_config.service";
 
 @injectable()
@@ -21,9 +22,10 @@ export class ConfigService implements IConfigService{
   private fikaConfigFilePath?: string;
 
 
-  getNotionBotId(): string {
+  getNotionBotId(): Uuid {
     if  (this.config.notionWorkspace !== "NOT_CONNECTED"){
-      return this.config.notionWorkspace.botId
+      const botId = new Uuid(this.config.notionWorkspace.botId);
+      return botId;
     }else{
       throw new NotionNotConnected('NOTION_NOT_CONNECTED');
     }
