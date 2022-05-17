@@ -1,14 +1,14 @@
-import { NotionWorkspace } from "../entity/notion_workspace.entity";
-import { AddOnConfig } from "../value_object/add_on_config.vo";
-import { IConfigService } from "./i_config.service";
 import fs from 'fs';
+import { injectable } from "inversify";
 import path from 'path';
 import { defaultConfig } from "src/config/constants/default_config";
-import { Config } from "../entity/config.entity";
-import { AddOnType } from "../entity/add_on.entity";
-import { injectable } from "inversify";
 import { CONFIG_FILE_NAME, FIKA_PATH } from "src/config/constants/path";
-import { FikaPathExistsError } from "../exceptions";
+import { AddOnType } from "../entity/add_on.entity";
+import { Config } from "../entity/config.entity";
+import { NotionWorkspace } from "../entity/notion_workspace.entity";
+import { AddOnConfig } from "../value_object/add_on_config.vo";
+import { NotionNotConnected } from "../value_object/exceptions/notion_not_connected";
+import { IConfigService } from "./i_config.service";
 
 @injectable()
 export class ConfigService implements IConfigService{
@@ -25,7 +25,7 @@ export class ConfigService implements IConfigService{
     if  (this.config.notionWorkspace !== "NOT_CONNECTED"){
       return this.config.notionWorkspace.botId
     }else{
-      throw new Error("Notion bot ID is not configured");
+      throw new NotionNotConnected('NOTION_NOT_CONNECTED');
     }
   }
 
