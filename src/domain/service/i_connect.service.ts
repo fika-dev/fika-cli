@@ -10,6 +10,6 @@ export interface IConnectService {
   create(devObj: DevObject): Promise<string>;
   update(devObj: DevObject): Promise<string>;
   remove(devObj: DevObject): Promise<string>;
-  getIssue(documentUrl: NotionUrl, botId: string) : Promise<Issue>;
-  updateIssue(updatedIssue: Issue, botId: string): Promise<Issue>;
+  getIssue(documentUrl: NotionUrl, botId: Uuid) : Promise<Issue>;
+  updateIssue(updatedIssue: Issue, botId: Uuid): Promise<Issue>;
 }

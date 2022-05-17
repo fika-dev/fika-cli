@@ -13,11 +13,11 @@ import { NotionUrl } from "../value_object/notion_url.vo";
 
 @injectable()
 export class ConnectService implements IConnectService {
-  async getIssue(documentUrl: NotionUrl, botId: string): Promise<Issue> {
+  async getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue> {
     try{
       const response = await axios.post('https://fikaapi.kkiri.app/notion/issue',
         {
-          botId: botId,
+          botId: botId.asString(),
           documentUrl: documentUrl.asString(),
         },
         {
@@ -34,10 +34,10 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async updateIssue(updatedIssue: Issue, botId: string): Promise<Issue> {
+  async updateIssue(updatedIssue: Issue, botId: Uuid): Promise<Issue> {
     const updatedIssueWithBotId = {
       ...updatedIssue,
-      botId
+      botId: botId.asString(),
     }
     try{
       const response = await axios.post('https://fikaapi.kkiri.app/notion/issue/update',
