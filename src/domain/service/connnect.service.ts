@@ -9,15 +9,16 @@ import { fikaCallbackUri, fikaNotionClientId, notionAuthorizeUri } from "src/con
 import { Issue } from "../entity/issue.entity";
 import { CreateNotionWorkspaceDto, CreateNotionWorkspaceDtoType } from "src/infrastructure/dto/create_notion_workspace.dto";
 import { Uuid } from "../value_object/uuid.vo";
+import { NotionUrl } from "../value_object/notion_url.vo";
 
 @injectable()
 export class ConnectService implements IConnectService {
-  async getIssue(documentUrl: string, botId: string): Promise<Issue> {
+  async getIssue(documentUrl: NotionUrl, botId: string): Promise<Issue> {
     try{
       const response = await axios.post('https://fikaapi.kkiri.app/notion/issue',
         {
           botId: botId,
-          documentUrl: documentUrl,
+          documentUrl: documentUrl.asString(),
         },
         {
           headers: {

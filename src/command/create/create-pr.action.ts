@@ -1,4 +1,5 @@
 import { IMessageService } from "@/domain/service/i_message.service";
+import { NotionUrl } from "@/domain/value_object/notion_url.vo";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
 import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
@@ -13,7 +14,8 @@ export const createPRAction = async (documentUrl: string)=>{
   const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
   configService.readConfig(require('os').homedir());
   const botId = configService.getNotionBotId();
-  const issue = await connectService.getIssue(documentUrl, botId);
+  const notionDocumentUrl = new NotionUrl(documentUrl);
+  const issue = await connectService.getIssue(notionDocumentUrl, botId);
   gitPlatformService.configGitPlatform(gitPlatformConfig);
   const updatedIssue = await gitPlatformService.createPR(issue)
   await connectService.updateIssue(updatedIssue, botId);
