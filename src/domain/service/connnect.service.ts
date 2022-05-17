@@ -10,7 +10,12 @@ import { Issue } from "../entity/issue.entity";
 import { CreateNotionWorkspaceDto, CreateNotionWorkspaceDtoType } from "src/infrastructure/dto/create_notion_workspace.dto";
 import { Uuid } from "../value_object/uuid.vo";
 import { NotionUrl } from "../value_object/notion_url.vo";
+import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
 
+interface errorDataType {
+  message: string,
+  statusCode: number,
+}
 @injectable()
 export class ConnectService implements IConnectService {
   async getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue> {
@@ -26,11 +31,16 @@ export class ConnectService implements IConnectService {
           }
         },
       );
+      
       const dto = new CreateIssueDto(response.data as CreateIssueDtoType);
       return dto.toEntity();
     }catch(e){
       const axiosError = e as AxiosError;
-      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      const errorData =  axiosError.response.data as errorDataType;
+      if (errorData.message === 'WRONG_PROPERTY_TITLE_NAME'){
+        throw new WrongPropertyTitleName('WRONG_PROPERTY_TITLE_NAME');
+      }
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);;
       throw new Error(axiosError.message);
     }
   }
