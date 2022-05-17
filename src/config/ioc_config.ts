@@ -1,3 +1,5 @@
+import { ErrorHandlingService } from "@/domain/service/error_handling.service";
+import { IErrorHandlingService } from "@/domain/service/i_error_handling.service";
 import { Container } from "inversify";
 import "reflect-metadata";
 import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
@@ -28,6 +30,7 @@ container.bind<IMorphService>(SERVICE_IDENTIFIER.MorphService).to(MorphService).
 container.bind<IMessageService>(SERVICE_IDENTIFIER.MessageService).to(MessageService).inSingletonScope();
 container.bind<ISnapshotService>(SERVICE_IDENTIFIER.SnapshotService).to(SnapshotService).inSingletonScope();
 container.bind<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService).to(GitPlatformService).inSingletonScope();
+container.bind<IErrorHandlingService>(SERVICE_IDENTIFIER.ErrorHandlingService).to(ErrorHandlingService).inSingletonScope();
 
 
 export default container;
