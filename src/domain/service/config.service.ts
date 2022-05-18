@@ -37,7 +37,7 @@ export class ConfigService implements IConfigService{
       ...this.config,
       notionWorkspace: notionWorkspace,
     }
-    const configString = JSON.stringify(this.config);
+    const configString = JSON.stringify(this.config, undefined, 4);
     if (!this.fikaConfigFilePath){
       this.createConfig(require('os').homedir());
     }

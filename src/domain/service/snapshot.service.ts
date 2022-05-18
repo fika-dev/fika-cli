@@ -29,7 +29,7 @@ export class SnapshotService implements ISnapshotService{
   
   public saveSyncedSnapshot(snapshot: Snapshot){
     const syncedSnapshot = new SyncedSnapshot(snapshot);
-    const snapshotString = JSON.stringify(syncedSnapshot);
+    const snapshotString = JSON.stringify(syncedSnapshot, undefined, 4);
     if (this._snapshotFileName){
       fs.writeFileSync(this._snapshotFileName, snapshotString);
     }else{
