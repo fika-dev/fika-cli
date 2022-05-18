@@ -14,7 +14,6 @@ try{
   program.name('fika')
   .description('CLI for advanced your workflow')
   .version('0.1.3');
-  program.addCommand(pushCommand);
   program.addCommand(createCommand);
   program.addCommand(createIssueShortCommand);
   program.addCommand(createPRShortCommand);
