@@ -1,3 +1,4 @@
+import { Uuid } from "@/domain/value_object/uuid.vo";
 import axios from "axios";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
@@ -23,7 +24,8 @@ test('1. guide notion authentication', async () => {
 
 
 test('2. get notion workspace', async () => { 
-  const notionWorkspace = await container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService).requestNotionWorkspace('80aecc8f-da82-4a8b-bb87-7c594be20c05');
+  const botId = new Uuid('80aecc8f-da82-4a8b-bb87-7c594be20c05');
+  const notionWorkspace = await container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService).requestNotionWorkspace(botId);
   console.log('🧪', ' in ConnectActionTest: ', 'notionWorkspace: ', notionWorkspace);
   expect(notionWorkspace).toBeDefined();
 });
