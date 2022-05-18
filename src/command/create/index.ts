@@ -1,4 +1,5 @@
 import { Command } from "commander";
+import { asyncErrorHandler } from "../error/error_handlers";
 import { createIssueAction } from "./create-issue.action";
 import { createPRAction } from "./create-pr.action";
 
@@ -9,9 +10,9 @@ export const createCommand = new Command()
   .option('-p, --pr <documentUrl>', 'create PR')
   .action( async (options: {issue: string, pr: string}) => {
     if (options.issue){
-      createIssueAction(options.issue);
+      asyncErrorHandler(createIssueAction(options.issue));
     }else if (options.pr){
-      createPRAction(options.pr);
+      asyncErrorHandler(createPRAction(options.pr));
     }
   });
 
@@ -21,7 +22,7 @@ export const createCommand = new Command()
   .argument('<document-url>')
   .action( async (argument) => {
     if (argument){
-      createIssueAction(argument);
+      asyncErrorHandler(createIssueAction(argument));
     }
   });
 
@@ -31,6 +32,6 @@ export const createCommand = new Command()
   .argument('<document-url>')
   .action( async (argument) => {
     if (argument){
-      createPRAction(argument);
+      asyncErrorHandler(createPRAction(argument));
     }
   });
