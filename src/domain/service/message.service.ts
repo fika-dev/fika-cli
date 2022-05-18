@@ -19,7 +19,7 @@ export class MessageService implements IMessageService{
     console.log(`------------------------------------------------`);
     console.log('');
     console.log(`해당 이슈를 처리하기 위한 브랜치를 생성하시려면`);
-    console.log(`현재 change 를 commit 하거나 stash 한 후 아래 커맨드를 실행해 주세요.\n\n`);
+    console.log(`아래 커맨드를 실행해 주세요.\n\n`);
     console.log(`git checkout -b feature/iss-${this._parseIssueNumber(issue.issueUrl!)}`);
     console.log('');
     console.log('');
@@ -31,6 +31,10 @@ export class MessageService implements IMessageService{
     console.log(`🟢 github PR url:  ${issue.prUrl}`);
     console.log(`🟢 notion url:  ${issue.notionUrl}`);
     console.log('');
+    console.log(`Github 에서 PR 을 병합한 이후에는`);
+    console.log(`아래 커맨드를 실행해 주세요.\n\n`);
+    console.log(`git checkout develop`);
+    console.log(`git pull origin develop\n\n`);
   }
   showError(message: ErrorMessage): void {
     console.log(`🚨 오류가 발생했습니다.  "${message.code}"`);
