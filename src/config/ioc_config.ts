@@ -1,7 +1,7 @@
+import "reflect-metadata";
+import { Container } from "inversify";
 import { ErrorHandlingService } from "@/domain/service/error_handling.service";
 import { IErrorHandlingService } from "@/domain/service/i_error_handling.service";
-import { Container } from "inversify";
-import "reflect-metadata";
 import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
 import { AnalyzeService } from "src/domain/service/analyze.service";
 import { ConfigService } from "src/domain/service/config.service";
