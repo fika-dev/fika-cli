@@ -31,6 +31,10 @@ export class MessageService implements IMessageService{
     console.log(`🟢 github PR url:  ${issue.prUrl}`);
     console.log(`🟢 notion url:  ${issue.notionUrl}`);
     console.log('');
+    console.log(`Github 에서 PR 을 병합한 이후에는`);
+    console.log(`아래 커맨드를 실행해 주세요.\n\n`);
+    console.log(`git checkout develop`);
+    console.log(`git pull origin develop\n\n`);
   }
   showError(message: ErrorMessage): void {
     console.log(`🚨 오류가 발생했습니다.  "${message.code}"`);
