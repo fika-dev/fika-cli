@@ -50,6 +50,10 @@ export class ErrorHandlingService implements IErrorHandlingService{
         code: exception.name,
       });
     }
+    messageService.showError({
+      message: exception.message, 
+      code: exception.name,
+    });
   }
 
 }
