@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
 import { Issue } from "../entity/issue.entity";
 import { ErrorMessage, IMessageService,  } from "./i_message.service";
+import chalk from 'chalk';
 
 
 
@@ -11,7 +12,7 @@ export class MessageService implements IMessageService{
   }
 
   showConnecting(connectingUrl: string): void {
-    console.log(`\n☕ fika가 notion 과의 연결을 위해 아래 👇 웹주소에 접속합니다.\n ${connectingUrl}\n`);
+    console.log(`\n☕ ${chalk.hex('#FAE232').bold('fika')}가 notion 과의 연결을 위해 아래 👇 웹주소에 접속합니다.\n ${connectingUrl}\n`);
   }
 
   showCreateIssueSuccess(issue: Issue): void {
