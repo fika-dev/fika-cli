@@ -10,4 +10,5 @@ export interface IMessageService {
   showError(message: ErrorMessage): void;
   showCreateIssueSuccess(issue: Issue): void;
   showCreatePRSuccess(issue: Issue): void;
+  showConnecting(connectingUrl: string): void;
 }

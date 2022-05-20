@@ -10,6 +10,10 @@ export class MessageService implements IMessageService{
     console.log(`\n\n🎉 ${message}\n\n`);
   }
 
+  showConnecting(connectingUrl: string): void {
+    console.log(`\n☕ fika가 notion 과의 연결을 위해 아래 👇 웹주소에 접속합니다.\n ${connectingUrl}\n`);
+  }
+
   showCreateIssueSuccess(issue: Issue): void {
     console.log(`🎉 이슈 생성에 성공하였습니다!  "${issue.title}"`);
     console.log('');
