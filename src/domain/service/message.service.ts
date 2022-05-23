@@ -7,6 +7,26 @@ import chalk from 'chalk';
 
 @injectable()
 export class MessageService implements IMessageService{
+  showGettingIssueForPR(): void {
+    console.log(`\n\n${this._withYellowBoldChalk('풀리퀘스트 PR')}을 만들기 위한 정보를 Notion 페이지로 부터 가져오고 있습니다.\n\n`);
+  }
+  showGitPush(branchName: string): void {
+    this._clear(); 
+    console.log(`\n\n
+    풀리퀘스트 PR 을 만들기 위한 정보를 Notion 페이지로 부터 가져오기 ${this._withGreenBoldChalk('완료')}
+    
+    ${this._withWhiteBoldChalk(branchName)} 브랜치를 Github 에 push 하고 있습니다.\n\n`);
+  }
+  showCreatingPR(issue: Issue, branchName: string): void {
+    this._clear(); 
+    console.log(`\n\n
+      풀리퀘스트 PR 을 만들기 위한 정보를 Notion 페이지로 부터 가져오기 ${this._withGreenBoldChalk('완료')}
+
+      feature/iss-85 브랜치를 Github 에 push ${this._withGreenBoldChalk('완료')}
+
+      "${this._withCyanBoldChalk(issue.title)}"
+      이슈와 같은 이름의 풀리퀘스트 PR 을 Github 에 생성하고 있습니다.\n\n`);
+  }
   showGettingIssue(): void {
     console.log(`\n\n${this._withYellowBoldChalk('이슈 Issue')} 를 만들기 위한 정보를 Notion 페이지로 부터 가져오고 있습니다.\n\n`);
   }
@@ -62,15 +82,16 @@ export class MessageService implements IMessageService{
   }
 
   showCreatePRSuccess(issue: Issue): void {
-    console.log(`🎉 Pull Request (PR) 생성에 성공하였습니다!  "${issue.title}"`);
+    this._clear(); 
+    console.log(`🎉 Pull Request (PR) 생성에 성공하였습니다!  "${this._withCyanBoldChalk(issue.title)}"`);
     console.log('');
-    console.log(`🟢 github PR url:  ${issue.prUrl}`);
-    console.log(`🟢 notion url:  ${issue.notionUrl}`);
+    console.log(`🟢 github PR url:  ${this._withYellowBoldChalk(issue.prUrl)}`);
+    console.log(`🟢 notion url:  ${this._withBlueBoldChalk(issue.notionUrl)}`);
     console.log('');
     console.log(`Github 에서 PR 을 병합한 이후에는`);
     console.log(`아래 커맨드를 실행해 주세요.\n\n`);
-    console.log(`git checkout develop`);
-    console.log(`git pull origin develop\n\n`);
+    console.log(`${this._withWhiteBoldChalk('git checkout develop')}`);
+    console.log(`${this._withWhiteBoldChalk('git pull origin develop')}\n\n`);
   }
   showError(message: ErrorMessage): void {
     console.log(`🚨 오류가 발생했습니다.  "${message.code}"`);
