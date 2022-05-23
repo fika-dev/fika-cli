@@ -10,12 +10,14 @@ export const createIssueAction = async (documentUrlString: string)=>{
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
+  messageService.showGettingIssue();
   const gitPlatformConfig = configService.getGitPlatformConfig();
   const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
   configService.readConfig(require('os').homedir());
   const botId = configService.getNotionBotId();
   const notionDocumentUrl = new NotionUrl(documentUrlString);
   const issue = await connectService.getIssue(notionDocumentUrl, botId);
+  messageService.showCreatingGitIssue();
   gitPlatformService.configGitPlatform(gitPlatformConfig);
   const updatedIssue = await gitPlatformService.createIssue(issue)
   await connectService.updateIssue(updatedIssue, botId);
