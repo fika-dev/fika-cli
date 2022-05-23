@@ -11,7 +11,7 @@ export class MessageService implements IMessageService{
     console.log(`\n\n${this._withYellowBoldChalk('이슈 Issue')} 를 만들기 위한 정보를 Notion 페이지로 부터 가져오고 있습니다.\n\n`);
   }
   showCreatingGitIssue(): void {
-    console.clear();
+    this._clear();
     console.log(`\n\n이슈 Issue 를 만들기 위한 정보를 Notion 페이지로 부터 가져오기 ${this._withGreenBoldChalk('완료')}
     ${this._withGreenBoldChalk('[Fika] message service 에서 보여주는 text 들을 더 보기 좋게 만들기 (e.g. color)')}
     
@@ -46,7 +46,7 @@ export class MessageService implements IMessageService{
   }
 
   showCreateIssueSuccess(issue: Issue): void {
-    console.clear();
+    this._clear(); 
     console.log(`🎉 이슈 생성에 성공하였습니다!  "${this._withCyanBoldChalk(issue.title)}"`);
     console.log('');
     console.log(`🟢 github issue url:  ${this._withYellowBoldChalk(issue.issueUrl)}`);
@@ -95,4 +95,11 @@ export class MessageService implements IMessageService{
   private _withBlueBoldChalk = (word: string) => chalk.hex('#00A2FF').bold(word)
   private _withCyanBoldChalk = (word: string) => chalk.hex('#18E7CF').bold(word)
   private _withWhiteBoldChalk = (word: string) => chalk.hex('#FFFFFF').bold(word)
+
+  private _clear = ()=>{
+    const lines = process.stdout.rows;
+    for (let index = 0; index < lines; index++) {
+      process.stdout.clearLine(0);
+    } 
+  }
 }
