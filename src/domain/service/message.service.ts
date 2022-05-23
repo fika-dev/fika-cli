@@ -11,6 +11,7 @@ export class MessageService implements IMessageService{
     console.log(`\n\n${this._withYellowBoldChalk('이슈 Issue')} 를 만들기 위한 정보를 Notion 페이지로 부터 가져오고 있습니다.\n\n`);
   }
   showCreatingGitIssue(): void {
+    console.clear();
     console.log(`\n\n이슈 Issue 를 만들기 위한 정보를 Notion 페이지로 부터 가져오기 ${this._withGreenBoldChalk('완료')}
     ${this._withGreenBoldChalk('[Fika] message service 에서 보여주는 text 들을 더 보기 좋게 만들기 (e.g. color)')}
     
@@ -45,16 +46,17 @@ export class MessageService implements IMessageService{
   }
 
   showCreateIssueSuccess(issue: Issue): void {
-    console.log(`🎉 이슈 생성에 성공하였습니다!  "${issue.title}"`);
+    console.clear();
+    console.log(`🎉 이슈 생성에 성공하였습니다!  "${this._withCyanBoldChalk(issue.title)}"`);
     console.log('');
-    console.log(`🟢 github issue url:  ${issue.issueUrl}`);
-    console.log(`🟢 notion url:  ${issue.notionUrl}`);
+    console.log(`🟢 github issue url:  ${this._withYellowBoldChalk(issue.issueUrl)}`);
+    console.log(`🟢 notion url:  ${this._withBlueBoldChalk(issue.notionUrl)}`);
     console.log('');
     console.log(`------------------------------------------------`);
     console.log('');
     console.log(`해당 이슈를 처리하기 위한 브랜치를 생성하시려면`);
     console.log(`아래 커맨드를 실행해 주세요.\n\n`);
-    console.log(`git checkout -b feature/iss-${this._parseIssueNumber(issue.issueUrl!)}`);
+    console.log(`${this._withWhiteBoldChalk('git checkout -b feature/iss-')}${this._withWhiteBoldChalk(this._parseIssueNumber(issue.issueUrl!))}`);
     console.log('');
     console.log('');
   }
@@ -91,4 +93,6 @@ export class MessageService implements IMessageService{
   private _withGreenBoldChalk = (word: string) => chalk.hex('#61D835').bold(word)
   private _withRedBoldChalk = (word: string) => chalk.hex('#FF644E').bold(word)
   private _withBlueBoldChalk = (word: string) => chalk.hex('#00A2FF').bold(word)
+  private _withCyanBoldChalk = (word: string) => chalk.hex('#18E7CF').bold(word)
+  private _withWhiteBoldChalk = (word: string) => chalk.hex('#FFFFFF').bold(word)
 }
