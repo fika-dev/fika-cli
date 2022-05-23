@@ -7,6 +7,16 @@ import chalk from 'chalk';
 
 @injectable()
 export class MessageService implements IMessageService{
+  showGettingIssue(): void {
+    console.log(`\n\n${this._withYellowBoldChalk('이슈 Issue')} 를 만들기 위한 정보를 Notion 페이지로 부터 가져오고 있습니다.\n\n`);
+  }
+  showCreatingGitIssue(): void {
+    console.log(`\n\n이슈 Issue 를 만들기 위한 정보를 Notion 페이지로 부터 가져오기 ${this._withGreenBoldChalk('완료')}
+    ${this._withGreenBoldChalk('[Fika] message service 에서 보여주는 text 들을 더 보기 좋게 만들기 (e.g. color)')}
+    
+    
+    ${this._withYellowBoldChalk('Github 이슈 Issue')} 생성 중\n\n`);
+  }
   showSuccess(message: string): void {
     console.log(`\n\n🎉 ${message}\n\n`);
   }
