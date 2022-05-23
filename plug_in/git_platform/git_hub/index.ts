@@ -33,11 +33,9 @@ export class GitHub extends GitPlatform{
     return updatedIssue;
   }
 
-  async createPR(issue: Issue): Promise<Issue> {
+  async createPR(issue: Issue, branchName: string): Promise<Issue> {
     const execP =promisify(exec);  
     const labelOptions = issue.labels.map((label)=>`--label "${label}" `).join(' ')
-    const {stdout: branchName, stderr: branchNameErr} = await execP('git rev-parse --abbrev-ref HEAD');
-    const {stdout: pushOut, stderr: pushErr} =await execP(`git push origin ${branchName}`);
     const {stdout, stderr} = await execP(`gh pr create  --title "${issue.title}" --body "${issue.body}\n 해결이슈: #${this._parseIssueNumber(branchName)}" ${labelOptions} --base develop`);
     if (stderr){
       if (stderr.includes(COMMAND_NOT_FOUND_STRING)){
