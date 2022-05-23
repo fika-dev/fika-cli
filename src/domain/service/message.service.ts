@@ -16,15 +16,17 @@ export class MessageService implements IMessageService{
     🎉 Notion 과의 연결에 ${this._withGreenBoldChalk('성공')} 하였습니다!
     
        아래의 기능들을 사용해 보세요!
+
     
-    1️⃣ Notion 페이지와 연결된 Github 이슈 생성하기 (TMI: ${this._withRedBoldChalk('ci')} 는 ${this._withRedBoldChalk('create issue')} 의 약자입니다)
+    1) Notion 페이지와 연결된 Github 이슈 생성하기 (TMI: ${this._withBlueBoldChalk('ci')} 는 ${this._withBlueBoldChalk('create issue')} 의 약자입니다)
     
-    ${this._withYellowBoldChalk('fika')} ${this._withRedBoldChalk('ci')} [NOTION_PAGE_URL]
+    ${this._withYellowBoldChalk('fika')} ${this._withBlueBoldChalk('ci')} [NOTION_PAGE_URL]
     
     
-    2️⃣ Notion 페이지와 연결된 Github 풀리퀘스트 (PR) 생성하기 (TMI: ${this._withRedBoldChalk('cpr')} 은 ${this._withRedBoldChalk('create PR')} 의 약자입니다)
     
-    ${this._withYellowBoldChalk('fika')} ${this._withRedBoldChalk('cpr')} [NOTION_PAGE_URL]
+    2) Notion 페이지와 연결된 Github 풀리퀘스트 (PR) 생성하기 (TMI: ${this._withBlueBoldChalk('cpr')} 은 ${this._withBlueBoldChalk('create PR')} 의 약자입니다)
+    
+    ${this._withYellowBoldChalk('fika')} ${this._withBlueBoldChalk('cpr')} [NOTION_PAGE_URL]
     `)
   }
 
@@ -78,4 +80,5 @@ export class MessageService implements IMessageService{
   private _withYellowBoldChalk = (word: string) => chalk.hex('#FAE232').bold(word)
   private _withGreenBoldChalk = (word: string) => chalk.hex('#61D835').bold(word)
   private _withRedBoldChalk = (word: string) => chalk.hex('#FF644E').bold(word)
+  private _withBlueBoldChalk = (word: string) => chalk.hex('#00A2FF').bold(word)
 }
