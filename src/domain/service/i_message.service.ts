@@ -11,4 +11,5 @@ export interface IMessageService {
   showCreateIssueSuccess(issue: Issue): void;
   showCreatePRSuccess(issue: Issue): void;
   showConnecting(connectingUrl: string): void;
+  showConnectSuccess(): void;
 }

@@ -12,5 +12,5 @@ export const setAction = async (botIdString: string)=>{
   const botId: Uuid = new Uuid(botIdString);
   const notionWorkspace = await connectService.requestNotionWorkspace(botId);
   configService.updateNotionWorkspace(notionWorkspace);
-  messageService.showSuccess("Notion 과의 연결에 성공하였습니다");
+  messageService.showConnectSuccess();
 }
