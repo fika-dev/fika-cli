@@ -10,12 +10,19 @@ import { AddOnConfig } from "../value_object/add_on_config.vo";
 
 @injectable()
 export class GitPlatformService implements IGitPlatformService{
-  async pushCurrentBranch(): Promise<string> {
+
+  async getBranchName(): Promise<string> {
     const execP =promisify(exec);  
     const {stdout: branchName, stderr: branchNameErr} = await execP('git rev-parse --abbrev-ref HEAD');
-    const {stdout: pushOut, stderr: pushErr} =await execP(`git push origin ${branchName}`);
     return branchName;
   }
+
+  async pushBranch(branchName: string): Promise<void> {
+    const execP =promisify(exec);  
+    const {stdout: pushOut, stderr: pushErr} =await execP(`git push origin ${branchName}`);
+  }
+
+
   
   private _gitPlatform: GitPlatform;
 
