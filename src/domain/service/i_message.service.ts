@@ -10,4 +10,11 @@ export interface IMessageService {
   showError(message: ErrorMessage): void;
   showCreateIssueSuccess(issue: Issue): void;
   showCreatePRSuccess(issue: Issue): void;
+  showConnecting(connectingUrl: string): void;
+  showConnectSuccess(): void;
+  showGettingIssue(): void;
+  showCreatingGitIssue(): void;
+  showGettingIssueForPR(): void;
+  showGitPush(branchName: string): void;
+  showCreatingPR(issue: Issue, branchName: string): void;
 }

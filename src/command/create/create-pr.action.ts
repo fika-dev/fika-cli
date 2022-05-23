@@ -10,14 +10,19 @@ export const createPRAction = async (documentUrl: string)=>{
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
+  messageService.showGettingIssueForPR();
   const gitPlatformConfig = configService.getGitPlatformConfig();
   const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
   configService.readConfig(require('os').homedir());
   const botId = configService.getNotionBotId();
   const notionDocumentUrl = new NotionUrl(documentUrl);
   const issue = await connectService.getIssue(notionDocumentUrl, botId);
+  const branchName = await gitPlatformService.getBranchName();
+  messageService.showGitPush(branchName);
+  await gitPlatformService.pushBranch(branchName);
   gitPlatformService.configGitPlatform(gitPlatformConfig);
-  const updatedIssue = await gitPlatformService.createPR(issue)
+  messageService.showCreatingPR(issue, branchName);
+  const updatedIssue = await gitPlatformService.createPR(issue, branchName);
   await connectService.updateIssue(updatedIssue, botId);
   messageService.showCreatePRSuccess(updatedIssue);
 }
