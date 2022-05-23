@@ -11,8 +11,25 @@ export class MessageService implements IMessageService{
     console.log(`\n\n🎉 ${message}\n\n`);
   }
 
+  showConnectSuccess(){
+    console.log(`
+    🎉 Notion 과의 연결에 ${this._withGreenBoldChalk('성공')} 하였습니다!
+    
+       아래의 기능들을 사용해 보세요!
+    
+    1️⃣ Notion 페이지와 연결된 Github 이슈 생성하기 (TMI: ${this._withRedBoldChalk('ci')} 는 ${this._withRedBoldChalk('create issue')} 의 약자입니다)
+    
+    ${this._withYellowBoldChalk('fika')} ${this._withRedBoldChalk('ci')} [NOTION_PAGE_URL]
+    
+    
+    2️⃣ Notion 페이지와 연결된 Github 풀리퀘스트 (PR) 생성하기 (TMI: ${this._withRedBoldChalk('cpr')} 은 ${this._withRedBoldChalk('create PR')} 의 약자입니다)
+    
+    ${this._withYellowBoldChalk('fika')} ${this._withRedBoldChalk('cpr')} [NOTION_PAGE_URL]
+    `)
+  }
+
   showConnecting(connectingUrl: string): void {
-    console.log(`\n☕ ${chalk.hex('#FAE232').bold('fika')}가 notion 과의 연결을 위해 아래 👇 웹주소에 접속합니다.\n ${connectingUrl}\n`);
+    console.log(`\n ${this._withYellowBoldChalk('fika')} 가 notion 과의 연결을 위해 아래 👇 웹주소에 접속합니다.\n\n ${connectingUrl}\n`);
   }
 
   showCreateIssueSuccess(issue: Issue): void {
@@ -57,4 +74,8 @@ export class MessageService implements IMessageService{
     const fragments = issueUrl.split('/');
     return fragments[fragments.length-1]
   }
+
+  private _withYellowBoldChalk = (word: string) => chalk.hex('#FAE232').bold(word)
+  private _withGreenBoldChalk = (word: string) => chalk.hex('#61D835').bold(word)
+  private _withRedBoldChalk = (word: string) => chalk.hex('#FF644E').bold(word)
 }
