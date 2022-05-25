@@ -13,7 +13,7 @@ import { UnknownError } from './domain/value_object/exceptions/unknown_error';
 try{
   program.name('fika')
   .description('CLI for advanced your workflow')
-  .version('0.2.1');
+  .version('0.2.2');
   program.addCommand(createCommand);
   program.addCommand(createIssueShortCommand);
   program.addCommand(createPRShortCommand);
