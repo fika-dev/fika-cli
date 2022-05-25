@@ -29,8 +29,6 @@ feature/iss-85 브랜치를 Github 에 push ${this._withGreenBoldChalk('완료')
   showCreatingGitIssue(): void {
     this._clear();
     console.log(`\n\n이슈 Issue 를 만들기 위한 정보를 Notion 페이지로 부터 가져오기 ${this._withGreenBoldChalk('완료')}
-    ${this._withGreenBoldChalk('[Fika] message service 에서 보여주는 text 들을 더 보기 좋게 만들기 (e.g. color)')}
-    
     
     ${this._withYellowBoldChalk('Github 이슈 Issue')} 생성 중\n\n`);
   }

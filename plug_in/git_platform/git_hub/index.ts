@@ -36,7 +36,7 @@ export class GitHub extends GitPlatform{
   async createPR(issue: Issue, branchName: string): Promise<Issue> {
     const execP =promisify(exec);  
     const labelOptions = issue.labels.join(' ')
-    const {stdout, stderr} = await execP(`gh pr create  --title "${issue.title}" --body "${issue.body}\n 해결이슈: #${this._parseIssueNumber(branchName)}" --label "${labelOptions}" --base develop`);
+    const {stdout, stderr} = await execP(`gh pr create --base develop  --title "${issue.title}" --body "${issue.body}\n 해결이슈: #${this._parseIssueNumber(branchName)}" --label "${labelOptions}" `);
     if (stderr){
       if (stderr.includes(COMMAND_NOT_FOUND_STRING)){
         throw new NoGithubCli('NO_GH_CLI');
