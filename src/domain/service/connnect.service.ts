@@ -20,7 +20,7 @@ interface errorDataType {
 export class ConnectService implements IConnectService {
   async getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue> {
     try{
-      const response = await axios.post('https://api.fikadev.com/notion/issue',
+      const response = await axios.post('https://fikaapi.kkiri.app/notion/issue',
         {
           botId: botId.asString(),
           documentUrl: documentUrl.asString(),
@@ -50,7 +50,7 @@ export class ConnectService implements IConnectService {
       botId: botId.asString(),
     }
     try{
-      const response = await axios.post('https://api.fikadev.com/notion/issue/update',
+      const response = await axios.post('https://fikaapi.kkiri.app/notion/issue/update',
         updatedIssueWithBotId,
         {headers: {"content-type": "application/json",}},
       );
@@ -78,7 +78,7 @@ export class ConnectService implements IConnectService {
   }
   async requestNotionWorkspace(botId: Uuid): Promise<NotionWorkspace> {
     try{
-      const response = await axios.get(`https://api.fikadev.com/notion/workspace?id=${botId.asString()}`);
+      const response = await axios.get(`https://fikaapi.kkiri.app/notion/workspace?id=${botId.asString()}`);
       const dto = new CreateNotionWorkspaceDto(response.data as CreateNotionWorkspaceDtoType);
       return dto.toEntity();
     }catch(e){
