@@ -13,14 +13,37 @@ import { IConfigService } from "./i_config.service";
 
 @injectable()
 export class ConfigService implements IConfigService{
+
+  private config: Config = defaultConfig;
+  private fikaConfigFilePath?: string;
+
   constructor(){
     this.updateNotionWorkspace = this.updateNotionWorkspace.bind(this);
     this.createConfig = this.createConfig.bind(this);
   }
 
-  private config: Config = defaultConfig;
-  private fikaConfigFilePath?: string;
-
+  getFikaToken(): string | undefined {
+    if (this.config.fikaToken !== "UN_AUTHENTICATED"){
+      const accessToken = this.config.fikaToken.accessToken;
+      return accessToken;
+    }else{
+      return;
+    }
+  }
+  
+  updateFikaToken(token: string): void {
+    this.config = {
+      ...this.config,
+      fikaToken: {
+        accessToken: token
+      },
+    }
+    const configString = JSON.stringify(this.config, undefined, 4);
+    if (!this.fikaConfigFilePath){
+      this.createConfig(require('os').homedir());
+    }
+    fs.writeFileSync(this.fikaConfigFilePath, configString);
+  }
 
   getNotionBotId(): Uuid {
     if  (this.config.notionWorkspace !== "NOT_CONNECTED"){
