@@ -5,6 +5,7 @@ import { ObjectType } from "src/domain/entity/dev_object.entity";
 
 export const defaultConfig: Config = {
   notionWorkspace: "NOT_CONNECTED",
+  fikaToken: "UN_AUTHENTICATED",
   addOns: [
     {
       name: "Repo.Analyzer",
@@ -28,5 +29,5 @@ export const defaultConfig: Config = {
       name: "Github.GitPlatform",
       type: AddOnType.GitPlatform,
     },
-  ]
+  ],
 }

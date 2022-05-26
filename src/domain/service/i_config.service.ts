@@ -11,4 +11,6 @@ export interface IConfigService {
   getMorpherConfig(): AddOnConfig;
   updateNotionWorkspace(notionWorkspace: NotionWorkspace): void;
   getGitPlatformConfig(): AddOnConfig;
+  getFikaToken(): string | undefined;
+  updateFikaToken(token: string): void;
 }
