@@ -1,18 +1,23 @@
 import { injectable } from "inversify";
 import { IPromptService } from "./i-prompt.service";
+import promptly from 'promptly';
 
 @injectable()
 export class PromptService implements IPromptService{
-  askAlreadySignedUp(): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  async askAlreadySignedUp(): Promise<boolean> {
+    const answer = await promptly.confirm('이미 Fika 계정이 있으신가요? (y or n)');
+    return answer;
   }
-  askEmailAddress(): Promise<string> {
-    throw new Error("Method not implemented.");
+  async askEmailAddress(): Promise<string> {
+    const emailAddress = await promptly.prompt('이메일 주소를 입력해주세요: ');
+    return emailAddress;
   }
-  askPassword(): Promise<string> {
-    throw new Error("Method not implemented.");
+  async askPassword(): Promise<string> {
+    const password = await promptly.password('비밀번호를 입력해주세요: ');
+    return password;
   }
-  askOtpToken(): Promise<string> {
-    throw new Error("Method not implemented.");
+  async askOtpToken(): Promise<string> {
+    const otpToken = await promptly.password('OTP 를 입력해주세요: ');
+    return otpToken;
   }
 }
