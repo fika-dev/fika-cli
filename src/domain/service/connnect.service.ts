@@ -1,6 +1,6 @@
 import { DevObject } from "../entity/dev_object.entity";
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
-import { IConnectService } from "./i_connect.service";
+import { IConnectService, UserWithToken } from "./i_connect.service";
 import open from 'open';
 import axios, { AxiosError } from "axios";
 import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/create_issue.dto";
@@ -18,6 +18,41 @@ interface errorDataType {
 }
 @injectable()
 export class ConnectService implements IConnectService {
+  private token: string | undefined;
+
+  useToken(token: string): void {
+    this.token = token;
+  }
+
+  async isAvailableEmail(email: string): Promise<boolean> {
+    try{
+      const response = await axios.post('https://api.fikadev.com/auth/is-valid-email',
+        { email },
+        {headers: {"content-type": "application/json",}},
+      );
+      return true;
+    }catch(e){
+      const axiosError = e as AxiosError;
+      if (axiosError.code === '409'){
+        return false;
+      }
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      throw new Error(axiosError.message);
+    }
+  }
+
+  async requestOtpEmail(email: string, password: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
+  async signup(email: string, password: string, otpToken: string): Promise<UserWithToken> {
+    throw new Error("Method not implemented.");
+  }
+
+  async signin(email: string, password: string): Promise<UserWithToken> {
+    throw new Error("Method not implemented.");
+  }
+
   async getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue> {
     try{
       const response = await axios.post('https://api.fikadev.com/notion/issue',
