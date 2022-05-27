@@ -5,5 +5,5 @@ export interface IPromptService {
   askAlreadySignedUp(): Promise<boolean>
   askEmailAddress(): Promise<string>
   askPassword(): Promise<string>
-  askOtpToken(): Promise<string>
+  askOtpToken(email: string): Promise<string>
 }
