@@ -7,6 +7,7 @@ const SERVICE_IDENTIFIER = {
   SnapshotService: Symbol.for("SnapshotService"),
   GitPlatformService: Symbol.for("GitPlatformService"),
   ErrorHandlingService: Symbol.for("ErrorHandlingService"),
+  PromptService: Symbol.for("PromptService"),
 };
 
 export default SERVICE_IDENTIFIER;

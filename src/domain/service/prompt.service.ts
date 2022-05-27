@@ -16,8 +16,8 @@ export class PromptService implements IPromptService{
     const password = await promptly.password('비밀번호를 입력해주세요: ');
     return password;
   }
-  async askOtpToken(): Promise<string> {
-    const otpToken = await promptly.password('OTP 를 입력해주세요: ');
+  async askOtpToken(email: string): Promise<string> {
+    const otpToken = await promptly.password(`${email} 로 OTP 를 전송하였습니다.\n이메일에서 복사한 OTP 를 입력해주세요: `);
     return otpToken;
   }
 }

@@ -17,6 +17,8 @@ import { MessageService } from "src/domain/service/message.service";
 import { MorphService } from "src/domain/service/morph.service";
 import { SnapshotService } from "src/domain/service/snapshot.service";
 import SERVICE_IDENTIFIER from "./constants/identifiers";
+import { IPromptService } from "@/domain/service/i-prompt.service";
+import { PromptService } from "@/domain/service/prompt.service";
 
 
 
@@ -31,6 +33,7 @@ container.bind<IMessageService>(SERVICE_IDENTIFIER.MessageService).to(MessageSer
 container.bind<ISnapshotService>(SERVICE_IDENTIFIER.SnapshotService).to(SnapshotService).inSingletonScope();
 container.bind<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService).to(GitPlatformService).inSingletonScope();
 container.bind<IErrorHandlingService>(SERVICE_IDENTIFIER.ErrorHandlingService).to(ErrorHandlingService).inSingletonScope();
+container.bind<IPromptService>(SERVICE_IDENTIFIER.PromptService).to(PromptService).inSingletonScope();
 
 
 export default container;
