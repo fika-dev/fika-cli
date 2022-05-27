@@ -5,7 +5,7 @@ import BaseException from "@/domain/value_object/exceptions/base_exception";
 import { UnknownError } from "@/domain/value_object/exceptions/unknown_error";
 
 
-export function errorHandler(e) {
+export function errorHandler(e: any) {
   const errorHandlingService = container.get<IErrorHandlingService>(SERVICE_IDENTIFIER.ErrorHandlingService);
   if (!(e instanceof BaseException)){
     const unknownError = new UnknownError("UNKNOWN_ERROR", e.message);
