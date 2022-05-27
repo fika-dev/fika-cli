@@ -22,5 +22,7 @@ export async function authHandler(){
       token = await signupAction();
     }
     connectService.useToken(token);
+
   }
+  // test
 }
