@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { asyncErrorHandler } from "../error/error_handlers";
+import { asyncWrapper } from "../wrapper/wrappers";
 import { setAction } from "./set.action";
 
 export const setCommand = new Command()
@@ -7,5 +7,5 @@ export const setCommand = new Command()
   .description('set Notion bot id')
   .argument('<notion-bot-id>')
   .action( async (argument: string) => {
-    await asyncErrorHandler(setAction(argument));
+    await asyncWrapper(setAction(argument));
   });
