@@ -42,15 +42,44 @@ export class ConnectService implements IConnectService {
   }
 
   async requestOtpEmail(email: string, password: string): Promise<void> {
-    throw new Error("Method not implemented.");
+    try{
+      const response = await axios.post('https://api.fikadev.com/auth/send-otp-email',
+        { email, password },
+        {headers: {"content-type": "application/json",}},
+      );
+    }catch(e){
+      const axiosError = e as AxiosError;
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      throw new Error(axiosError.message);
+    }
   }
 
   async signup(email: string, password: string, otpToken: string): Promise<UserWithToken> {
-    throw new Error("Method not implemented.");
+    try{
+      const response = await axios.post('https://api.fikadev.com/auth/cli/signup',
+        { email, password, otpToken },
+        {headers: {"content-type": "application/json",}},
+      );
+      return {accessToken: response.data.token.access_token}
+    }catch(e){
+      const axiosError = e as AxiosError;
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      throw new Error(axiosError.message);
+    }
   }
 
   async signin(email: string, password: string): Promise<UserWithToken> {
-    throw new Error("Method not implemented.");
+    try{
+      const response = await axios.post('https://api.fikadev.com/auth/cli/signin',
+        { email, password },
+        {headers: {"content-type": "application/json",}},
+      );
+      return {accessToken: response.data.token.access_token}
+    }catch(e){
+      const axiosError = e as AxiosError;
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      throw new Error(axiosError.message);
+    }
   }
 
   async getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue> {
