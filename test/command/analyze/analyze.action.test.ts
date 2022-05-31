@@ -23,8 +23,8 @@ describe('test sample_1', ()=>{
     const snapshots = await analyzeAction();
     expect(snapshots.repo).toBeDefined();
   });
-  test('2. get components', async () => { 
-    const snapshots = await analyzeAction();
-    expect(snapshots.components.length).toBeGreaterThan(0);
-  });
+  // test('2. get components', async () => { 
+  //   const snapshots = await analyzeAction();
+  //   expect(snapshots.components.length).toBeGreaterThan(0);
+  // });
 })
