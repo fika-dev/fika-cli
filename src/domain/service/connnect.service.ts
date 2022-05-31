@@ -33,10 +33,11 @@ export class ConnectService implements IConnectService {
       return true;
     }catch(e){
       const axiosError = e as AxiosError;
-      if (axiosError.code === '409'){
+      const responseData = axiosError.response.data as any;
+      if (responseData && responseData.statusCode === 409){
         return false;
       }
-      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.response.data);
       throw new Error(axiosError.message);
     }
   }
