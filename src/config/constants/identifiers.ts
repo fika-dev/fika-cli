@@ -10,4 +10,8 @@ const SERVICE_IDENTIFIER = {
   PromptService: Symbol.for("PromptService"),
 };
 
+export const PARAMETER_IDENTIFIER = {
+  Domain: Symbol.for("DomainParameter")
+}
+
 export default SERVICE_IDENTIFIER;

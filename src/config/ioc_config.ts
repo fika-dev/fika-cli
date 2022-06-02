@@ -16,10 +16,9 @@ import { ISnapshotService } from "src/domain/service/i_snapshot.service";
 import { MessageService } from "src/domain/service/message.service";
 import { MorphService } from "src/domain/service/morph.service";
 import { SnapshotService } from "src/domain/service/snapshot.service";
-import SERVICE_IDENTIFIER from "./constants/identifiers";
+import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "./constants/identifiers";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { PromptService } from "@/domain/service/prompt.service";
-
 
 
 
@@ -34,6 +33,13 @@ container.bind<ISnapshotService>(SERVICE_IDENTIFIER.SnapshotService).to(Snapshot
 container.bind<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService).to(GitPlatformService).inSingletonScope();
 container.bind<IErrorHandlingService>(SERVICE_IDENTIFIER.ErrorHandlingService).to(ErrorHandlingService).inSingletonScope();
 container.bind<IPromptService>(SERVICE_IDENTIFIER.PromptService).to(PromptService).inSingletonScope();
+if (process.env.NODE_ENV === "production"){
+  container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://api.fikadev.com');
+}else if (process.env.NODE_ENV === "test"){
+  container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://testapi.fikadev.com');
+}else{
+  container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://testapi.fikadev.com');
+}
 
 
 export default container;
