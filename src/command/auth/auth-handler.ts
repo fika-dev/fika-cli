@@ -11,9 +11,11 @@ export async function authHandler(){
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
+  configService.readConfig(require('os').homedir())
   token = configService.getFikaToken();
   if (token){
     connectService.useToken(token);
+    return true;
   }else{
     const isSignedUp = await promptService.askAlreadySignedUp();
     if(isSignedUp){
@@ -22,7 +24,7 @@ export async function authHandler(){
       token = await signupAction();
     }
     connectService.useToken(token);
-
+    return true;
   }
   // test
 }
