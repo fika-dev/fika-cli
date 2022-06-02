@@ -8,7 +8,7 @@ import chalk from 'chalk';
 @injectable()
 export class MessageService implements IMessageService{
   showInvaildEmail(email: string): void {
-    console.log(`\n🚨 입력하신 \n${this._withRedBoldChalk(email)} 은 \n양식에 맞지 않거나, 이미 가입된 이메일 주소입니다.\n`);
+    console.log(`\n🚨 입력하신 \n${this._withRedBoldChalk(email)} 은 \n\n`);
   }
   showGettingIssueForPR(): void {
     console.log(`\n\n${this._withYellowBoldChalk('풀리퀘스트 PR')}을 만들기 위한 정보를 Notion 페이지로 부터 가져오고 있습니다.\n\n`);
@@ -22,7 +22,7 @@ export class MessageService implements IMessageService{
   showCreatingPR(issue: Issue, branchName: string): void {
     this._clear(); 
     console.log(`\n\n\n풀리퀘스트 PR 을 만들기 위한 정보를 Notion 페이지로 부터 가져오기 ${this._withGreenBoldChalk('완료')}   
-feature/iss-85 브랜치를 Github 에 push ${this._withGreenBoldChalk('완료')}    
+${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk('완료')}    
 "${this._withCyanBoldChalk(issue.title)}"
 이슈와 같은 이름의 풀리퀘스트 PR 을 Github 에 생성하고 있습니다.\n\n`);
   }
