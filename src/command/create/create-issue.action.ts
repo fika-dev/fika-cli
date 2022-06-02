@@ -13,7 +13,7 @@ export const createIssueAction = async (documentUrlString: string)=>{
   messageService.showGettingIssue();
   const gitPlatformConfig = configService.getGitPlatformConfig();
   const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
-  configService.readConfig(require('os').homedir());
+  configService.readConfig();
   const botId = configService.getNotionBotId();
   const notionDocumentUrl = new NotionUrl(documentUrlString);
   const issue = await connectService.getIssue(notionDocumentUrl, botId);

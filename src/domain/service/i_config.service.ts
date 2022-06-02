@@ -4,8 +4,8 @@ import { Uuid } from "../value_object/uuid.vo";
 
 export interface IConfigService {
   getNotionBotId(): Uuid;
-  createConfig(homePath: string): void;
-  readConfig(homePath: string): void;
+  createConfig(): void;
+  readConfig(): void;
   updateConfig(): void;
   getAnalyzerConfigs(): AddOnConfig[];
   getMorpherConfig(): AddOnConfig;
