@@ -6,12 +6,11 @@ import { IConfigService } from "src/domain/service/i_config.service";
 import { IMorphService } from "src/domain/service/i_morph.service";
 
 export const  analyzeAction = async () : Promise<Snapshot> => {
-  const homePath = require('os').homedir();
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const analyzeService = container.get<IAnalyzeService>(SERVICE_IDENTIFIER.AnalyzeService);
   const morphService = container.get<IMorphService>(SERVICE_IDENTIFIER.MorphService);
 
-  configService.readConfig(homePath);
+  configService.readConfig();
   const analyzerConfigs = configService.getAnalyzerConfigs();
   analyzeService.registerAnalyzers(analyzerConfigs);
 

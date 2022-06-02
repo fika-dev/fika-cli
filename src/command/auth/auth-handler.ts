@@ -11,7 +11,7 @@ export async function authHandler(){
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
-  configService.readConfig(require('os').homedir())
+  configService.readConfig()
   token = configService.getFikaToken();
   if (token){
     connectService.useToken(token);

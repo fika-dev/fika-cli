@@ -1,5 +1,6 @@
+import { PARAMETER_IDENTIFIER } from '@/config/constants/identifiers';
 import fs from 'fs';
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import path from 'path';
 import { defaultConfig } from "src/config/constants/default_config";
 import { CONFIG_FILE_NAME, FIKA_PATH } from "src/config/constants/path";
@@ -16,10 +17,14 @@ export class ConfigService implements IConfigService{
 
   private config: Config = defaultConfig;
   private fikaConfigFilePath?: string;
+  private fikaPath: string;
 
-  constructor(){
+  constructor(
+    @inject(PARAMETER_IDENTIFIER.FikaPath) fikaPath: string 
+  ){
     this.updateNotionWorkspace = this.updateNotionWorkspace.bind(this);
     this.createConfig = this.createConfig.bind(this);
+    this.fikaPath = fikaPath;
   }
 
   getFikaToken(): string | undefined {
@@ -40,7 +45,7 @@ export class ConfigService implements IConfigService{
     }
     const configString = JSON.stringify(this.config, undefined, 4);
     if (!this.fikaConfigFilePath){
-      this.createConfig(require('os').homedir());
+      this.createConfig();
     }
     fs.writeFileSync(this.fikaConfigFilePath, configString);
   }
@@ -62,24 +67,23 @@ export class ConfigService implements IConfigService{
     }
     const configString = JSON.stringify(this.config, undefined, 4);
     if (!this.fikaConfigFilePath){
-      this.createConfig(require('os').homedir());
+      this.createConfig();
     }
     fs.writeFileSync(this.fikaConfigFilePath, configString);
   }
-  createConfig(homePath: string): void {
-    const fikaPath = path.join(homePath, FIKA_PATH);
-    if (!fs.existsSync(fikaPath)){
-      fs.mkdirSync(fikaPath);
+  createConfig(): void {
+    if (!fs.existsSync(this.fikaPath)){
+      fs.mkdirSync(this.fikaPath);
     }
-    this.fikaConfigFilePath  = path.join(fikaPath, CONFIG_FILE_NAME);
+    this.fikaConfigFilePath  = path.join(this.fikaPath, CONFIG_FILE_NAME);
     if (!fs.existsSync(this.fikaConfigFilePath)){
       const configString = JSON.stringify(defaultConfig, undefined, 4);
       fs.writeFileSync(this.fikaConfigFilePath, configString);
     }
   }
-  readConfig(homePath: string):void {
+  readConfig():void {
     if (!this.fikaConfigFilePath){
-      this.createConfig(homePath);
+      this.createConfig();
     }
     const configString = fs.readFileSync(this.fikaConfigFilePath, 'utf-8');
     this.config = JSON.parse(configString) as Config;
