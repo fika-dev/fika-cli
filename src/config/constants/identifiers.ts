@@ -6,6 +6,13 @@ const SERVICE_IDENTIFIER = {
   MessageService: Symbol.for("MessageService"),
   SnapshotService: Symbol.for("SnapshotService"),
   GitPlatformService: Symbol.for("GitPlatformService"),
+  ErrorHandlingService: Symbol.for("ErrorHandlingService"),
+  PromptService: Symbol.for("PromptService"),
 };
+
+export const PARAMETER_IDENTIFIER = {
+  Domain: Symbol.for("DomainParameter"),
+  FikaPath: Symbol.for("FikaPathParameter"),
+}
 
 export default SERVICE_IDENTIFIER;

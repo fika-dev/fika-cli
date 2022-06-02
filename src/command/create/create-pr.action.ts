@@ -6,20 +6,23 @@ import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
 import { IConfigService } from "src/domain/service/i_config.service";
 import { IConnectService } from "src/domain/service/i_connect.service";
 
-export const createIssueAction = async (documentUrlString: string)=>{
+export const createPRAction = async (documentUrl: string)=>{
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  messageService.showGettingIssue();
+  messageService.showGettingIssueForPR();
   const gitPlatformConfig = configService.getGitPlatformConfig();
   const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
   configService.readConfig();
   const botId = configService.getNotionBotId();
-  const notionDocumentUrl = new NotionUrl(documentUrlString);
+  const notionDocumentUrl = new NotionUrl(documentUrl);
   const issue = await connectService.getIssue(notionDocumentUrl, botId);
-  messageService.showCreatingGitIssue();
+  const branchName = await gitPlatformService.getBranchName();
+  messageService.showGitPush(branchName);
+  await gitPlatformService.pushBranch(branchName);
   gitPlatformService.configGitPlatform(gitPlatformConfig);
-  const updatedIssue = await gitPlatformService.createIssue(issue)
+  messageService.showCreatingPR(issue, branchName);
+  const updatedIssue = await gitPlatformService.createPR(issue, branchName);
   await connectService.updateIssue(updatedIssue, botId);
-  messageService.showCreateIssueSuccess(updatedIssue);
+  messageService.showCreatePRSuccess(updatedIssue);
 }

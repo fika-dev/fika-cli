@@ -4,5 +4,5 @@ import { IConfigService } from "src/domain/service/i_config.service";
 
 export const initAction = (homePath: string)=>{
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  configService.createConfig(homePath);
+  configService.createConfig();
 }
