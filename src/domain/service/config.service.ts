@@ -24,7 +24,7 @@ export class ConfigService implements IConfigService{
 
   getFikaToken(): string | undefined {
     if (this.config.fikaToken !== "UN_AUTHENTICATED"){
-      const accessToken = this.config.fikaToken.accessToken;
+      const accessToken = this.config.fikaToken?.accessToken;
       return accessToken;
     }else{
       return;
