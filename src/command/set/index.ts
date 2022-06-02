@@ -1,5 +1,6 @@
 import { Command } from "commander";
-import { asyncWrapper } from "../wrapper/wrappers";
+import { authHandler } from "../auth/auth-handler";
+import { asyncWrapper, authWrapper } from "../wrapper/wrappers";
 import { setAction } from "./set.action";
 
 export const setCommand = new Command()
@@ -7,5 +8,5 @@ export const setCommand = new Command()
   .description('set Notion bot id')
   .argument('<notion-bot-id>')
   .action( async (argument: string) => {
-    await asyncWrapper(setAction(argument));
+    await authWrapper(setAction, argument)
   });
