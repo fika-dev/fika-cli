@@ -11,6 +11,8 @@ export function errorHandler(e: any) {
     const unknownError = new UnknownError("UNKNOWN_ERROR", e.message);
     errorHandlingService.handle(unknownError);  
   }
-  errorHandlingService.handle(e);
+  else{
+    errorHandlingService.handle(e);
+  }
 }
 

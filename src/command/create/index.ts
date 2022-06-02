@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { asyncWrapper } from "../wrapper/wrappers";
+import { asyncWrapper, authWrapper } from "../wrapper/wrappers";
 import { createIssueAction } from "./create-issue.action";
 import { createPRAction } from "./create-pr.action";
 
@@ -10,9 +10,9 @@ export const createCommand = new Command()
   .option('-p, --pr <documentUrl>', 'create PR')
   .action( async (options: {issue: string, pr: string}) => {
     if (options.issue){
-      asyncWrapper(createIssueAction(options.issue));
+      authWrapper(createIssueAction,options.issue);
     }else if (options.pr){
-      asyncWrapper(createPRAction(options.pr));
+      authWrapper(createPRAction,options.pr);
     }
   });
 
@@ -22,7 +22,7 @@ export const createCommand = new Command()
   .argument('<document-url>')
   .action( async (argument) => {
     if (argument){
-      asyncWrapper(createIssueAction(argument));
+      authWrapper(createIssueAction,argument);
     }
   });
 
@@ -32,6 +32,6 @@ export const createCommand = new Command()
   .argument('<document-url>')
   .action( async (argument) => {
     if (argument){
-      asyncWrapper(createPRAction(argument));
+      authWrapper(createPRAction,argument);
     }
   });
