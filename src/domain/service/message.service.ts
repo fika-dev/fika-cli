@@ -76,6 +76,8 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk('완료')}
     console.log(`${this._withWhiteBoldChalk('git checkout -b feature/iss-#')}${this._withWhiteBoldChalk(this._parseIssueNumber(issue.issueUrl!))}`);
     console.log('');
     console.log('');
+
+    
   }
 
   showCreatePRSuccess(issue: Issue): void {
