@@ -4,13 +4,14 @@ import { IConnectService, UserWithToken } from "./i_connect.service";
 import open from 'open';
 import axios, { AxiosError } from "axios";
 import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/create_issue.dto";
-import { injectable } from "inversify";
-import { fikaCallbackUri, fikaNotionClientId, notionAuthorizeUri } from "src/config/constants/uri";
+import { inject, injectable } from "inversify";
+import { fikaNotionClientId, notionAuthorizeUri } from "src/config/constants/uri";
 import { Issue } from "../entity/issue.entity";
 import { CreateNotionWorkspaceDto, CreateNotionWorkspaceDtoType } from "src/infrastructure/dto/create_notion_workspace.dto";
 import { Uuid } from "../value_object/uuid.vo";
 import { NotionUrl } from "../value_object/notion_url.vo";
 import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
+import { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 
 interface errorDataType {
   message: string,
@@ -19,6 +20,12 @@ interface errorDataType {
 @injectable()
 export class ConnectService implements IConnectService {
   private token: string | undefined;
+  private domain: string;
+  constructor(@inject(PARAMETER_IDENTIFIER.Domain) domain : string){
+    this.domain = domain;
+  }
+
+  
 
   useToken(token: string): void {
     this.token = token;
@@ -26,7 +33,7 @@ export class ConnectService implements IConnectService {
 
   async isAvailableEmail(email: string): Promise<boolean> {
     try{
-      const response = await axios.post('https://api.fikadev.com/auth/is-valid-email',
+      const response = await axios.post(`${this.domain}/auth/is-valid-email`,
         { email },
         {headers: {"content-type": "application/json",}},
       );
@@ -44,7 +51,7 @@ export class ConnectService implements IConnectService {
 
   async requestOtpEmail(email: string, password: string): Promise<void> {
     try{
-      const response = await axios.post('https://api.fikadev.com/auth/send-otp-email',
+      const response = await axios.post(`${this.domain}/auth/send-otp-email`,
         { email, password },
         {headers: {"content-type": "application/json",}},
       );
@@ -57,7 +64,7 @@ export class ConnectService implements IConnectService {
 
   async signup(email: string, password: string, otpToken: string): Promise<UserWithToken> {
     try{
-      const response = await axios.post('https://api.fikadev.com/auth/cli/signup',
+      const response = await axios.post(`${this.domain}/auth/cli/signup`,
         { email, password, otpToken },
         {headers: {"content-type": "application/json",}},
       );
@@ -71,7 +78,7 @@ export class ConnectService implements IConnectService {
 
   async signin(email: string, password: string): Promise<UserWithToken> {
     try{
-      const response = await axios.post('https://api.fikadev.com/auth/cli/signin',
+      const response = await axios.post(`${this.domain}/auth/cli/signin`,
         { email, password },
         {headers: {"content-type": "application/json",}},
       );
@@ -85,7 +92,7 @@ export class ConnectService implements IConnectService {
 
   async getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue> {
     try{
-      const response = await axios.post('https://api.fikadev.com/notion/issue',
+      const response = await axios.post(`${this.domain}/notion/issue`,
         {
           botId: botId.asString(),
           documentUrl: documentUrl.asString(),
@@ -115,7 +122,7 @@ export class ConnectService implements IConnectService {
       botId: botId.asString(),
     }
     try{
-      const response = await axios.post('https://api.fikadev.com/notion/issue/update',
+      const response = await axios.post(`${this.domain}/notion/issue/update`,
         updatedIssueWithBotId,
         {headers: {"content-type": "application/json",}},
       );
@@ -136,21 +143,20 @@ export class ConnectService implements IConnectService {
     throw new Error("Method not implemented.");
   }
   getNotionAuthenticationUri(): string {
-    const redirectUri = encodeURIComponent(fikaCallbackUri);
+    const redirectUri = encodeURIComponent(`${this.domain}/notion/callback`);
     const params= `client_id=${fikaNotionClientId}&redirect_uri=${redirectUri}&response_type=code&owner=user&state=init`;
     const targetUri = `${notionAuthorizeUri}?${params}`;
     return targetUri;
   }
   async requestNotionWorkspace(botId: Uuid): Promise<NotionWorkspace> {
     try{
-      const response = await axios.get(`https://api.fikadev.com/notion/workspace?id=${botId.asString()}`);
+      const response = await axios.get(`${this.domain}/notion/workspace?id=${botId.asString()}`);
       const dto = new CreateNotionWorkspaceDto(response.data as CreateNotionWorkspaceDtoType);
       return dto.toEntity();
     }catch(e){
       const axiosError = e as AxiosError;
-      console.log('🧪', ' in ConnnectService: ', 'error code: ',e.code);
-      throw new Error(e.response?.message);
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',e.response.data);
+      throw new Error(`${e.response.data.error}: ${e.response.data.message}`);
     }
-    
   }
 }
