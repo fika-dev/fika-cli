@@ -35,10 +35,14 @@ container.bind<IErrorHandlingService>(SERVICE_IDENTIFIER.ErrorHandlingService).t
 container.bind<IPromptService>(SERVICE_IDENTIFIER.PromptService).to(PromptService).inSingletonScope();
 if (process.env.NODE_ENV === "production"){
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://api.fikadev.com');
+  const homePath =  require('os').homedir();
+  container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue(homePath);
 }else if (process.env.NODE_ENV === "test"){
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://testapi.fikadev.com');
+  container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue('./test/test-samples');
 }else{
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://testapi.fikadev.com');
+  container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue('./test/test-samples');
 }
 
 
