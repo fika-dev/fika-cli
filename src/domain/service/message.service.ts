@@ -7,6 +7,9 @@ import chalk from 'chalk';
 
 @injectable()
 export class MessageService implements IMessageService{
+  showInvaildEmail(email: string): void {
+    console.log(`\n🚨 입력하신 \n${this._withRedBoldChalk(email)} 은 \n양식에 맞지 않거나, 이미 가입된 이메일 주소입니다.\n`);
+  }
   showGettingIssueForPR(): void {
     console.log(`\n\n${this._withYellowBoldChalk('풀리퀘스트 PR')}을 만들기 위한 정보를 Notion 페이지로 부터 가져오고 있습니다.\n\n`);
   }
