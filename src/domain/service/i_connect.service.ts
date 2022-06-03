@@ -2,6 +2,7 @@ import { DevObject } from "../entity/dev_object.entity";
 import { Issue } from "../entity/issue.entity";
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
 import { NotionUrl } from "../value_object/notion_url.vo";
+import { UpdateInfo } from "../value_object/update-info.vo";
 import { Uuid } from "../value_object/uuid.vo";
 
 export interface UserWithToken {
@@ -20,4 +21,5 @@ export interface IConnectService {
   requestOtpEmail(email: string, password: string): Promise<void>
   signup(email: string, password: string, otpToken: string): Promise<UserWithToken>
   signin(email: string, password: string): Promise<UserWithToken>
+  checkUpdate(currentVersion: string): Promise<UpdateInfo>
 }

@@ -13,6 +13,7 @@ import { NotionUrl } from "../value_object/notion_url.vo";
 import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
 import { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 import { ERROR_CODE_STRING, NotOnline, SYS_CALL_STRING } from "../value_object/exceptions/not_online";
+import { UpdateInfo } from "../value_object/update-info.vo";
 
 interface errorDataType {
   message: string,
@@ -40,6 +41,18 @@ export class ConnectService implements IConnectService {
         }
       },
     );
+  }
+  
+  async checkUpdate(currentVersion: string): Promise<UpdateInfo> {
+    try{
+      const response = await this.axiosInstance.get(`/cli/version?current-version=${currentVersion}`);
+      const updateInfo = response.data as UpdateInfo;
+      return updateInfo;
+    }catch(e){
+      const axiosError = e as AxiosError;
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      throw new Error(axiosError.message);
+    }
   }
 
   
