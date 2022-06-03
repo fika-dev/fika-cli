@@ -33,6 +33,8 @@ container.bind<ISnapshotService>(SERVICE_IDENTIFIER.SnapshotService).to(Snapshot
 container.bind<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService).to(GitPlatformService).inSingletonScope();
 container.bind<IErrorHandlingService>(SERVICE_IDENTIFIER.ErrorHandlingService).to(ErrorHandlingService).inSingletonScope();
 container.bind<IPromptService>(SERVICE_IDENTIFIER.PromptService).to(PromptService).inSingletonScope();
+
+
 if (process.env.NODE_ENV === "production"){
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://api.fikadev.com');
   const homePath =  require('os').homedir();
