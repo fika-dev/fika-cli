@@ -10,7 +10,6 @@ export const  analyzeAction = async () : Promise<Snapshot> => {
   const analyzeService = container.get<IAnalyzeService>(SERVICE_IDENTIFIER.AnalyzeService);
   const morphService = container.get<IMorphService>(SERVICE_IDENTIFIER.MorphService);
 
-  configService.readConfig();
   const analyzerConfigs = configService.getAnalyzerConfigs();
   analyzeService.registerAnalyzers(analyzerConfigs);
 

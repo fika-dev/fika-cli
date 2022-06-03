@@ -1,5 +1,6 @@
+import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import { exec } from "child_process";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { GitHub } from "plug_in/git_platform/git_hub";
 import { promisify } from "util";
 import { AddOnType } from "../entity/add_on.entity";
@@ -7,9 +8,15 @@ import { GitPlatform } from "../entity/git_platform.entity";
 import { Issue } from "../entity/issue.entity";
 import { IGitPlatformService } from "../entity/i_git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
+import { ConfigService } from "./config.service";
+import { IConfigService } from "./i_config.service";
 
 @injectable()
 export class GitPlatformService implements IGitPlatformService{
+  private configService: IConfigService;
+  constructor(@inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService){
+    this.configService = configService;
+  }
 
   async getBranchName(): Promise<string> {
     const execP =promisify(exec);  
@@ -43,7 +50,8 @@ export class GitPlatformService implements IGitPlatformService{
 
   async createPR(issue: Issue, branchName: string): Promise<Issue> {
     if (this._gitPlatform){
-      return await this._gitPlatform.createPR(issue, branchName);
+      const baseBranch = this.configService.getBaseBranch();
+      return await this._gitPlatform.createPR(issue, branchName, baseBranch);
     }else{
       throw new Error("Git Platform is not defined, need to config first");
     }

@@ -6,11 +6,15 @@ export interface IConfigService {
   getNotionBotId(): Uuid;
   createConfig(): void;
   readConfig(): void;
-  updateConfig(): void;
+
+  getBaseBranch(): string;
+  getIssueBranch(issueNumber: string): string;
   getAnalyzerConfigs(): AddOnConfig[];
   getMorpherConfig(): AddOnConfig;
-  updateNotionWorkspace(notionWorkspace: NotionWorkspace): void;
   getGitPlatformConfig(): AddOnConfig;
   getFikaToken(): string | undefined;
+
+  updateConfig(): void;
+  updateNotionWorkspace(notionWorkspace: NotionWorkspace): void;
   updateFikaToken(token: string): void;
 }

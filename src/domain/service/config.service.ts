@@ -9,6 +9,7 @@ import { Config } from "../entity/config.entity";
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { NotionNotConnected } from "../value_object/exceptions/notion_not_connected";
+import { GitConfig } from '../value_object/git_config.vo';
 import { Uuid } from '../value_object/uuid.vo';
 import { IConfigService } from "./i_config.service";
 
@@ -25,6 +26,18 @@ export class ConfigService implements IConfigService{
     this.updateNotionWorkspace = this.updateNotionWorkspace.bind(this);
     this.createConfig = this.createConfig.bind(this);
     this.fikaPath = fikaPath;
+    this.readConfig();
+  }
+  getBaseBranch(): string {
+    return this.config.git.baseBranch;
+  }
+  getIssueBranch(issueNumber: string): string {
+    const branchTemplate = this.config.git.issueBranchTemplate;
+    const isValidTemplate = GitConfig.validateIssueBranch(branchTemplate);
+    if (!isValidTemplate){
+      throw Error('Not Valid Issue Branch Template');
+    }
+    return GitConfig.getIssueBranch(issueNumber, branchTemplate);
   }
 
   getFikaToken(): string | undefined {

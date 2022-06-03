@@ -30,4 +30,8 @@ export const defaultConfig: Config = {
       type: AddOnType.GitPlatform,
     },
   ],
+  git: {
+    baseBranch: 'develop',
+    issueBranchTemplate: 'feature/iss/#<ISSUE_NUMBER>',
+  }
 }
