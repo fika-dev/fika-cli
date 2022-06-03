@@ -1,6 +1,7 @@
 import { NotAuthenticated } from "@/domain/value_object/exceptions/not_authenticated";
 import { authHandler } from "../auth/auth-handler";
 import { errorHandler } from "../error/error_handlers";
+import { updateHandler } from "../update/update-handler";
 
 export async function syncWrapper<T extends any[], K>(
   func: (...args: T) => K,
@@ -28,10 +29,15 @@ export async function authWrapper(
   func: Function,
   ...argument: any
 ): Promise<any> {
-  const [isAuthenticated] = await asyncWrapper(authHandler());
-  if (isAuthenticated){
-    return asyncWrapper(func(...argument));
+  const [needForceUpdate] =  await asyncWrapper(updateHandler());
+  if (!needForceUpdate){
+    const [isAuthenticated] = await asyncWrapper(authHandler());
+    if (isAuthenticated){
+      return asyncWrapper(func(...argument));
+    }else{
+      throw new NotAuthenticated('NOT_AUTHENTICATED');
+    }
   }else{
-    throw new NotAuthenticated('NOT_AUTHENTICATED');
-  }
+    return;
+  } 
 }
