@@ -25,6 +25,12 @@ export class ErrorHandlingService implements IErrorHandlingService{
         guideUrl: 'https://www.notion.so/haamki/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1',
       });
     }
+    else if (exception.name === 'GhPrAlreadyExists'){
+      messageService.showError({
+        message: `이미 같은 branch 들에 대한 중복된 풀리퀘스트가 존재합니다.\n\n2 가지 해결방안)\n\n1. Github 에서 이미 존재하는 PR을 Close 후 다시 시도해주세요. \n2. 혹은 현재 branch 를 github 에 push 만 하여도, 이미 생성된 PR에 반영됩니다.`, 
+        code: exception.name,
+      });
+    }
     else if (exception.name === 'NOTION_NOT_CONNECTED'){
       messageService.showError({
         message: `notion 이 fika 와 연결되지 않았습니다.\n\n fika connect \n\n 위의 커맨드를 통해 fika 와 notion 을 연결해주세요.`, 
