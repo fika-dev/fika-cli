@@ -7,6 +7,7 @@ import { exec } from 'child_process';
 import { COMMAND_NOT_FOUND_STRING, NoGithubCli} from '@/domain/value_object/exceptions/no_gh_cli';
 import { GHCliNotLoggedin, NEED_LOGIN_STRING } from "@/domain/value_object/exceptions/gh_cli_not_loggedin";
 import { GhPrAlreadyExists, PR_ALREADY_EXISTS_STRING, PR_FOR_BRANCH_STRING } from "@/domain/value_object/exceptions/gh_pr_already_exists";
+import { GhNoCommits, NO_COMMITS_STRING } from "@/domain/value_object/exceptions/gh_no_commits";
 
 export class GitHub extends GitPlatform{
   
@@ -57,6 +58,9 @@ export class GitHub extends GitPlatform{
         }
         if (e.stderr.includes(PR_ALREADY_EXISTS_STRING) && e.stderr.includes(PR_FOR_BRANCH_STRING)){
           throw new GhPrAlreadyExists('GhPrAlreadyExists');
+        }
+        if (e.stderr.includes(NO_COMMITS_STRING)){
+          throw new GhNoCommits('GhNoCommits');
         }
       }
     }

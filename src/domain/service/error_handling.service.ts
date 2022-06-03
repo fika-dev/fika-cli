@@ -30,6 +30,11 @@ export class ErrorHandlingService implements IErrorHandlingService{
         message: `이미 같은 branch 들에 대한 중복된 풀리퀘스트가 존재합니다.\n\n2 가지 해결방안)\n\n1. Github 에서 이미 존재하는 PR을 Close 후 다시 시도해주세요. \n2. 혹은 현재 branch 를 github 에 push 만 하여도, 이미 생성된 PR에 반영됩니다.`, 
         code: exception.name,
       });
+    }else if (exception.name === 'GhNoCommits'){
+      messageService.showError({
+        message: `\n\n타겟팅하고 있는 브랜치 와 현재 push 하고 있는 브랜치 사이에 업데이트할 커밋이 없습니다.\n제출하지 않은 Commit 이 있는지 확인해보세요.\n\n`, 
+        code: exception.name,
+      });
     }
     else if (exception.name === 'NOTION_NOT_CONNECTED'){
       messageService.showError({
