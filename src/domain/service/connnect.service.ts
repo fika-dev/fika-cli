@@ -12,6 +12,7 @@ import { Uuid } from "../value_object/uuid.vo";
 import { NotionUrl } from "../value_object/notion_url.vo";
 import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
 import { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
+import { ERROR_CODE_STRING, NotOnline, SYS_CALL_STRING } from "../value_object/exceptions/not_online";
 
 interface errorDataType {
   message: string,
@@ -28,6 +29,17 @@ export class ConnectService implements IConnectService {
       baseURL: this.domain,
       timeout: 5000,
     });
+    this.axiosInstance.interceptors.response.use(
+      response=>response,
+      (error: any) => {
+        if (error.syscall === SYS_CALL_STRING && error.code === ERROR_CODE_STRING){
+          throw new NotOnline('NotOnline');
+        }
+        else{
+          return error;
+        }
+      },
+    );
   }
 
   

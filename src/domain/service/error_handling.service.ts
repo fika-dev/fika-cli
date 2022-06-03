@@ -66,6 +66,11 @@ export class ErrorHandlingService implements IErrorHandlingService{
         message: `해당 기능을 사용하기 위해서는 로그인이 필요합니다.`, 
         code: exception.name,
       });
+    }else if (exception.name === 'NotOnline'){
+      messageService.showError({
+        message: `\n\nFika 서버에 접속이 어렵습니다. \n 인터넷 연결을 확인 후 다시 시도해주세요.\n\n`, 
+        code: exception.name,
+      });
     }
     else{
       messageService.showError({
