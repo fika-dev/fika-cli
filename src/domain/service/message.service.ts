@@ -13,6 +13,14 @@ export class MessageService implements IMessageService{
   constructor(@inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService){
     this.configService = configService;
   }
+  showNeedUpdate(version: string): void {
+    console.log(`\n🚨 현재 최신버젼: \n${this._withGreenBoldChalk(version)} 으로 업데이트 후 사용 가능합니다. \n\n${this._withWhiteBoldChalk(`npm install -g fika@${version}`)}
+    혹은 \n ${this._withWhiteBoldChalk(`yarn global add fika@${version}`)}\n으로 upgrade 후 사용해주시면 감사하겠습니다.\n\n`);
+  }
+  showRecommendUpdate(version: string): void {
+    console.log(`\n현재 최신버젼: \n${this._withGreenBoldChalk(version)} 으로 업데이트 하고자 하신다면, \n\n${this._withWhiteBoldChalk(`npm install -g fika@${version}`)}
+    혹은 \n ${this._withWhiteBoldChalk(`yarn global add fika@${version}`)}\n으로 upgrade 후 사용해주시면 감사하겠습니다.\n\n`);
+  }
 
   showInvaildEmail(email: string): void {
     console.log(`\n🚨 입력하신 \n${this._withRedBoldChalk(email)} 은 \n\n`);
