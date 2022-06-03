@@ -21,8 +21,12 @@ interface errorDataType {
 export class ConnectService implements IConnectService {
   private token: string | undefined;
   private domain: string;
+  private axiosInstance: any;
   constructor(@inject(PARAMETER_IDENTIFIER.Domain) domain : string){
     this.domain = domain;
+    this.axiosInstance = axios.create({
+      timeout: 5000,
+    });
   }
 
   
@@ -33,7 +37,7 @@ export class ConnectService implements IConnectService {
 
   async isAvailableEmail(email: string): Promise<boolean> {
     try{
-      const response = await axios.post(`${this.domain}/auth/is-valid-email`,
+      const response = await this.axiosInstance.post(`${this.domain}/auth/is-valid-email`,
         { email },
         {headers: {"content-type": "application/json",}},
       );
@@ -51,7 +55,7 @@ export class ConnectService implements IConnectService {
 
   async requestOtpEmail(email: string, password: string): Promise<void> {
     try{
-      const response = await axios.post(`${this.domain}/auth/send-otp-email`,
+      const response = await this.axiosInstance.post(`${this.domain}/auth/send-otp-email`,
         { email, password },
         {headers: {"content-type": "application/json",}},
       );
@@ -64,7 +68,7 @@ export class ConnectService implements IConnectService {
 
   async signup(email: string, password: string, otpToken: string): Promise<UserWithToken> {
     try{
-      const response = await axios.post(`${this.domain}/auth/cli/signup`,
+      const response = await this.axiosInstance.post(`${this.domain}/auth/cli/signup`,
         { email, password, otpToken },
         {headers: {"content-type": "application/json",}},
       );
@@ -78,7 +82,7 @@ export class ConnectService implements IConnectService {
 
   async signin(email: string, password: string): Promise<UserWithToken> {
     try{
-      const response = await axios.post(`${this.domain}/auth/cli/signin`,
+      const response = await this.axiosInstance.post(`${this.domain}/auth/cli/signin`,
         { email, password },
         {headers: {"content-type": "application/json",}},
       );
@@ -92,7 +96,7 @@ export class ConnectService implements IConnectService {
 
   async getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue> {
     try{
-      const response = await axios.post(`${this.domain}/notion/issue`,
+      const response = await this.axiosInstance.post(`${this.domain}/notion/issue`,
         {
           botId: botId.asString(),
           documentUrl: documentUrl.asString(),
@@ -122,7 +126,7 @@ export class ConnectService implements IConnectService {
       botId: botId.asString(),
     }
     try{
-      const response = await axios.post(`${this.domain}/notion/issue/update`,
+      const response = await this.axiosInstance.post(`${this.domain}/notion/issue/update`,
         updatedIssueWithBotId,
         {headers: {"content-type": "application/json",}},
       );
@@ -150,7 +154,7 @@ export class ConnectService implements IConnectService {
   }
   async requestNotionWorkspace(botId: Uuid): Promise<NotionWorkspace> {
     try{
-      const response = await axios.get(`${this.domain}/notion/workspace?id=${botId.asString()}`);
+      const response = await this.axiosInstance.get(`${this.domain}/notion/workspace?id=${botId.asString()}`);
       const dto = new CreateNotionWorkspaceDto(response.data as CreateNotionWorkspaceDtoType);
       return dto.toEntity();
     }catch(e){
