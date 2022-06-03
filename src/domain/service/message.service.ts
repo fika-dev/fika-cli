@@ -1,12 +1,19 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { Issue } from "../entity/issue.entity";
 import { ErrorMessage, IMessageService,  } from "./i_message.service";
 import chalk from 'chalk';
+import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
+import { IConfigService } from "./i_config.service";
 
 
 
 @injectable()
 export class MessageService implements IMessageService{
+  private configService: IConfigService;
+  constructor(@inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService){
+    this.configService = configService;
+  }
+
   showInvaildEmail(email: string): void {
     console.log(`\n🚨 입력하신 \n${this._withRedBoldChalk(email)} 은 \n\n`);
   }
@@ -81,6 +88,7 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk('완료')}
   }
 
   showCreatePRSuccess(issue: Issue): void {
+    const baseBranch = this.configService.getBaseBranch();
     this._clear(); 
     console.log(`🎉 Pull Request (PR) 생성에 성공하였습니다!  "${this._withCyanBoldChalk(issue.title)}"`);
     console.log('');
@@ -89,8 +97,8 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk('완료')}
     console.log('');
     console.log(`Github 에서 PR 을 병합한 이후에는`);
     console.log(`아래 커맨드를 실행해 주세요.\n\n`);
-    console.log(`${this._withWhiteBoldChalk('git checkout develop')}`);
-    console.log(`${this._withWhiteBoldChalk('git pull origin develop')}\n\n`);
+    console.log(`${this._withWhiteBoldChalk(`git checkout ${baseBranch}`)}`);
+    console.log(`${this._withWhiteBoldChalk(`git pull origin ${baseBranch}`)}\n\n`);
   }
   showError(message: ErrorMessage): void {
     console.log(`🚨 오류가 발생했습니다.  "${message.code}"`);
