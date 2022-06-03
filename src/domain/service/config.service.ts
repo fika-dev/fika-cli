@@ -12,6 +12,7 @@ import { NotionNotConnected } from "../value_object/exceptions/notion_not_connec
 import { GitConfig } from '../value_object/git_config.vo';
 import { Uuid } from '../value_object/uuid.vo';
 import { IConfigService } from "./i_config.service";
+import {version} from '../../../package.json';
 
 @injectable()
 export class ConfigService implements IConfigService{
@@ -27,6 +28,9 @@ export class ConfigService implements IConfigService{
     this.createConfig = this.createConfig.bind(this);
     this.fikaPath = fikaPath;
     this.readConfig();
+  }
+  getFikaVersion(): string {
+    return version;
   }
   getBaseBranch(): string {
     return this.config.git.baseBranch;
