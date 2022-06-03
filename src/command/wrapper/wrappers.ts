@@ -25,7 +25,7 @@ export async function asyncWrapper<T>(
   }
 }
 
-export async function authWrapper(
+export async function commandWrapper(
   func: Function,
   ...argument: any
 ): Promise<any> {
