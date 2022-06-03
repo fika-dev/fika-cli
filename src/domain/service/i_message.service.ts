@@ -18,4 +18,6 @@ export interface IMessageService {
   showGitPush(branchName: string): void;
   showCreatingPR(issue: Issue, branchName: string): void;
   showInvaildEmail(email: string): void;
+  showNeedUpdate(version: string): void;
+  showRecommendUpdate(version: string): void;
 }
