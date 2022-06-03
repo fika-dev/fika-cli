@@ -13,7 +13,7 @@ import { IConfigService } from "./i_config.service";
 
 @injectable()
 export class GitPlatformService implements IGitPlatformService{
-  private configService: IConfigService
+  private configService: IConfigService;
   constructor(@inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService){
     this.configService = configService;
   }
