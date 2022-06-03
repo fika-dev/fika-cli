@@ -38,11 +38,11 @@ export class GitHub extends GitPlatform{
     }
   }
 
-  async createPR(issue: Issue, branchName: string): Promise<Issue> {
+  async createPR(issue: Issue, branchName: string, baseBranchName: string): Promise<Issue> {
     const execP =promisify(exec);  
     const labelOptions = issue.labels.join(' ')
     try{
-      const {stdout, stderr} = await execP(`gh pr create --base develop  --title "${issue.title}" --body "${issue.body}\n 해결이슈: #${this._parseIssueNumber(branchName)}" --label "${labelOptions}" `);
+      const {stdout, stderr} = await execP(`gh pr create --base ${baseBranchName}  --title "${issue.title}" --body "${issue.body}\n 해결이슈: #${this._parseIssueNumber(branchName)}" --label "${labelOptions}" `);
       const updatedIssue: Issue = {
         ...issue,
         prUrl: stdout.trim(),
