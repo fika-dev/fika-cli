@@ -19,6 +19,7 @@ import { SnapshotService } from "src/domain/service/snapshot.service";
 import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "./constants/identifiers";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { PromptService } from "@/domain/service/prompt.service";
+import { FIKA_PATH } from "./constants/path";
 
 
 
@@ -38,7 +39,7 @@ container.bind<IPromptService>(SERVICE_IDENTIFIER.PromptService).to(PromptServic
 if (process.env.NODE_ENV === "production"){
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://api.fikadev.com');
   const homePath =  require('os').homedir();
-  container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue(`homePath/.fika`);
+  container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue(`${homePath}/${FIKA_PATH}`);
 }else if (process.env.NODE_ENV === "test"){
   console.log('🧪', ' in IocConfig: ', 'running in test mode!!: ',);
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://testapi.fikadev.com');
