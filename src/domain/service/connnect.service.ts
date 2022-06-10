@@ -37,7 +37,7 @@ export class ConnectService implements IConnectService {
           throw new NotOnline('NotOnline');
         }
         else{
-          return error;
+          throw error;
         }
       },
     );
