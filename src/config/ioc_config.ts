@@ -35,17 +35,21 @@ container.bind<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService).to(Gi
 container.bind<IErrorHandlingService>(SERVICE_IDENTIFIER.ErrorHandlingService).to(ErrorHandlingService).inSingletonScope();
 container.bind<IPromptService>(SERVICE_IDENTIFIER.PromptService).to(PromptService).inSingletonScope();
 
-
-if (process.env.NODE_ENV === "production"){
+if (!process.env.FIKA_ENV){
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://api.fikadev.com');
   const homePath =  require('os').homedir();
   container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue(`${homePath}/${FIKA_PATH}`);
-}else if (process.env.NODE_ENV === "test"){
+}
+else if (process.env.FIKA_ENV === "production"){
+  container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://api.fikadev.com');
+  const homePath =  require('os').homedir();
+  container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue(`${homePath}/${FIKA_PATH}`);
+}else if (process.env.FIKA_ENV === "test"){
   console.log('🧪', ' in IocConfig: ', 'running in test mode!!: ',);
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://testapi.fikadev.com');
   container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue('./test/test-samples');
 }else{
-  console.log('🧪', ' in IocConfig: ', 'process.env.NODE_ENV: ',process.env.NODE_ENV);
+  console.log('🧪', ' in IocConfig: ', 'process.env.FIKA_ENV: ',process.env.FIKA_ENV);
   console.log('🧪', ' in IocConfig: ', 'running in develop mode!!: ',);
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://testapi.fikadev.com');
   container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue('./test/test-samples');
