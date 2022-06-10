@@ -33,9 +33,15 @@ export class ConfigService implements IConfigService{
     return version;
   }
   getBaseBranch(): string {
+    if (!this.config.git){
+      this.updateGitConfig();
+    }
     return this.config.git.baseBranch;
   }
   getIssueBranch(issueNumber: string): string {
+    if (!this.config.git){
+      this.updateGitConfig();
+    }
     const branchTemplate = this.config.git.issueBranchTemplate;
     const isValidTemplate = GitConfig.validateIssueBranch(branchTemplate);
     if (!isValidTemplate){
@@ -51,6 +57,21 @@ export class ConfigService implements IConfigService{
     }else{
       return;
     }
+  }
+
+  private updateGitConfig(): void {
+    this.config = {
+      ...this.config,
+      git: {
+        baseBranch: 'develop',
+        issueBranchTemplate: 'feature/iss/#<ISSUE_NUMBER>',
+      }
+    }
+    const configString = JSON.stringify(this.config, undefined, 4);
+    if (!this.fikaConfigFilePath){
+      this.createConfig();
+    }
+    fs.writeFileSync(this.fikaConfigFilePath, configString);
   }
   
   updateFikaToken(token: string): void {
