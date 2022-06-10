@@ -48,10 +48,15 @@ export class GitPlatformService implements IGitPlatformService{
     }
   }
 
-  async createPR(issue: Issue, branchName: string): Promise<Issue> {
+  async createPR(issue: Issue, branchName: string, baseBranch? : string): Promise<Issue> {
     if (this._gitPlatform){
-      const baseBranch = this.configService.getBaseBranch();
-      return await this._gitPlatform.createPR(issue, branchName, baseBranch);
+      let baseBranchName: string;
+      if (!baseBranch){
+        baseBranchName = this.configService.getBaseBranch();
+      }else{
+        baseBranchName = baseBranch;
+      }
+      return await this._gitPlatform.createPR(issue, branchName, baseBranchName);
     }else{
       throw new Error("Git Platform is not defined, need to config first");
     }
