@@ -8,11 +8,12 @@ export const createCommand = new Command()
   .description('create issue or PR in github')
   .option('-i, --issue <documentUrl>', 'create issue')
   .option('-p, --pr <documentUrl>', 'create PR')
-  .action( async (options: {issue: string, pr: string}) => {
+  .option('--base <base-branch>', 'create PR into given base branch')
+  .action( async (options: {issue: string, pr: string, base:string}) => {
     if (options.issue){
       commandWrapper(createIssueAction,options.issue);
     }else if (options.pr){
-      commandWrapper(createPRAction,options.pr);
+      commandWrapper(createPRAction,options.pr, options.base);
     }
   });
 
@@ -29,9 +30,10 @@ export const createCommand = new Command()
   export const createPRShortCommand = new Command()
   .command('cpr')
   .description('create PR in github')
+  .option('--base <base-branch>', 'PR into given base branch')
   .argument('<document-url>')
-  .action( async (argument) => {
+  .action( async (argument, option) => {
     if (argument){
-      commandWrapper(createPRAction,argument);
+      commandWrapper(createPRAction,argument, option.base);
     }
   });

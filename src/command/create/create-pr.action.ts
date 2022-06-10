@@ -6,7 +6,7 @@ import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
 import { IConfigService } from "src/domain/service/i_config.service";
 import { IConnectService } from "src/domain/service/i_connect.service";
 
-export const createPRAction = async (documentUrl: string)=>{
+export const createPRAction = async (documentUrl: string, baseBranch?: string)=>{
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
