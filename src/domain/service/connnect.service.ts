@@ -42,6 +42,12 @@ export class ConnectService implements IConnectService {
       },
     );
   }
+  createIssueRecord(issue: Issue): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  getIssueRecord(branchName: string): Promise<Issue> {
+    throw new Error("Method not implemented.");
+  }
   
   async checkUpdate(currentVersion: string): Promise<UpdateInfo> {
     try{
