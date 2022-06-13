@@ -24,5 +24,5 @@ export interface IConnectService {
   checkUpdate(currentVersion: string): Promise<UpdateInfo>
 
   createIssueRecord(issue: Issue): Promise<void>;
-  getIssueRecord(branchName: string): Promise<Issue>;
+  getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue>;
 }

@@ -63,8 +63,29 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  getIssueRecord(branchName: string): Promise<Issue> {
-    throw new Error("Method not implemented.");
+  async getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue> {
+    try{
+      const response = await this.axiosInstance.get('/git/issue', 
+      {
+        headers: {
+          "content-type": "application/json",
+          "Authorization": `Bearer ${this.token}`
+        },
+        data: {
+          gitRepoUrl: gitRepoUrl,
+          issueNumber: this._parseIssueNumber(branchName),
+        },
+      });
+      return {
+        notionUrl: response.data.notionPageUrl,
+        title: response.data.title,
+        labels: [],
+      }
+    }catch(e){
+      const axiosError = e as AxiosError;
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      throw new Error(axiosError.message);
+    }
   }
   
   async checkUpdate(currentVersion: string): Promise<UpdateInfo> {
@@ -221,5 +242,12 @@ export class ConnectService implements IConnectService {
         throw new Error(e)
       }
     }
+  }
+  
+  private _parseIssueNumber(branchName: string): string{
+    const fragments = branchName.split('/');
+    const featureName = fragments[fragments.length-1];
+    const featureFragments = featureName.split('-');
+    return featureFragments[featureFragments.length-1];
   }
 }
