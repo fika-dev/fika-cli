@@ -17,6 +17,11 @@ export class GitPlatformService implements IGitPlatformService{
   constructor(@inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService){
     this.configService = configService;
   }
+  async getGitRepoUrl(): Promise<string> {
+    const execP =promisify(exec);  
+    const {stdout: gitRepoUrlWithGit, stderr: branchNameErr} = await execP('git remote get-url origin');
+    return gitRepoUrlWithGit.replace('.git', '');
+  }
 
   async getBranchName(): Promise<string> {
     const execP =promisify(exec);  
