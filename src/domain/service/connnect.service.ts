@@ -42,8 +42,27 @@ export class ConnectService implements IConnectService {
       },
     );
   }
-  createIssueRecord(issue: Issue): Promise<void> {
-    throw new Error("Method not implemented.");
+  async createIssueRecord(issue: Issue): Promise<void> {
+    try{
+      const fragments = issue.issueUrl.split('/');
+      const gitRepoUrl = fragments.slice(0,fragments.length-2).join('/')
+      const response = await this.axiosInstance.post('/git/issue', {
+        gitRepoUrl: gitRepoUrl,
+        notionPageUrl: issue.notionUrl,
+        title: issue.title,
+        issueNumber: fragments[fragments.length-1]
+      },
+      {headers: {
+        "content-type": "application/json",
+        "Authorization": `Bearer ${this.token}`
+      }}
+      );
+      console.log('🧪', ' in ConnnectService: ', 'response.data: ',response.data);
+    }catch(e){
+      const axiosError = e as AxiosError;
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      throw new Error(axiosError.message);
+    }
   }
   getIssueRecord(branchName: string): Promise<Issue> {
     throw new Error("Method not implemented.");
