@@ -73,7 +73,6 @@ export class ConnectService implements IConnectService {
           "Authorization": `Bearer ${this.token}`
         },
       });
-      console.log('🧪', ' in ConnnectService: getIssueRecord: ', 'response.data: ',response.data);
       return {
         notionUrl: response.data.notionPageUrl,
         title: response.data.title,
