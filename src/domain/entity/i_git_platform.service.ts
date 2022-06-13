@@ -7,4 +7,5 @@ export interface IGitPlatformService {
   configGitPlatform(config: AddOnConfig)
   pushBranch(branchName: string): Promise<void>
   getBranchName(): Promise<string>
+  getGitRepoUrl(): Promise<string>
 }

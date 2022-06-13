@@ -31,9 +31,6 @@ export const createCommand = new Command()
   .command('cpr')
   .description('create PR in github')
   .option('--base <base-branch>', 'PR into given base branch')
-  .argument('<document-url>')
-  .action( async (argument, option) => {
-    if (argument){
-      commandWrapper(createPRAction,argument, option.base);
-    }
+  .action( async (option) => {
+    commandWrapper(createPRAction, option.base);
   });

@@ -42,6 +42,49 @@ export class ConnectService implements IConnectService {
       },
     );
   }
+  async createIssueRecord(issue: Issue): Promise<void> {
+    try{
+      const fragments = issue.issueUrl.split('/');
+      const gitRepoUrl = fragments.slice(0,fragments.length-2).join('/')
+      const response = await this.axiosInstance.post('/git/issue', {
+        gitRepoUrl: gitRepoUrl,
+        notionPageUrl: issue.notionUrl,
+        title: issue.title,
+        issueNumber: fragments[fragments.length-1]
+      },
+      {headers: {
+        "content-type": "application/json",
+        "Authorization": `Bearer ${this.token}`
+      }}
+      );
+    }catch(e){
+      const axiosError = e as AxiosError;
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      throw new Error(axiosError.message);
+    }
+  }
+  async getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue> {
+    try{
+      const issueNumber = this._parseIssueNumber(branchName);
+      const response = await this.axiosInstance.get(`/git/issue?gitRepoUrl=${gitRepoUrl}&issueNumber=${issueNumber}`, 
+      {
+        headers: {
+          "content-type": "application/json",
+          "Authorization": `Bearer ${this.token}`
+        },
+      });
+      return {
+        notionUrl: response.data.notionPageUrl,
+        title: response.data.title,
+        issueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
+        labels: [],
+      }
+    }catch(e){
+      const axiosError = e as AxiosError;
+      console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);
+      throw new Error(axiosError.message);
+    }
+  }
   
   async checkUpdate(currentVersion: string): Promise<UpdateInfo> {
     try{
@@ -197,5 +240,12 @@ export class ConnectService implements IConnectService {
         throw new Error(e)
       }
     }
+  }
+  
+  private _parseIssueNumber(branchName: string): string{
+    const fragments = branchName.split('/');
+    const featureName = fragments[fragments.length-1];
+    const featureFragments = featureName.split('-');
+    return featureFragments[featureFragments.length-1].replace('#', '');
   }
 }

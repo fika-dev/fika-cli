@@ -22,4 +22,7 @@ export interface IConnectService {
   signup(email: string, password: string, otpToken: string): Promise<UserWithToken>
   signin(email: string, password: string): Promise<UserWithToken>
   checkUpdate(currentVersion: string): Promise<UpdateInfo>
+
+  createIssueRecord(issue: Issue): Promise<void>;
+  getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue>;
 }
