@@ -20,7 +20,7 @@ export class GitPlatformService implements IGitPlatformService{
   async getGitRepoUrl(): Promise<string> {
     const execP =promisify(exec);  
     const {stdout: gitRepoUrlWithGit, stderr: branchNameErr} = await execP('git remote get-url origin');
-    return gitRepoUrlWithGit.replace('.git', '');
+    return gitRepoUrlWithGit.replace('.git', '').trim();
   }
 
   async getBranchName(): Promise<string> {
