@@ -57,7 +57,6 @@ export class ConnectService implements IConnectService {
         "Authorization": `Bearer ${this.token}`
       }}
       );
-      console.log('🧪', ' in ConnnectService: ', 'response.data: ',response.data);
     }catch(e){
       const axiosError = e as AxiosError;
       console.log('🧪', ' in ConnnectService: ', 'error code: ',axiosError.code);

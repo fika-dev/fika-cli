@@ -20,5 +20,6 @@ export const createIssueAction = async (documentUrlString: string)=>{
   gitPlatformService.configGitPlatform(gitPlatformConfig);
   const updatedIssue = await gitPlatformService.createIssue(issue)
   await connectService.updateIssue(updatedIssue, botId);
+  await connectService.createIssueRecord(updatedIssue);
   messageService.showCreateIssueSuccess(updatedIssue);
 }
