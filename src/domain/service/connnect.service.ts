@@ -65,20 +65,19 @@ export class ConnectService implements IConnectService {
   }
   async getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue> {
     try{
-      const response = await this.axiosInstance.get('/git/issue', 
+      const issueNumber = this._parseIssueNumber(branchName);
+      const response = await this.axiosInstance.get(`/git/issue?gitRepoUrl=${gitRepoUrl}&issueNumber=${issueNumber}`, 
       {
         headers: {
           "content-type": "application/json",
           "Authorization": `Bearer ${this.token}`
         },
-        data: {
-          gitRepoUrl: gitRepoUrl,
-          issueNumber: this._parseIssueNumber(branchName),
-        },
       });
+      console.log('🧪', ' in ConnnectService: getIssueRecord: ', 'response.data: ',response.data);
       return {
         notionUrl: response.data.notionPageUrl,
         title: response.data.title,
+        issueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
         labels: [],
       }
     }catch(e){
@@ -248,6 +247,6 @@ export class ConnectService implements IConnectService {
     const fragments = branchName.split('/');
     const featureName = fragments[fragments.length-1];
     const featureFragments = featureName.split('-');
-    return featureFragments[featureFragments.length-1];
+    return featureFragments[featureFragments.length-1].replace('#', '');
   }
 }
