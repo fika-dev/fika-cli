@@ -14,6 +14,7 @@ import { IConfigService } from "./i_config.service";
 @injectable()
 export class GitPlatformService implements IGitPlatformService{
   private configService: IConfigService;
+  private _gitPlatform: GitPlatform;
   constructor(@inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService){
     this.configService = configService;
   }
@@ -36,7 +37,7 @@ export class GitPlatformService implements IGitPlatformService{
 
 
   
-  private _gitPlatform: GitPlatform;
+  
 
   async createIssue(issue: Issue): Promise<Issue> {
     if (this._gitPlatform){
@@ -48,7 +49,7 @@ export class GitPlatformService implements IGitPlatformService{
   configGitPlatform(config: AddOnConfig) {
     if (config.type === AddOnType.GitPlatform){
       if (config.name === 'Github.GitPlatform'){
-        this._gitPlatform = new GitHub(config);
+        this._gitPlatform = new GitHub(config, this.configService);
       }
     }
   }
