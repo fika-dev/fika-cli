@@ -79,7 +79,7 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk('완료')}
 
   showCreateIssueSuccess(issue: Issue): void {
     this._clear(); 
-    const issueNumber = this._parseIssueNumber(issue.issueUrl!);
+    const issueNumber = this._parseIssueNumberFromUrl(issue.issueUrl!);
     const issueBranch = this.configService.getIssueBranch(issueNumber);
     console.log(`🎉 이슈 생성에 성공하였습니다!  "${this._withCyanBoldChalk(issue.title)}"`);
     console.log('');
@@ -122,7 +122,7 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk('완료')}
     console.log('');
   }
 
-  _parseIssueNumber(issueUrl: string): string{
+  _parseIssueNumberFromUrl(issueUrl: string): string{
     const fragments = issueUrl.split('/');
     return fragments[fragments.length-1]
   }
