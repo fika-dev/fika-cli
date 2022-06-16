@@ -29,6 +29,17 @@ export class ConfigService implements IConfigService{
     this.fikaPath = fikaPath;
     this.readConfig();
   }
+  parseIssueNumber(branch: string): number {
+    if (!this.config.git){
+      this.updateGitConfig();
+    }
+    const fragments = this.config.git.issueBranchTemplate.split('<ISSUE_NUMBER>');
+    if (fragments.length ==1){
+      return parseInt(branch.replace(fragments[0], ''));
+    }else{
+      return parseInt(branch.replace(fragments[0], '').replace(fragments[1], ''));
+    }
+  }
   getFikaVersion(): string {
     return version;
   }
