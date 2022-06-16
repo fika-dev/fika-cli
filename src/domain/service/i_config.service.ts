@@ -18,4 +18,6 @@ export interface IConfigService {
   updateConfig(): void;
   updateNotionWorkspace(notionWorkspace: NotionWorkspace): void;
   updateFikaToken(token: string): void;
+
+  parseIssueNumber(branch: string): number;
 }

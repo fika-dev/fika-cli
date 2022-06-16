@@ -1,19 +1,22 @@
+import { IConfigService } from "@/domain/service/i_config.service";
+import { GHCliNotLoggedin, NEED_LOGIN_STRING } from "@/domain/value_object/exceptions/gh_cli_not_loggedin";
+import { GhNoCommits, NO_COMMITS_STRING } from "@/domain/value_object/exceptions/gh_no_commits";
+import { GhPrAlreadyExists, PR_ALREADY_EXISTS_STRING, PR_FOR_BRANCH_STRING } from "@/domain/value_object/exceptions/gh_pr_already_exists";
+import { COMMAND_NOT_FOUND_STRING, NoGithubCli } from '@/domain/value_object/exceptions/no_gh_cli';
+import { exec } from 'child_process';
 import { AddOnType } from "src/domain/entity/add_on.entity";
 import { GitPlatform } from "src/domain/entity/git_platform.entity";
 import { Issue } from "src/domain/entity/issue.entity";
 import { AddOnConfig } from "src/domain/value_object/add_on_config.vo";
-import {promisify} from 'util';
-import { exec } from 'child_process';
-import { COMMAND_NOT_FOUND_STRING, NoGithubCli} from '@/domain/value_object/exceptions/no_gh_cli';
-import { GHCliNotLoggedin, NEED_LOGIN_STRING } from "@/domain/value_object/exceptions/gh_cli_not_loggedin";
-import { GhPrAlreadyExists, PR_ALREADY_EXISTS_STRING, PR_FOR_BRANCH_STRING } from "@/domain/value_object/exceptions/gh_pr_already_exists";
-import { GhNoCommits, NO_COMMITS_STRING } from "@/domain/value_object/exceptions/gh_no_commits";
+import { promisify } from 'util';
 
 export class GitHub extends GitPlatform{
+  private configService: IConfigService;
   
-  constructor(config: AddOnConfig){
+  constructor(config: AddOnConfig, configService: IConfigService){
     super(config);
     this.addonType = AddOnType.GitPlatform;
+    this.configService = configService;
   }
   
   async createIssue(issue: Issue): Promise<Issue> {
@@ -41,8 +44,9 @@ export class GitHub extends GitPlatform{
   async createPR(issue: Issue, branchName: string, baseBranchName: string): Promise<Issue> {
     const execP =promisify(exec);  
     const labelOptions = issue.labels.join(' ')
+    const issueNumber = this.configService.parseIssueNumber(branchName);
     try{
-      const {stdout, stderr} = await execP(`gh pr create --base ${baseBranchName}  --title "${issue.title}" --body "${issue.body}\n 해결이슈: #${this._parseIssueNumber(branchName)}" --label "${labelOptions}" `);
+      const {stdout, stderr} = await execP(`gh pr create --base ${baseBranchName}  --title "${issue.title}" --body "${issue.body}\n 해결이슈: #${issueNumber}" --label "${labelOptions}" `);
       const updatedIssue: Issue = {
         ...issue,
         prUrl: stdout.trim(),
@@ -66,10 +70,5 @@ export class GitHub extends GitPlatform{
     }
   }
 
-  _parseIssueNumber(branchName: string): string{
-    const fragments = branchName.split('/');
-    const featureName = fragments[fragments.length-1];
-    const featureFragments = featureName.split('-');
-    return featureFragments[featureFragments.length-1];
-  }
+
 }

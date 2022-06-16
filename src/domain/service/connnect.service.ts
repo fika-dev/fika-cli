@@ -11,9 +11,10 @@ import { CreateNotionWorkspaceDto, CreateNotionWorkspaceDtoType } from "src/infr
 import { Uuid } from "../value_object/uuid.vo";
 import { NotionUrl } from "../value_object/notion_url.vo";
 import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
-import { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
+import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 import { ERROR_CODE_STRING, NotOnline, SYS_CALL_STRING } from "../value_object/exceptions/not_online";
 import { UpdateInfo } from "../value_object/update-info.vo";
+import { IConfigService } from "./i_config.service";
 
 interface errorDataType {
   message: string,
@@ -24,8 +25,12 @@ export class ConnectService implements IConnectService {
   private token: string | undefined;
   private domain: string;
   private axiosInstance: AxiosInstance;
-  constructor(@inject(PARAMETER_IDENTIFIER.Domain) domain : string){
+  private configService: IConfigService;
+  constructor(
+    @inject(PARAMETER_IDENTIFIER.Domain) domain : string,
+    @inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService){
     this.domain = domain;
+    this.configService = configService;
     this.axiosInstance = axios.create({
       baseURL: this.domain,
       timeout: 5000,
@@ -65,7 +70,7 @@ export class ConnectService implements IConnectService {
   }
   async getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue> {
     try{
-      const issueNumber = this._parseIssueNumber(branchName);
+      const issueNumber = this.configService.parseIssueNumber(branchName);
       const response = await this.axiosInstance.get(`/git/issue?gitRepoUrl=${gitRepoUrl}&issueNumber=${issueNumber}`, 
       {
         headers: {
@@ -242,10 +247,4 @@ export class ConnectService implements IConnectService {
     }
   }
   
-  private _parseIssueNumber(branchName: string): string{
-    const fragments = branchName.split('/');
-    const featureName = fragments[fragments.length-1];
-    const featureFragments = featureName.split('-');
-    return featureFragments[featureFragments.length-1].replace('#', '');
-  }
 }
