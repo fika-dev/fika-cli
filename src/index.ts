@@ -12,6 +12,7 @@ import { UnknownError } from './domain/value_object/exceptions/unknown_error';
 import {version} from '../package.json';
 
 try{
+  
   program.name('fika')
   .description('CLI for advanced your workflow')
   .version(version);
