@@ -46,7 +46,7 @@ export class GitHub extends GitPlatform{
     const labelOptions = issue.labels.join(' ')
     const issueNumber = this.configService.parseIssueNumber(branchName);
     try{
-      const {stdout, stderr} = await execP(`gh pr create --base ${baseBranchName}  --title "${issue.title}" --body "${issue.body}\n 해결이슈: #${issueNumber}" --label "${labelOptions}" `);
+      const {stdout, stderr} = await execP(`gh pr create --base ${baseBranchName}  --title "${issue.title}" --body "Notion 다큐먼트: ${issue.notionUrl}\n 해결이슈: #${issueNumber}" --label "${labelOptions}" `);
       const updatedIssue: Issue = {
         ...issue,
         prUrl: stdout.trim(),
