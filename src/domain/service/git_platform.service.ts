@@ -34,8 +34,9 @@ export class GitPlatformService implements IGitPlatformService{
       throw e;
     }
   }
-  fetchFromRemote(): Promise<void> {
-    throw new Error("Method not implemented.");
+  async fetchFromRemote(): Promise<void> {
+    const execP =promisify(exec);  
+    const {stdout: tag, stderr: branchNameErr} = await execP('git fetch');
   }
   compareDevelopFromMaster(): Promise<IssueWithPR[]> {
     throw new Error("Method not implemented.");
