@@ -38,7 +38,7 @@ export class GitPlatformService implements IGitPlatformService{
     const execP =promisify(exec);  
     const {stdout: tag, stderr: branchNameErr} = await execP('git fetch');
   }
-  compareDevelopFromMaster(): Promise<IssueWithPR[]> {
+  findDifferenceFromMaster(branchName: string): Promise<IssueWithPR[]> {
     throw new Error("Method not implemented.");
   }
   getLatestCommitId(branchName: string): Promise<string> {
