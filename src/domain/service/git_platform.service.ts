@@ -6,9 +6,10 @@ import { promisify } from "util";
 import { AddOnType } from "../entity/add_on.entity";
 import { GitPlatform } from "../entity/git_platform.entity";
 import { Issue } from "../entity/issue.entity";
-import { IGitPlatformService } from "../entity/i_git_platform.service";
+import { IGitPlatformService, IssueWithPR } from "../entity/i_git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
-import { ConfigService } from "./config.service";
+import { NoGitTag, NO_GIT_TAG } from "../value_object/exceptions/no_git_tag.vo";
+import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
 
 @injectable()
@@ -17,6 +18,36 @@ export class GitPlatformService implements IGitPlatformService{
   private _gitPlatform: GitPlatform;
   constructor(@inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService){
     this.configService = configService;
+  }
+  async getLatestTag(): Promise<VersionTag> {
+    try{
+      const execP =promisify(exec);  
+      const {stdout: tag, stderr: branchNameErr} = await execP('git describe --tags $(git rev-list --tags --max-count=1)');
+      return VersionTag.parseVersion(tag);
+    }catch(e: any){
+      if ('stderr' in e){
+        const error: string = e.stderr;
+        if (error.includes('fatal:')){
+          throw new NoGitTag(NO_GIT_TAG);
+        }
+      }
+      throw e;
+    }
+  }
+  fetchFromRemote(): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  compareDevelopFromMaster(): Promise<IssueWithPR[]> {
+    throw new Error("Method not implemented.");
+  }
+  getLatestCommitId(branchName: string): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
+  checkoutToBranch(branchName: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  tagCommit(tag: VersionTag): Promise<void> {
+    throw new Error("Method not implemented.");
   }
   async getGitRepoUrl(): Promise<string> {
     const execP =promisify(exec);  
