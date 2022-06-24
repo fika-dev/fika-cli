@@ -41,4 +41,5 @@ export interface IConnectService {
     commitId: string,
     releaseId: string
   ): Promise<string>;
+  createPullRequest(gitRepoUrl: string, notionPageUrl: string, issueNumber: number, prNumber: number): Promise<string>;
 }
