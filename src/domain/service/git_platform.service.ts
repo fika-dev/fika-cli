@@ -35,7 +35,7 @@ export class GitPlatformService implements IGitPlatformService {
       if ("stderr" in e) {
         const error: string = e.stderr;
         if (error.includes("fatal:")) {
-          throw new NoGitTag(NO_GIT_TAG);
+          return undefined;
         }
       }
       throw e;
