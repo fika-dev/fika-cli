@@ -1,10 +1,6 @@
 import { DevObject } from "../entity/dev_object.entity";
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
-import {
-  IConnectService,
-  IssueWithPR,
-  UserWithToken,
-} from "./i_connect.service";
+import { IConnectService, UserWithToken } from "./i_connect.service";
 import open from "open";
 import axios, { AxiosError, AxiosInstance } from "axios";
 import {
@@ -34,6 +30,8 @@ import {
 } from "../value_object/exceptions/not_online";
 import { UpdateInfo } from "../value_object/update-info.vo";
 import { IConfigService } from "./i_config.service";
+import { VersionTag } from "../value_object/version_tag.vo";
+import { IssueWithPR } from "../entity/i_git_platform.service";
 
 interface errorDataType {
   message: string;
@@ -71,7 +69,7 @@ export class ConnectService implements IConnectService {
   }
   async createRelease(
     gitRepoUrl: string,
-    tag: string,
+    tag: VersionTag,
     issuesWithPRList: IssueWithPR[]
   ): Promise<string> {
     try {
@@ -79,7 +77,7 @@ export class ConnectService implements IConnectService {
         "/git/release",
         {
           gitRepoUrl: gitRepoUrl,
-          tag: tag,
+          tag: tag.verionString,
           issuesWithPR: issuesWithPRList,
         },
         {
@@ -102,7 +100,7 @@ export class ConnectService implements IConnectService {
     }
   }
   async createReleaseNotionPage(
-    botId: string,
+    botId: Uuid,
     commitId: string,
     releaseId: string
   ): Promise<string> {
@@ -110,7 +108,7 @@ export class ConnectService implements IConnectService {
       const response = await this.axiosInstance.post(
         "/notion/release",
         {
-          botId: botId,
+          botId: botId.asString(),
           commitId: commitId,
           releaseId: releaseId,
         },
