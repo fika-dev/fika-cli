@@ -1,8 +1,12 @@
-export interface Issue{
+export class Issue{
   issueUrl?: string
   notionUrl: string
   title: string
   body?: string
   labels: string[]
   prUrl?: string
+  static parsePrNumber(prUrl: string): number{
+    const fragments = prUrl.trim().split("/");
+    return parseInt(fragments[fragments.length - 1]);
+  }
 }
