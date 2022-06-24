@@ -26,6 +26,6 @@ export interface IGitPlatformService {
     issueBranchPattern: string
   ): Promise<IssueWithPR[]>;
   getLatestCommitId(branchName: string): Promise<string>;
-  checkoutToBranch(branchName: string): Promise<void>;
+  checkoutToBranchWithReset(branchName: string): Promise<void>;
   tagCommit(branchName: string, tag: VersionTag): Promise<void>;
 }

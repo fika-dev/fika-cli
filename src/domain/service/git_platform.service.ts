@@ -66,10 +66,10 @@ export class GitPlatformService implements IGitPlatformService {
     const trimmedCommitId = commitId.trim();
     return trimmedCommitId;
   }
-  async checkoutToBranch(branchName: string): Promise<void> {
+  async checkoutToBranchWithReset(branchName: string): Promise<void> {
     const execP = promisify(exec);
     const { stdout: commitId, stderr: branchNameErr } = await execP(
-      `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName};`
+      `git checkout -B ${branchName}`
     );
   }
   async tagCommit(branchName: string, tag: VersionTag): Promise<void> {
