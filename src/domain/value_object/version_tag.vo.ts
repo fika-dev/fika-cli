@@ -8,9 +8,11 @@ export class VersionTag {
   verionString: string;
   majorVersion: number;
   minorVersion: number;
+  additionalTag?: string;
   patchVersion: number;
   static parseVersion(version: string): VersionTag {
-    const versionPattern: RegExp = /(\d{1,2})\.(\d{1,2})(?:\.(\d{1,2}))*/g;
+    const versionPattern: RegExp =
+      /(\d{1,2})\.(\d{1,2})(?:\.(\d{1,3}))*(?:(\D.{1,10}))*/g;
     const matched = versionPattern.exec(version);
     if (matched) {
       return {
@@ -18,6 +20,7 @@ export class VersionTag {
         majorVersion: parseInt(matched[1]),
         minorVersion: parseInt(matched[2]),
         patchVersion: matched[3] !== undefined ? parseInt(matched[3]) : 0,
+        additionalTag: matched[4],
       };
     } else {
       throw new WrongTagFormat(WRONG_TAG_FORMAT);
