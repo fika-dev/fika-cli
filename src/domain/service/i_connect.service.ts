@@ -6,7 +6,12 @@ import { UpdateInfo } from "../value_object/update-info.vo";
 import { Uuid } from "../value_object/uuid.vo";
 
 export interface UserWithToken {
-  accessToken: string
+  accessToken: string;
+}
+
+export interface IssueWithPR {
+  issueNumber: number;
+  prNumber: number;
 }
 export interface IConnectService {
   getNotionAuthenticationUri(): string;
@@ -14,15 +19,28 @@ export interface IConnectService {
   create(devObj: DevObject): Promise<string>;
   update(devObj: DevObject): Promise<string>;
   remove(devObj: DevObject): Promise<string>;
-  getIssue(documentUrl: NotionUrl, botId: Uuid) : Promise<Issue>;
+  getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue>;
   updateIssue(updatedIssue: Issue, botId: Uuid): Promise<Issue>;
   useToken(token: string): void;
-  isAvailableEmail(email: string): Promise<boolean>
-  requestOtpEmail(email: string, password: string): Promise<void>
-  signup(email: string, password: string, otpToken: string): Promise<UserWithToken>
-  signin(email: string, password: string): Promise<UserWithToken>
-  checkUpdate(currentVersion: string): Promise<UpdateInfo>
-
+  isAvailableEmail(email: string): Promise<boolean>;
+  requestOtpEmail(email: string, password: string): Promise<void>;
+  signup(
+    email: string,
+    password: string,
+    otpToken: string
+  ): Promise<UserWithToken>;
+  signin(email: string, password: string): Promise<UserWithToken>;
+  checkUpdate(currentVersion: string): Promise<UpdateInfo>;
   createIssueRecord(issue: Issue): Promise<void>;
   getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue>;
+  createRelease(
+    gitRepoUrl: string,
+    tag: string,
+    issuesWithPRList: IssueWithPR[]
+  ): Promise<string>;
+  createReleaseNotionPage(
+    botId: string,
+    commitId: string,
+    releaseId: string
+  ): Promise<string>;
 }
