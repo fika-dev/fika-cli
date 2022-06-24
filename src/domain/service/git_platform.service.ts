@@ -57,8 +57,13 @@ export class GitPlatformService implements IGitPlatformService {
       .split("\n")
       .map((log) => this.parseMergedLog(log, issueBranchPattern));
   }
-  getLatestCommitId(branchName: string): Promise<string> {
-    throw new Error("Method not implemented.");
+  async getLatestCommitId(branchName: string): Promise<string> {
+    const execP = promisify(exec);
+    const { stdout: commitId, stderr: branchNameErr } = await execP(
+      `git log ${branchName} --format=format:%H -n 1`
+    );
+    const trimmedCommitId = commitId.trim();
+    return trimmedCommitId;
   }
   checkoutToBranch(branchName: string): Promise<void> {
     throw new Error("Method not implemented.");
