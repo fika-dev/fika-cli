@@ -24,5 +24,8 @@ export const createPRAction = async (baseBranch?: string)=>{
   messageService.showCreatingPR(issue, branchName);
   const updatedIssue = await gitPlatformService.createPR(issue, branchName);
   await connectService.updateIssue(updatedIssue, botId);
+  const issueNumber = configService.parseIssueNumber(branchName);
+  const prNumber = Issue.parsePrNumber(updatedIssue.prUrl);
+  await connectService.createPullRequest(gitRepoUrl, issue.notionUrl, issueNumber, prNumber);
   messageService.showCreatePRSuccess(updatedIssue);
 }
