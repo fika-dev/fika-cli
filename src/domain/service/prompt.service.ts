@@ -6,9 +6,14 @@ import { VersionTag } from "../value_object/version_tag.vo";
 @injectable()
 export class PromptService implements IPromptService {
   async askTagInfo(latestTag: VersionTag): Promise<VersionTag> {
-    const answer = await promptly.prompt(
-      `What tag do you wanna name this release branch? For information the latest tag is ${latestTag}`
-    );
+    let question: string;
+
+    if (latestTag) {
+      question = `release 브랜치에 어떤 tag 를 붙이시겠습니까?\n가장 최근 tag 는 ${latestTag.verionString} 입니다.\ntag: `;
+    } else {
+      question = `release 브랜치에 어떤 tag 를 붙이시겠습니까?\n아직 정의된 tag 가 없습니다.`;
+    }
+    const answer = await promptly.prompt(question);
     return VersionTag.parseVersion(answer);
   }
   async askAlreadySignedUp(): Promise<boolean> {
