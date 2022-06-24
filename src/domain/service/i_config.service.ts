@@ -20,4 +20,5 @@ export interface IConfigService {
   updateFikaToken(token: string): void;
 
   parseIssueNumber(branch: string): number;
+  getIssueBranchPattern(): string;
 }
