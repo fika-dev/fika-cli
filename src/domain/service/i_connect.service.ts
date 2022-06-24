@@ -1,18 +1,16 @@
 import { DevObject } from "../entity/dev_object.entity";
 import { Issue } from "../entity/issue.entity";
+import { IssueWithPR } from "../entity/i_git_platform.service";
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
 import { NotionUrl } from "../value_object/notion_url.vo";
 import { UpdateInfo } from "../value_object/update-info.vo";
 import { Uuid } from "../value_object/uuid.vo";
+import { VersionTag } from "../value_object/version_tag.vo";
 
 export interface UserWithToken {
   accessToken: string;
 }
 
-export interface IssueWithPR {
-  issueNumber: number;
-  prNumber: number;
-}
 export interface IConnectService {
   getNotionAuthenticationUri(): string;
   requestNotionWorkspace(botId: Uuid): Promise<NotionWorkspace>;
@@ -35,11 +33,11 @@ export interface IConnectService {
   getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue>;
   createRelease(
     gitRepoUrl: string,
-    tag: string,
+    tag: VersionTag,
     issuesWithPRList: IssueWithPR[]
   ): Promise<string>;
   createReleaseNotionPage(
-    botId: string,
+    botId: Uuid,
     commitId: string,
     releaseId: string
   ): Promise<string>;
