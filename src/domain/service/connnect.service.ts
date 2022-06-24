@@ -70,7 +70,7 @@ export class ConnectService implements IConnectService {
   async createPullRequest(gitRepoUrl: string, notionPageUrl: string, issueNumber: number, prNumber: number): Promise<string> {
     try {
       const response = await this.axiosInstance.post(
-        "/git/release",
+        "/git/pull-request",
         {
           gitRepoUrl: gitRepoUrl,
           notionPageUrl: notionPageUrl,
