@@ -71,8 +71,11 @@ export class GitPlatformService implements IGitPlatformService {
       `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName};`
     );
   }
-  tagCommit(tag: VersionTag): Promise<void> {
-    throw new Error("Method not implemented.");
+  async tagCommit(branchName: string, tag: VersionTag): Promise<void> {
+    const execP = promisify(exec);
+    const { stdout: commitId, stderr: branchNameErr } = await execP(
+      `git tag ${branchName} ${tag.verionString};`
+    );
   }
   async getGitRepoUrl(): Promise<string> {
     const execP = promisify(exec);
