@@ -25,7 +25,7 @@ export const releaseAction = async () => {
   const latestTag = await gitPlatformService.getLatestTag();
   const tag = await promptService.askTagInfo(latestTag);
   await gitPlatformService.fetchFromRemote();
-  await gitPlatformService.checkoutToBranch("release");
+  await gitPlatformService.checkoutToBranchWithReset("release");
   await gitPlatformService.tagCommit("release", tag);
   const issueBranchPattern = configService.getIssueBranchPattern();
   const issueWithPRList = await gitPlatformService.findDifferenceFromMaster(
