@@ -67,6 +67,34 @@ export class ConnectService implements IConnectService {
       }
     );
   }
+  async getIssueRecordByPage(notionPageUrl: string, gitRepoUrl: string): Promise<Issue> {
+    try {
+      const response = await this.axiosInstance.get(
+        `/git/issue?gitRepoUrl=${gitRepoUrl}&notionPageUrl=${notionPageUrl}`,
+        {
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        }
+      );
+      return {
+        notionUrl: response.data.notionPageUrl,
+        title: response.data.title,
+        issueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
+        labels: [],
+      };
+    } catch (e) {
+      const axiosError = e as AxiosError;
+      console.log(
+        "🧪",
+        " in ConnnectService: ",
+        "error code: ",
+        axiosError.code
+      );
+      throw new Error(axiosError.message);
+    }
+  }
   async createPullRequest(gitRepoUrl: string, notionPageUrl: string, issueNumber: number, prNumber: number): Promise<string> {
     try {
       const response = await this.axiosInstance.post(
