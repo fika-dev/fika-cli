@@ -75,6 +75,11 @@ export class ErrorHandlingService implements IErrorHandlingService {
         message: `\n\nYou entered tag version in wrong format \n Please type in like (e.g. 3.0.1) \n\n`,
         code: exception.name,
       });
+    } else if (exception.name === NO_BASE_BRANCH_MESSAGE) {
+      messageService.showError({
+        message: `\n\nNo base branch is found \nPlease check base branch is well configured (e.g. develop branch) \n\n`,
+        code: exception.name,
+      });
     } else if (exception.name === NO_GIT_REMOTE_MESSAGE) {
       messageService.showError({
         message: `\n\nGit remotes are not found \nPlease set remotes like (git remote add origin <REMOTE_REPO>) \n\n`,
