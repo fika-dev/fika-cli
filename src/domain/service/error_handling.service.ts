@@ -3,6 +3,7 @@ import container from "@/config/ioc_config";
 import { injectable } from "inversify";
 import BaseException from "../value_object/exceptions/base_exception";
 import { NO_BASE_BRANCH_MESSAGE } from "../value_object/exceptions/no_base_branch.vo";
+import { NO_GIT_REMOTE_MESSAGE } from "../value_object/exceptions/no_git_remote.vo";
 import { WRONG_TAG_FORMAT } from "../value_object/exceptions/wrong_tag_format";
 import { IErrorHandlingService } from "./i_error_handling.service";
 import { IMessageService } from "./i_message.service";
@@ -77,6 +78,11 @@ export class ErrorHandlingService implements IErrorHandlingService {
     } else if (exception.name === NO_BASE_BRANCH_MESSAGE) {
       messageService.showError({
         message: `\n\nNo base branch is found \nPlease check base branch is well configured (e.g. develop branch) \n\n`,
+        code: exception.name,
+      });
+    } else if (exception.name === NO_GIT_REMOTE_MESSAGE) {
+      messageService.showError({
+        message: `\n\nGit remotes are not found \nPlease set remotes like (git remote add origin <REMOTE_REPO>) \n\n`,
         code: exception.name,
       });
     }else {
