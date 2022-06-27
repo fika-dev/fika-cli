@@ -41,8 +41,8 @@ export class GitHub extends GitPlatform{
         if (e.stderr.includes(NO_GIT_REMOTE_STRING)){
           throw new NoGitRemote(NO_GIT_REMOTE_MESSAGE);
         }
-        throw e;
       }
+      throw e;
     }
   }
 
@@ -72,6 +72,7 @@ export class GitHub extends GitPlatform{
           throw new GhNoCommits('GhNoCommits');
         }
       }
+      throw e;
     }
   }
 
