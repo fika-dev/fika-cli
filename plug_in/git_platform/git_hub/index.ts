@@ -3,6 +3,7 @@ import { GHCliNotLoggedin, NEED_LOGIN_STRING } from "@/domain/value_object/excep
 import { GhNoCommits, NO_COMMITS_STRING } from "@/domain/value_object/exceptions/gh_no_commits";
 import { GhPrAlreadyExists, PR_ALREADY_EXISTS_STRING, PR_FOR_BRANCH_STRING } from "@/domain/value_object/exceptions/gh_pr_already_exists";
 import { COMMAND_NOT_FOUND_STRING, NoGithubCli } from '@/domain/value_object/exceptions/no_gh_cli';
+import { NoGitRemote, NO_GIT_REMOTE_MESSAGE, NO_GIT_REMOTE_STRING } from "@/domain/value_object/exceptions/no_git_remote.vo";
 import { exec } from 'child_process';
 import { AddOnType } from "src/domain/entity/add_on.entity";
 import { GitPlatform } from "src/domain/entity/git_platform.entity";
@@ -37,6 +38,10 @@ export class GitHub extends GitPlatform{
         if (e.stderr.includes(NEED_LOGIN_STRING)){
           throw new GHCliNotLoggedin('GH_CLI_NOT_LOGGEDIN');
         }
+        if (e.stderr.includes(NO_GIT_REMOTE_STRING)){
+          throw new NoGitRemote(NO_GIT_REMOTE_MESSAGE);
+        }
+        throw e;
       }
     }
   }
