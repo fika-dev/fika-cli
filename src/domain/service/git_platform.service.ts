@@ -24,6 +24,12 @@ export class GitPlatformService implements IGitPlatformService {
   ) {
     this.configService = configService;
   }
+  async checkoutToBranchWithoutReset(branchName: string): Promise<void> {
+    const execP = promisify(exec);
+    const { stdout: commitId, stderr: branchNameErr } = await execP(
+      `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName};`
+    );
+  }
   async getLatestTag(): Promise<VersionTag> {
     try {
       const execP = promisify(exec);
