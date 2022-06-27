@@ -35,6 +35,7 @@ export interface IConnectService {
     gitRepoUrl: string,
     tag: VersionTag,
     issuesWithPRList: IssueWithPR[]
+    
   ): Promise<string>;
   createReleaseNotionPage(
     botId: Uuid,

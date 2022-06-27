@@ -18,7 +18,7 @@ export const createIssueAction = async (documentUrlString: string)=>{
   const issue = await connectService.getIssue(notionDocumentUrl, botId);
   messageService.showCreatingGitIssue();
   gitPlatformService.configGitPlatform(gitPlatformConfig);
-  const updatedIssue = await gitPlatformService.createIssue(issue)
+  const updatedIssue = await gitPlatformService.createIssue(issue);
   await connectService.updateIssue(updatedIssue, botId);
   await connectService.createIssueRecord(updatedIssue);
   messageService.showCreateIssueSuccess(updatedIssue);
