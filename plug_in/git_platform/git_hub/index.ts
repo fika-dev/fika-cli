@@ -2,6 +2,7 @@ import { IConfigService } from "@/domain/service/i_config.service";
 import { GHCliNotLoggedin, NEED_LOGIN_STRING } from "@/domain/value_object/exceptions/gh_cli_not_loggedin";
 import { GhNoCommits, NO_COMMITS_STRING } from "@/domain/value_object/exceptions/gh_no_commits";
 import { GhPrAlreadyExists, PR_ALREADY_EXISTS_STRING, PR_FOR_BRANCH_STRING } from "@/domain/value_object/exceptions/gh_pr_already_exists";
+import { NoBaseBranch, NO_BASE_BRANCH_MESSAGE, NO_BASE_BRANCH_STRING } from "@/domain/value_object/exceptions/no_base_branch.vo";
 import { COMMAND_NOT_FOUND_STRING, NoGithubCli } from '@/domain/value_object/exceptions/no_gh_cli';
 import { exec } from 'child_process';
 import { AddOnType } from "src/domain/entity/add_on.entity";
@@ -62,6 +63,9 @@ export class GitHub extends GitPlatform{
         }
         if (e.stderr.includes(PR_ALREADY_EXISTS_STRING) && e.stderr.includes(PR_FOR_BRANCH_STRING)){
           throw new GhPrAlreadyExists('GhPrAlreadyExists');
+        }
+        if (e.stderr.includes(NO_BASE_BRANCH_STRING)){
+          throw new NoBaseBranch(NO_BASE_BRANCH_MESSAGE);
         }
         if (e.stderr.includes(NO_COMMITS_STRING)){
           throw new GhNoCommits('GhNoCommits');
