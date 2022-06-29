@@ -67,10 +67,10 @@ export class ConnectService implements IConnectService {
       }
     );
   }
-  async getIssueRecordByPage(notionPageUrl: string, gitRepoUrl: string): Promise<Issue> {
+  async getIssueRecordByPage(notionPageUrl: NotionUrl, gitRepoUrl: string): Promise<Issue> {
     try {
       const response = await this.axiosInstance.get(
-        `/git/issue?gitRepoUrl=${gitRepoUrl}&notionPageUrl=${notionPageUrl}`,
+        `/git/issue?gitRepoUrl=${gitRepoUrl}&notionPageUrl=${notionPageUrl.asString()}`,
         {
           headers: {
             "content-type": "application/json",
