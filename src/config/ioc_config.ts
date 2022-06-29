@@ -51,7 +51,7 @@ else if (process.env.FIKA_ENV === "production"){
 }else{
   console.log('🧪', ' in IocConfig: ', 'process.env.FIKA_ENV: ',process.env.FIKA_ENV);
   console.log('🧪', ' in IocConfig: ', 'running in develop mode!!: ',);
-  container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://testapi.fikadev.com');
+  container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('http://localhost:3013');
   container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue('./test/test-samples');
 }
 

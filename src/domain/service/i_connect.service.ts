@@ -31,6 +31,7 @@ export interface IConnectService {
   checkUpdate(currentVersion: string): Promise<UpdateInfo>;
   createIssueRecord(issue: Issue): Promise<void>;
   getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue>;
+  getIssueRecordByPage(notionPageUrl: NotionUrl, gitRepoUrl: string): Promise<Issue>;
   createRelease(
     gitRepoUrl: string,
     tag: VersionTag,

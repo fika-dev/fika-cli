@@ -67,6 +67,40 @@ export class ConnectService implements IConnectService {
       }
     );
   }
+  async getIssueRecordByPage(notionPageUrl: NotionUrl, gitRepoUrl: string): Promise<Issue> {
+    try {
+      const response = await this.axiosInstance.get(
+        `/git/issue?gitRepoUrl=${gitRepoUrl}&notionPageUrl=${notionPageUrl.asString()}`,
+        {
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${this.token}`,
+          },
+        }
+      );
+      if (response.data){
+        return {
+          notionUrl: response.data.notionPageUrl,
+          title: response.data.title,
+          issueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
+          labels: [],
+        };
+      }else{
+        return;
+      }
+      
+    } catch (e) {
+      const axiosError = e as AxiosError;
+      console.log(
+        "🧪",
+        " in ConnnectService: ",
+        " in getIssueRecordByPage: ",
+        "error code: ",
+        axiosError.code
+      );
+      throw new Error(axiosError.message);
+    }
+  }
   async createPullRequest(gitRepoUrl: string, notionPageUrl: string, issueNumber: number, prNumber: number): Promise<string> {
     try {
       const response = await this.axiosInstance.post(
@@ -179,6 +213,7 @@ export class ConnectService implements IConnectService {
       console.log(
         "🧪",
         " in ConnnectService: ",
+        " in createIssueRecord: ",
         "error code: ",
         axiosError.code
       );
@@ -207,7 +242,7 @@ export class ConnectService implements IConnectService {
       const axiosError = e as AxiosError;
       console.log(
         "🧪",
-        " in ConnnectService: ",
+        " in ConnnectService: in getIssueRecord: ",
         "error code: ",
         axiosError.code
       );
@@ -352,6 +387,7 @@ export class ConnectService implements IConnectService {
         console.log(
           "🧪",
           " in ConnnectService: ",
+          " in getIssue: ",
           "error code: ",
           axiosError.code
         );
@@ -378,8 +414,9 @@ export class ConnectService implements IConnectService {
       console.log(
         "🧪",
         " in ConnnectService: ",
+        " in updateIssue:",
         "error code: ",
-        axiosError.code
+        axiosError.code,
       );
       throw new Error(axiosError.message);
     }

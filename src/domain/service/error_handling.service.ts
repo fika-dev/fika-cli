@@ -85,6 +85,11 @@ export class ErrorHandlingService implements IErrorHandlingService {
         message: `\n\nGit remotes are not found \nPlease set remotes like (git remote add origin <REMOTE_REPO>) \n\n`,
         code: exception.name,
       });
+    }else if (exception.name === NO_BASE_BRANCH_MESSAGE) {
+      messageService.showError({
+        message: `\n\nNo base branch is found \nPlease check base branch is well configured (e.g. develop branch) \n\n`,
+        code: exception.name,
+      });
     }else {
       messageService.showError({
         message: exception.message,

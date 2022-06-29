@@ -8,7 +8,7 @@ export interface IConfigService {
   readConfig(): void;
 
   getBaseBranch(): string;
-  getIssueBranch(issueNumber: string): string;
+  getIssueBranch(issueNumber: number): string;
   getAnalyzerConfigs(): AddOnConfig[];
   getMorpherConfig(): AddOnConfig;
   getGitPlatformConfig(): AddOnConfig;

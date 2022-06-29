@@ -55,7 +55,7 @@ export class ConfigService implements IConfigService {
     }
     return this.config.git.baseBranch;
   }
-  getIssueBranch(issueNumber: string): string {
+  getIssueBranch(issueNumber: number): string {
     if (!this.config.git) {
       this.updateGitConfig();
     }
@@ -64,7 +64,7 @@ export class ConfigService implements IConfigService {
     if (!isValidTemplate) {
       throw Error("Not Valid Issue Branch Template");
     }
-    return GitConfig.getIssueBranch(issueNumber, branchTemplate);
+    return GitConfig.getIssueBranch(issueNumber.toString(), branchTemplate);
   }
 
   getFikaToken(): string | undefined {

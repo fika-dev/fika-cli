@@ -9,6 +9,7 @@ export interface IMessageService {
   showSuccess(message: string): void;
   showError(message: ErrorMessage): void;
   showNotionPage(url: string): void;
+  showCheckoutToExistingIssue(issue: Issue, branchName: string): void;
   showCreateIssueSuccess(issue: Issue): void;
   showCreatePRSuccess(issue: Issue): void;
   showConnecting(connectingUrl: string): void;

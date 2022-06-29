@@ -5,7 +5,7 @@ export class Issue{
   body?: string
   labels: string[]
   prUrl?: string
-  static parsePrNumber(prUrl: string): number{
+  static parseNumberFromUrl(prUrl: string): number{
     const fragments = prUrl.trim().split("/");
     return parseInt(fragments[fragments.length - 1]);
   }
