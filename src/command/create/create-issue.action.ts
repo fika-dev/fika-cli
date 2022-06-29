@@ -1,3 +1,4 @@
+import { Issue } from "@/domain/entity/issue.entity";
 import { IMessageService } from "@/domain/service/i_message.service";
 import { NotionUrl } from "@/domain/value_object/notion_url.vo";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
@@ -10,16 +11,25 @@ export const createIssueAction = async (documentUrlString: string)=>{
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  messageService.showGettingIssue();
   const gitPlatformConfig = configService.getGitPlatformConfig();
   const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
-  const botId = configService.getNotionBotId();
+  const gitRepoUrl = await gitPlatformService.getGitRepoUrl();
   const notionDocumentUrl = new NotionUrl(documentUrlString);
-  const issue = await connectService.getIssue(notionDocumentUrl, botId);
-  messageService.showCreatingGitIssue();
-  gitPlatformService.configGitPlatform(gitPlatformConfig);
-  const updatedIssue = await gitPlatformService.createIssue(issue);
-  await connectService.updateIssue(updatedIssue, botId);
-  await connectService.createIssueRecord(updatedIssue);
-  messageService.showCreateIssueSuccess(updatedIssue);
+  const existingIssue =  await connectService.getIssueRecordByPage(notionDocumentUrl, gitRepoUrl);
+  if (existingIssue){
+    const branch = configService.getIssueBranch(Issue.parseNumberFromUrl(existingIssue.issueUrl));
+    gitPlatformService.checkoutToBranchWithoutReset(branch);
+    messageService.showCheckoutToExistingIssue(existingIssue, branch);
+  }else{
+    messageService.showGettingIssue();
+    const botId = configService.getNotionBotId();
+    const issue = await connectService.getIssue(notionDocumentUrl, botId);
+    messageService.showCreatingGitIssue();
+    gitPlatformService.configGitPlatform(gitPlatformConfig);
+    const updatedIssue = await gitPlatformService.createIssue(issue);
+    await connectService.updateIssue(updatedIssue, botId);
+    await connectService.createIssueRecord(updatedIssue);
+    messageService.showCreateIssueSuccess(updatedIssue);
+  }
+  
 }
