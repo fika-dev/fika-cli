@@ -13,6 +13,11 @@ export class MessageService implements IMessageService {
   ) {
     this.configService = configService;
   }
+  showCheckoutToExistingIssue(issue: Issue, branchName: string): void {
+    console.log(`\n해당 page 와 관련되어, 이미 생성된 issue 를 확인하였습니다.
+“${this._withGreenBoldChalk(issue.title)}”\n
+\n${this._withYellowBoldChalk(branchName)} 브랜치로 checkout 합니다.`);
+  }
   showNotionPage(url: string): void {
     console.log(`\n\nA new Notion was created : ${url}`);
   }
@@ -122,7 +127,7 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk("완료")}
 
   showCreateIssueSuccess(issue: Issue): void {
     this._clear();
-    const issueNumber = this._parseIssueNumberFromUrl(issue.issueUrl!);
+    const issueNumber = Issue.parseNumberFromUrl(issue.issueUrl!);
     const issueBranch = this.configService.getIssueBranch(issueNumber);
     console.log(
       `🎉 이슈 생성에 성공하였습니다!  "${this._withCyanBoldChalk(
