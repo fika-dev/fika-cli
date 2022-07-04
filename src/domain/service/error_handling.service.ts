@@ -62,7 +62,7 @@ export class ErrorHandlingService implements IErrorHandlingService {
       });
     } else if (exception.name === "NOT_AUTHENTICATED") {
       messageService.showError({
-        message: `해당 기능을 사용하기 위해서는 로그인이 필요합니다.`,
+        message: `로그인 정보가 올바르지 않습니다.`,
         code: exception.name,
       });
     } else if (exception.name === "NotOnline") {
