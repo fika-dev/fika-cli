@@ -8,7 +8,6 @@ export async function syncWrapper<T extends any[], K>(
   ...params: T
 ): Promise<[K | null, any]> {
   try {
-    await authHandler();
     return [func(...params), null];
   } catch (e) {
     errorHandler(e);
@@ -31,11 +30,15 @@ export async function commandWrapper(
 ): Promise<any> {
   const [needForceUpdate] =  await asyncWrapper(updateHandler());
   if (!needForceUpdate){
-    const [isAuthenticated] = await asyncWrapper(authHandler());
-    if (isAuthenticated){
-      return asyncWrapper(func(...argument));
-    }else{
-      throw new NotAuthenticated('NOT_AUTHENTICATED');
+    const authHandlerValues = await asyncWrapper(authHandler());
+    if (authHandlerValues){
+      if (authHandlerValues[0]){
+        return asyncWrapper(func(...argument));
+      }
+    }
+    else{
+      const e = new NotAuthenticated('NOT_AUTHENTICATED');
+      errorHandler(e);
     }
   }else{
     return;
