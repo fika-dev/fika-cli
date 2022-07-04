@@ -46,13 +46,18 @@ else if (process.env.FIKA_ENV === "production"){
   container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue(`${homePath}/${FIKA_PATH}`);
 }else if (process.env.FIKA_ENV === "test"){
   console.log('🧪', ' in IocConfig: ', 'running in test mode!!: ',);
-  container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('https://testapi.fikadev.com');
-  container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue('./test/test-samples');
-}else{
   console.log('🧪', ' in IocConfig: ', 'process.env.FIKA_ENV: ',process.env.FIKA_ENV);
+  const apiAddress = 'https://testapi.fikadev.com';
+  console.log('🧪', ' in IocConfig: ', 'apiAddress: ',apiAddress);
+  container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(apiAddress);
+  container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue('../test/test-samples');
+}else{
   console.log('🧪', ' in IocConfig: ', 'running in develop mode!!: ',);
-  container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue('http://localhost:3013');
-  container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue('./test/test-samples');
+  console.log('🧪', ' in IocConfig: ', 'process.env.FIKA_ENV: ',process.env.FIKA_ENV);
+  const apiAddress = 'http://localhost:3013';
+  console.log('🧪', ' in IocConfig: ', 'apiAddress: ',apiAddress);
+  container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(apiAddress);
+  container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue('../test/test-samples');
 }
 
 
