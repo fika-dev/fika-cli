@@ -4,3 +4,4 @@ test/.fika
 dist
 .prettierrc
 .vscode
+test/testing-env
