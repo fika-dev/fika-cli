@@ -15,8 +15,12 @@ import BaseException from "./domain/value_object/exceptions/base_exception";
 import { UnknownError } from "./domain/value_object/exceptions/unknown_error";
 import { version } from "../package.json";
 import { releaseCommand } from "./command/release";
+import dotenv from "dotenv"
+
+
 
 try {
+  dotenv.config();
   program
     .name("fika")
     .description("CLI for advanced your workflow")
