@@ -20,8 +20,9 @@ import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "./constants/identifier
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { PromptService } from "@/domain/service/prompt.service";
 import { FIKA_PATH } from "./constants/path";
+import dotenv from "dotenv";
 
-
+dotenv.config();
 
 let container = new Container();
 
@@ -54,7 +55,7 @@ else if (process.env.FIKA_ENV === "production"){
 }else{
   console.log('🧪', ' in IocConfig: ', 'running in develop mode!!: ',);
   console.log('🧪', ' in IocConfig: ', 'process.env.FIKA_ENV: ',process.env.FIKA_ENV);
-  const apiAddress = 'http://localhost:3013';
+  const apiAddress = process.env.LOCAL_API_ADDRESS;
   console.log('🧪', ' in IocConfig: ', 'apiAddress: ',apiAddress);
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(apiAddress);
   container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue(`${process.env.TESTING_PATH}/${FIKA_PATH}`);
