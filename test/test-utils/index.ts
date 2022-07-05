@@ -41,3 +41,26 @@ export const restoreGitRepo = async (repoPath: string) =>{
   const execP =promisify(exec);
   const {stdout, stderr} = await execP(`cd ${repoPath} && git restore . && git clean -f`);
 }
+
+export const cloneTestingRepo = async (repoPath: string) =>{
+  const execP =promisify(exec);
+  const {stdout, stderr} = await execP(`cd ${repoPath} && git clone ${process.env.TESTING_REPO_GIT_URL}`);
+}
+
+export const checkTestingRepo = async (repoPath: string) =>{
+  try{
+    const execP =promisify(exec);
+    const { stdout: gitRepoUrlWithGit, stderr: branchNameErr } = await execP(
+      `cd ${repoPath} && git remote get-url origin`
+    );
+    const remoteUrl = gitRepoUrlWithGit.trim();
+    if (remoteUrl === process.env.TESTING_REPO_GIT_URL){
+      return true;
+    }else{
+      return false;
+    }
+  }catch(e){
+    return false;
+  }
+}
+
