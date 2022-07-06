@@ -8,10 +8,9 @@ import { GitPlatform } from "../entity/git_platform.entity";
 import { Issue } from "../entity/issue.entity";
 import {
   IGitPlatformService,
-  IssueWithPR,
+  IssueWithPR
 } from "../entity/i_git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
-import { NoGitTag, NO_GIT_TAG } from "../value_object/exceptions/no_git_tag.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
 
