@@ -16,7 +16,7 @@ afterEach(()=>{
 
 test('1. test valid email', async () => { 
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
-  const isValidEmail = await connectService.isAvailableEmail('test@test.com');
+  const isValidEmail = await connectService.isAvailableEmail('wonmo.jung@kkiri.app');
   expect(isValidEmail).toEqual(false);
 });
 
