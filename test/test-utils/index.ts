@@ -16,7 +16,7 @@ export const clearTestFikaPath = (currentPath: string)=>{
 
 
 export const readTestFikaConfig = (currentPath: string): Config=>{
-  const fikaConfigFilePath = currentPath + '/test/.fika/fika.config.json';
+  const fikaConfigFilePath = currentPath + '/.fika/fika.config.json';
   if (fikaConfigFilePath){
     const configString = fs.readFileSync(fikaConfigFilePath, 'utf-8');
     const config = JSON.parse(configString) as Config;

@@ -11,8 +11,7 @@ afterAll(() => {
 });
 
 test('1. create config & check notion workspace', () => { 
-  const testRoot = process.cwd() + '/test';
-  initAction(testRoot);
-  const config = readTestFikaConfig(process.cwd());
+  initAction(process.env.TESTING_PATH);
+  const config = readTestFikaConfig(process.env.TESTING_PATH);
   expect(config.notionWorkspace).toBe("NOT_CONNECTED");
 });
