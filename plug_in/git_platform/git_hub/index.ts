@@ -14,18 +14,24 @@ import { promisify } from 'util';
 
 export class GitHub extends GitPlatform{
   private configService: IConfigService;
+  private gitRepoPath: string;
   
-  constructor(config: AddOnConfig, configService: IConfigService){
+  constructor(config: AddOnConfig, configService: IConfigService, gitRepoPath: string){
     super(config);
     this.addonType = AddOnType.GitPlatform;
     this.configService = configService;
+    this.gitRepoPath = gitRepoPath;
+  }
+
+  private async execP(command){
+    const execP = promisify(exec);
+    return await execP(command, {cwd: this.gitRepoPath});
   }
   
   async createIssue(issue: Issue): Promise<Issue> {
-    try{
-      const execP =promisify(exec);  
+    try{ 
     const labelOptions = issue.labels.map((label)=>`--label "${label}" `).join(' ')
-    const {stdout} = await execP(`gh issue create  --title "${issue.title}" --body "${issue.body}" ${labelOptions}`);
+    const {stdout} = await this.execP(`gh issue create  --title "${issue.title}" --body "${issue.body}" ${labelOptions}`);
     const updatedIssue: Issue = {
       ...issue,
       issueUrl: stdout.trim(),
@@ -48,11 +54,10 @@ export class GitHub extends GitPlatform{
   }
 
   async createPR(issue: Issue, branchName: string, baseBranchName: string): Promise<Issue> {
-    const execP =promisify(exec);  
     const labelOptions = issue.labels.join(' ')
     const issueNumber = this.configService.parseIssueNumber(branchName);
     try{
-      const {stdout, stderr} = await execP(`gh pr create --base ${baseBranchName}  --title "${issue.title}" --body "Notion 다큐먼트: ${issue.notionUrl}\n 해결이슈: #${issueNumber}" --label "${labelOptions}" `);
+      const {stdout, stderr} = await this.execP(`gh pr create --base ${baseBranchName}  --title "${issue.title}" --body "Notion 다큐먼트: ${issue.notionUrl}\n 해결이슈: #${issueNumber}" --label "${labelOptions}" `);
       const updatedIssue: Issue = {
         ...issue,
         prUrl: stdout.trim(),
