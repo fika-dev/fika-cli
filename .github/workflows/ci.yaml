@@ -17,7 +17,7 @@ jobs:
         with:
           path: ~/.yarn
           key: fika-cli-node-${{hashFiles('**/yarn.lock')}}
-          restore-key: |
+          restore-keys: |
             fika-cli-node-
       - name: Use NodeJS
         uses: actions/setup-node@v1
