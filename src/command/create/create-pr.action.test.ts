@@ -30,15 +30,14 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  // await deleteBranch(TEST_CPR_BRANCH_NAME);
-  // const config = readTestFikaConfig(process.env.TESTING_PATH);
-  // await checkOutToBranch(config.git.baseBranch);
+  await deleteBranch(TEST_CPR_BRANCH_NAME);
+  const config = readTestFikaConfig(process.env.TESTING_PATH);
+  await checkOutToBranch(config.git.baseBranch);
 });
 
 afterAll(() => {});
 
 test("1. create PR test", async () => {
-  expect(true).toBe(true);
-  // const result = await createPRAction();
-  // expect(result).toBeUndefined();
+  const result = await createPRAction();
+  expect(result).toBeUndefined();
 });
