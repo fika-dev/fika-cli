@@ -58,6 +58,7 @@
     "tsnode": "FIKA_ENV=development ts-node -r tsconfig-paths/register ./src/index.ts",
     "build": "FIKA_ENV=production tsc && tsc-alias",
     "prepublishOnly": "npm run build",
-    "format:check": "prettier --check \"**/*.{ts,json,yaml,yml,js,md}\""
+    "format:check": "prettier --check \"**/*.{ts,json,yaml,yml,js,md}\"",
+    "format": "prettier --write \"**/*.{ts,json,yaml,yml,js,md}\""
   }
 }
