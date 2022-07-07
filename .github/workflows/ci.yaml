@@ -17,3 +17,4 @@ jobs:
       - run: yarn test
         env:
           CI: true
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_CLI }}
