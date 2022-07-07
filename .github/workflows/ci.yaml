@@ -1,0 +1,19 @@
+name: CI
+on:
+  pull_request:
+    branches: [develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - run: yarn install --frozen-lockfile
+      - run: yarn format:check
+      - run: yarn test
+        env:
+          CI: true
