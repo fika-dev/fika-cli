@@ -24,7 +24,7 @@ jobs:
           touch time.txt
           git add time.txt
           git commit -m "new date commit"
-          git push origin master
+          git push origin develop
       - name: Cache node_modules
         uses: actions/cache@v1
         with:
