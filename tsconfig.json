@@ -11,7 +11,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"],
+      "@/*": ["src/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
@@ -21,11 +21,7 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
-    "esModuleInterop": true,
+    "esModuleInterop": true
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "test/test-samples",
-  ]
+  "exclude": ["node_modules", "dist", "test/test-samples"]
 }
