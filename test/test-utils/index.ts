@@ -10,6 +10,7 @@ import container from "@/config/ioc_config";
 import { IConnectService } from "@/domain/service/i_connect.service";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import { IConfigService } from "@/domain/service/i_config.service";
+import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 
 export const clearTestFikaPath = (currentPath: string)=>{
   const fikaPath = currentPath + '/.fika';
@@ -93,3 +94,7 @@ const _checkTestingRepo = async (repoPath: string): Promise<boolean> =>{
   }
 }
 
+export const checkOutToBranch = async (branchName: string)=> {
+  const gitService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
+  await gitService.checkoutToBranchWithReset(branchName);
+}
