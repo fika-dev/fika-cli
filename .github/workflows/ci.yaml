@@ -18,6 +18,14 @@ jobs:
         run: |
           git config --global user.name "croquies"
           git config --global user.email "${{ secrets.GH_USER_EMAIL }}"
+            - name: commit
+      - name: git commands
+      - run: |
+          # Stage the file, commit and push
+          cd ./test/testing-env/fika-cli-test-samples
+          git add time.txt
+          git commit -m "new date commit"
+          git push origin master
       - name: Cache node_modules
         uses: actions/cache@v1
         with:
@@ -30,8 +38,11 @@ jobs:
         with:
           node-version: "16.x"
       - run: yarn install --frozen-lockfile
+        working-directory: ${{ env.working-directory }}
       - run: yarn format:check
+        working-directory: ${{ env.working-directory }}
       - run: yarn test
         env:
           CI: true
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_CLI }}
+        working-directory: ${{ env.working-directory }}
