@@ -12,6 +12,13 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "<>"
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.yarn
+          key: fika-cli-node-${{hashFiles('**/yarn.lock')}}
+          restore-key: |
+            fika-cli-node-
       - name: Use NodeJS
         uses: actions/setup-node@v1
         with:
