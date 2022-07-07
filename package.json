@@ -46,6 +46,7 @@
     "@types/valid-url": "^1.0.3",
     "babel-jest": "^28.0.3",
     "jest": "^27.0.6",
+    "prettier": "^2.7.1",
     "ts-jest": "^27.0.6",
     "ts-node": "^10.7.0",
     "tsc-alias": "^1.6.7",
