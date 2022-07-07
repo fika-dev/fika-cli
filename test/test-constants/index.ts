@@ -6,6 +6,8 @@ export const TEST_FIKA_BOT_ID = 'd3224eba-6e67-4730-9b6f-a9ef1dc7e4ac';
 
 export const TEST_TASK_DOC_ID = 'https://www.notion.so/test-document-8d3ec82f2fc14b64b150f298c48598ae';
 
+export const TEST_CPR_DOC_ID =  'https://www.notion.so/for-pull-request-test-document-643f1f31906d498c8556d92fc1c614dc'
+
 export const testUserConfig: Config = {
   notionWorkspace: {
     "id": "6e9f6c0d-9018-43cf-8081-9ddb21368fc2",
