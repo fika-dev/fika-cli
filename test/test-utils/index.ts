@@ -84,9 +84,10 @@ const _checkTestingRepo = async (repoPath: string): Promise<boolean> =>{
       `cd ${repoPath} && git remote get-url origin`
     );
     const remoteUrl = gitRepoUrlWithGit.trim();
-    if (remoteUrl === process.env.TESTING_REPO_GIT_URL){
+    if (remoteUrl.includes("fika-cli-test-samples")){
       return true;
     }else{
+      console.log('🧪', ' in Index: ', 'remoteUrl: ',remoteUrl);
       return false;
     }
   }catch(e){

@@ -6,6 +6,7 @@ import {
   TEST_CPR_DOC_ID,
 } from "test/test-constants";
 import {
+  checkAndCloneRepo,
   checkOutToBranch,
   createTestConfig,
   deleteBranch,
@@ -16,7 +17,8 @@ import {
 } from "test/test-utils";
 import { createPRAction } from "./create-pr.action";
 
-beforeAll(() => {
+beforeAll(async () => {
+  await checkAndCloneRepo();
   createTestConfig(process.env.TESTING_PATH + "/.fika");
   setAuthToken();
 });
@@ -28,7 +30,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  await deleteBranch(TEST_CPR_BRANCH_NAME);
+  // await deleteBranch(TEST_CPR_BRANCH_NAME);
   const config = readTestFikaConfig(process.env.TESTING_PATH);
   await checkOutToBranch(config.git.baseBranch);
 });
