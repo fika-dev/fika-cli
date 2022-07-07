@@ -10,6 +10,8 @@ export const TEST_CPR_DOC_ID =  'https://www.notion.so/for-pull-request-test-doc
 
 export const TEST_CPR_BRANCH_NAME = 'feature/iss/#2';
 
+export const TEST_CHANGE_FILE_PATH = './test/testing-env/fika-cli-test-samples/sample_01/readme.md';
+
 export const testUserConfig: Config = {
   notionWorkspace: {
     "id": "6e9f6c0d-9018-43cf-8081-9ddb21368fc2",
