@@ -84,7 +84,7 @@ const _checkTestingRepo = async (repoPath: string): Promise<boolean> =>{
       `cd ${repoPath} && git remote get-url origin`
     );
     const remoteUrl = gitRepoUrlWithGit.trim();
-    if (remoteUrl === process.env.TESTING_REPO_GIT_URL){
+    if (process.env.TESTING_REPO_GIT_URL.includes(remoteUrl)){
       return true;
     }else{
       console.log('🧪', ' in Index: ', 'remoteUrl: ',remoteUrl);
