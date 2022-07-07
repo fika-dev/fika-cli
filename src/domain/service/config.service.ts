@@ -36,14 +36,11 @@ export class ConfigService implements IConfigService {
     if (!this.config.git) {
       this.updateGitConfig();
     }
-    const fragments =
-      this.config.git.issueBranchTemplate.split("<ISSUE_NUMBER>");
+    const fragments = this.config.git.issueBranchTemplate.split("<ISSUE_NUMBER>");
     if (fragments.length == 1) {
       return parseInt(branch.replace(fragments[0], ""));
     } else {
-      return parseInt(
-        branch.replace(fragments[0], "").replace(fragments[1], "")
-      );
+      return parseInt(branch.replace(fragments[0], "").replace(fragments[1], ""));
     }
   }
   getFikaVersion(): string {
@@ -146,15 +143,11 @@ export class ConfigService implements IConfigService {
     throw new Error("Method not implemented.");
   }
   getAnalyzerConfigs(): AddOnConfig[] {
-    return this.config.addOns.filter(
-      (addOn) => addOn.type === AddOnType.Analyzer
-    );
+    return this.config.addOns.filter(addOn => addOn.type === AddOnType.Analyzer);
   }
 
   getMorpherConfig(): AddOnConfig {
-    const [morpherConfig] = this.config.addOns.filter(
-      (addOn) => addOn.type === AddOnType.Morpher
-    );
+    const [morpherConfig] = this.config.addOns.filter(addOn => addOn.type === AddOnType.Morpher);
     if (morpherConfig) {
       return morpherConfig;
     } else {
@@ -164,7 +157,7 @@ export class ConfigService implements IConfigService {
 
   getGitPlatformConfig(): AddOnConfig {
     const [gitPlatformConfig] = this.config.addOns.filter(
-      (addOn) => addOn.type === AddOnType.GitPlatform
+      addOn => addOn.type === AddOnType.GitPlatform
     );
     if (gitPlatformConfig) {
       return gitPlatformConfig;

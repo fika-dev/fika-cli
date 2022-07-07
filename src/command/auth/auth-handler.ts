@@ -6,20 +6,20 @@ import { IConnectService } from "@/domain/service/i_connect.service";
 import { loginAction } from "./login.action";
 import { signupAction } from "./signup.action";
 
-export async function authHandler(){
+export async function authHandler() {
   let token: string;
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   token = configService.getFikaToken();
-  if (token){
+  if (token) {
     connectService.useToken(token);
     return true;
-  }else{
+  } else {
     const isSignedUp = await promptService.askAlreadySignedUp();
-    if(isSignedUp){
+    if (isSignedUp) {
       token = await loginAction();
-    }else{
+    } else {
       token = await signupAction();
     }
     connectService.useToken(token);

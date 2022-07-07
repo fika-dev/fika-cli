@@ -7,13 +7,15 @@ import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
 import { IConfigService } from "src/domain/service/i_config.service";
 import { IConnectService } from "src/domain/service/i_connect.service";
 
-export const createPRAction = async (baseBranch?: string)=>{
+export const createPRAction = async (baseBranch?: string) => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   messageService.showGettingIssueForPR();
   const gitPlatformConfig = configService.getGitPlatformConfig();
-  const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
+  const gitPlatformService = container.get<IGitPlatformService>(
+    SERVICE_IDENTIFIER.GitPlatformService
+  );
   const botId = configService.getNotionBotId();
   const branchName = await gitPlatformService.getBranchName();
   const gitRepoUrl = await gitPlatformService.getGitRepoUrl();
@@ -28,4 +30,4 @@ export const createPRAction = async (baseBranch?: string)=>{
   const prNumber = Issue.parseNumberFromUrl(updatedIssue.prUrl);
   await connectService.createPullRequest(gitRepoUrl, issue.notionUrl, issueNumber, prNumber);
   messageService.showCreatePRSuccess(updatedIssue);
-}
+};

@@ -17,9 +17,7 @@ export class PromptService implements IPromptService {
     return VersionTag.parseVersion(answer);
   }
   async askAlreadySignedUp(): Promise<boolean> {
-    const answer = await promptly.confirm(
-      "이미 Fika 계정이 있으신가요? (y or n)"
-    );
+    const answer = await promptly.confirm("이미 Fika 계정이 있으신가요? (y or n)");
     return answer;
   }
   async askEmailAddress(): Promise<string> {

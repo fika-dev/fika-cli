@@ -1,6 +1,6 @@
 export enum ObjectType {
   Repo,
-  Component
+  Component,
 }
 
 export abstract class DevObject {
@@ -13,6 +13,5 @@ export abstract class DevObject {
   lastSyncedDate?: Date;
   createdAt?: Date;
   updatedAt?: Date;
-  abstract needUpdate(devObj: DevObject):boolean;
+  abstract needUpdate(devObj: DevObject): boolean;
 }
-

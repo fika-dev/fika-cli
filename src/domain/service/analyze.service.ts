@@ -11,33 +11,35 @@ import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { IAnalyzeService } from "./i_analyze.service";
 
 @injectable()
-export class AnalyzeService implements IAnalyzeService{
-  constructor(){
+export class AnalyzeService implements IAnalyzeService {
+  constructor() {
     this.registerAnalyzers = this.registerAnalyzers.bind(this);
   }
   private _analyzers: Analyzer[] = [];
-  public registerAnalyzers(configs: AddOnConfig[]){
-    this._analyzers = configs.map(config=>{
-      if (config.objectType === ObjectType.Repo){
-        return new GitRepoAnalyzer(config);
-      }
-      if (config.objectType === ObjectType.Component){
-        if (config.name === "React.Component.Analyzer" ){
-          return new ReactComponentAnalyzer(config);
+  public registerAnalyzers(configs: AddOnConfig[]) {
+    this._analyzers = configs
+      .map(config => {
+        if (config.objectType === ObjectType.Repo) {
+          return new GitRepoAnalyzer(config);
         }
-      }else{
-        return undefined;
-      }
-    }).filter(analyzer => analyzer);
+        if (config.objectType === ObjectType.Component) {
+          if (config.name === "React.Component.Analyzer") {
+            return new ReactComponentAnalyzer(config);
+          }
+        } else {
+          return undefined;
+        }
+      })
+      .filter(analyzer => analyzer);
   }
   public async analyze(morpher: Morpher): Promise<Snapshot> {
-    const devObjs = (await Promise.all(
-      this._analyzers.map(
-        (analyzer)=> analyzer.analyze(morpher)
-      )
-    )).flat();
-    const repoList = devObjs.filter(devObj=>devObj.objectType===ObjectType.Repo) as Repo[];
-    const components = devObjs.filter(devObj=>devObj.objectType===ObjectType.Component) as Component[];
+    const devObjs = (
+      await Promise.all(this._analyzers.map(analyzer => analyzer.analyze(morpher)))
+    ).flat();
+    const repoList = devObjs.filter(devObj => devObj.objectType === ObjectType.Repo) as Repo[];
+    const components = devObjs.filter(
+      devObj => devObj.objectType === ObjectType.Component
+    ) as Component[];
     const snapshot = new Snapshot(repoList.concat(components));
     return snapshot;
   }

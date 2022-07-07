@@ -3,7 +3,7 @@ import { DevObject } from "./dev_object.entity";
 import { Issue } from "./issue.entity";
 import { Morpher } from "./morpher.entity";
 
-export abstract class GitPlatform extends AddOn{
+export abstract class GitPlatform extends AddOn {
   abstract createIssue(issue: Issue): Promise<Issue>;
   abstract createPR(issue: Issue, branchName: string, baseBranchName: string): Promise<Issue>;
 }

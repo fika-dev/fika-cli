@@ -8,9 +8,7 @@ import { IConfigService } from "./i_config.service";
 @injectable()
 export class MessageService implements IMessageService {
   private configService: IConfigService;
-  constructor(
-    @inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService
-  ) {
+  constructor(@inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService) {
     this.configService = configService;
   }
   showCheckoutToExistingIssue(issue: Issue, branchName: string): void {
@@ -58,9 +56,7 @@ export class MessageService implements IMessageService {
       "완료"
     )}
     
-    ${this._withWhiteBoldChalk(
-      branchName
-    )} 브랜치를 Github 에 push 하고 있습니다.\n\n`);
+    ${this._withWhiteBoldChalk(branchName)} 브랜치를 Github 에 push 하고 있습니다.\n\n`);
   }
   showCreatingPR(issue: Issue, branchName: string): void {
     this._clear();
@@ -101,9 +97,7 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk("완료")}
       "ci"
     )} 는 ${this._withBlueBoldChalk("create issue")} 의 약자입니다)
     
-    ${this._withYellowBoldChalk("fika")} ${this._withBlueBoldChalk(
-      "ci"
-    )} [NOTION_PAGE_URL]
+    ${this._withYellowBoldChalk("fika")} ${this._withBlueBoldChalk("ci")} [NOTION_PAGE_URL]
     
     
     
@@ -111,9 +105,7 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk("완료")}
       "cpr"
     )} 은 ${this._withBlueBoldChalk("create PR")} 의 약자입니다)
     
-    ${this._withYellowBoldChalk("fika")} ${this._withBlueBoldChalk(
-      "cpr"
-    )} [NOTION_PAGE_URL]
+    ${this._withYellowBoldChalk("fika")} ${this._withBlueBoldChalk("cpr")} [NOTION_PAGE_URL]
     `);
   }
 
@@ -129,24 +121,16 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk("완료")}
     this._clear();
     const issueNumber = Issue.parseNumberFromUrl(issue.issueUrl!);
     const issueBranch = this.configService.getIssueBranch(issueNumber);
-    console.log(
-      `🎉 이슈 생성에 성공하였습니다!  "${this._withCyanBoldChalk(
-        issue.title
-      )}"`
-    );
+    console.log(`🎉 이슈 생성에 성공하였습니다!  "${this._withCyanBoldChalk(issue.title)}"`);
     console.log("");
-    console.log(
-      `🟢 github issue url:  ${this._withYellowBoldChalk(issue.issueUrl)}`
-    );
+    console.log(`🟢 github issue url:  ${this._withYellowBoldChalk(issue.issueUrl)}`);
     console.log(`🟢 notion url:  ${this._withBlueBoldChalk(issue.notionUrl)}`);
     console.log("");
     console.log(`------------------------------------------------`);
     console.log("");
     console.log(`해당 이슈를 처리하기 위한 브랜치를 생성하시려면`);
     console.log(`아래 커맨드를 실행해 주세요.\n\n`);
-    console.log(
-      `${this._withWhiteBoldChalk(`git checkout -b ${issueBranch}`)}`
-    );
+    console.log(`${this._withWhiteBoldChalk(`git checkout -b ${issueBranch}`)}`);
     console.log("");
     console.log("");
   }
@@ -155,9 +139,7 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk("완료")}
     const baseBranch = this.configService.getBaseBranch();
     this._clear();
     console.log(
-      `🎉 Pull Request (PR) 생성에 성공하였습니다!  "${this._withCyanBoldChalk(
-        issue.title
-      )}"`
+      `🎉 Pull Request (PR) 생성에 성공하였습니다!  "${this._withCyanBoldChalk(issue.title)}"`
     );
     console.log("");
     console.log(`🟢 github PR url:  ${this._withYellowBoldChalk(issue.prUrl)}`);
@@ -166,9 +148,7 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk("완료")}
     console.log(`Github 에서 PR 을 병합한 이후에는`);
     console.log(`아래 커맨드를 실행해 주세요.\n\n`);
     console.log(`${this._withWhiteBoldChalk(`git checkout ${baseBranch}`)}`);
-    console.log(
-      `${this._withWhiteBoldChalk(`git pull origin ${baseBranch}`)}\n\n`
-    );
+    console.log(`${this._withWhiteBoldChalk(`git pull origin ${baseBranch}`)}\n\n`);
   }
   showError(message: ErrorMessage): void {
     console.log(`🚨 오류가 발생했습니다.  "${message.code}"`);
@@ -187,17 +167,12 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk("완료")}
     return fragments[fragments.length - 1];
   }
 
-  private _withYellowBoldChalk = (word: string) =>
-    chalk.hex("#FAE232").bold(word);
-  private _withGreenBoldChalk = (word: string) =>
-    chalk.hex("#61D835").bold(word);
+  private _withYellowBoldChalk = (word: string) => chalk.hex("#FAE232").bold(word);
+  private _withGreenBoldChalk = (word: string) => chalk.hex("#61D835").bold(word);
   private _withRedBoldChalk = (word: string) => chalk.hex("#FF644E").bold(word);
-  private _withBlueBoldChalk = (word: string) =>
-    chalk.hex("#00A2FF").bold(word);
-  private _withCyanBoldChalk = (word: string) =>
-    chalk.hex("#18E7CF").bold(word);
-  private _withWhiteBoldChalk = (word: string) =>
-    chalk.hex("#FFFFFF").bold(word);
+  private _withBlueBoldChalk = (word: string) => chalk.hex("#00A2FF").bold(word);
+  private _withCyanBoldChalk = (word: string) => chalk.hex("#18E7CF").bold(word);
+  private _withWhiteBoldChalk = (word: string) => chalk.hex("#FFFFFF").bold(word);
 
   private _clear = () => {
     const lines = process.stdout.rows;

@@ -1,7 +1,4 @@
-import {
-  WrongTagFormat,
-  WRONG_TAG_FORMAT,
-} from "./exceptions/wrong_tag_format";
+import { WrongTagFormat, WRONG_TAG_FORMAT } from "./exceptions/wrong_tag_format";
 
 export class VersionTag {
   static versionPattern: RegExp = /(\d{1,2})\.(\d{1,2})(?:\.(\d{1,2}))*/g;
@@ -11,8 +8,7 @@ export class VersionTag {
   additionalTag?: string;
   patchVersion: number;
   static parseVersion(version: string): VersionTag {
-    const versionPattern: RegExp =
-      /(\d{1,2})\.(\d{1,2})(?:\.(\d{1,3}))*(?:(\D.{1,10}))*/g;
+    const versionPattern: RegExp = /(\d{1,2})\.(\d{1,2})(?:\.(\d{1,3}))*(?:(\D.{1,10}))*/g;
     const matched = versionPattern.exec(version);
     if (matched) {
       return {

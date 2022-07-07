@@ -14,6 +14,6 @@ export const PARAMETER_IDENTIFIER = {
   Domain: Symbol.for("DomainParameter"),
   FikaPath: Symbol.for("FikaPathParameter"),
   GitRepoPath: Symbol.for("GitRepoPath"),
-}
+};
 
 export default SERVICE_IDENTIFIER;

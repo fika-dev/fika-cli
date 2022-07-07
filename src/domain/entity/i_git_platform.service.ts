@@ -10,21 +10,14 @@ export interface IssueWithPR {
 
 export interface IGitPlatformService {
   createIssue(issue: Issue): Promise<Issue>;
-  createPR(
-    issue: Issue,
-    branchName: string,
-    baseBranch?: string
-  ): Promise<Issue>;
+  createPR(issue: Issue, branchName: string, baseBranch?: string): Promise<Issue>;
   configGitPlatform(config: AddOnConfig);
   pushBranch(branchName: string): Promise<void>;
   getBranchName(): Promise<string>;
   getGitRepoUrl(): Promise<string>;
   getLatestTag(): Promise<VersionTag>;
   fetchFromRemote(): Promise<void>;
-  findDifferenceFromMaster(
-    branchName: string,
-    issueBranchPattern: string
-  ): Promise<IssueWithPR[]>;
+  findDifferenceFromMaster(branchName: string, issueBranchPattern: string): Promise<IssueWithPR[]>;
   getLatestCommitId(branchName: string): Promise<string>;
   checkoutToBranchWithReset(branchName: string): Promise<void>;
   checkoutToBranchWithoutReset(branchName: string): Promise<void>;

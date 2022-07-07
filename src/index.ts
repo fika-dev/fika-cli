@@ -1,10 +1,6 @@
 #!/usr/bin/env node
 import { connectCommand } from "@/command/connect";
-import {
-  createCommand,
-  createIssueShortCommand,
-  createPRShortCommand
-} from "@/command/create";
+import { createCommand, createIssueShortCommand, createPRShortCommand } from "@/command/create";
 import { program } from "commander";
 import dotenv from "dotenv";
 import { version } from "../package.json";
@@ -16,14 +12,9 @@ import { IErrorHandlingService } from "./domain/service/i_error_handling.service
 import BaseException from "./domain/value_object/exceptions/base_exception";
 import { UnknownError } from "./domain/value_object/exceptions/unknown_error";
 
-
-
 try {
   dotenv.config();
-  program
-    .name("fika")
-    .description("CLI for advanced your workflow")
-    .version(version);
+  program.name("fika").description("CLI for advanced your workflow").version(version);
   program.addCommand(createCommand);
   program.addCommand(createIssueShortCommand);
   program.addCommand(createPRShortCommand);

@@ -1,3 +1,3 @@
 import BaseException from "./base_exception";
 
-export class NotionNotConnected extends BaseException{}
+export class NotionNotConnected extends BaseException {}

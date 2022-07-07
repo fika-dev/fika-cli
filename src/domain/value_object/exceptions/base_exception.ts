@@ -1,8 +1,8 @@
-export default class BaseException extends Error{
-  constructor(name?: string, message?: string){
+export default class BaseException extends Error {
+  constructor(name?: string, message?: string) {
     super();
     this.name = name;
-    if (message){
+    if (message) {
       this.message = message;
     }
   }

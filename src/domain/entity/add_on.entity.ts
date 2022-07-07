@@ -10,11 +10,11 @@ export class AddOn {
   name: string;
   addonType: AddOnType;
   config: AddOnConfig;
-  constructor(config: AddOnConfig){}
-  public getAddOnTypeAsString(): string{
+  constructor(config: AddOnConfig) {}
+  public getAddOnTypeAsString(): string {
     return AddOnType[this.addonType] as string;
   }
-  public setAddOnTypeFromString(addonTypeString: string){
+  public setAddOnTypeFromString(addonTypeString: string) {
     this.addonType = AddOnType[addonTypeString as keyof typeof AddOnType];
   }
 }
