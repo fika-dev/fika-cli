@@ -17,7 +17,7 @@ import {
 } from "test/test-utils";
 import { createPRAction } from "./create-pr.action";
 
-beforeAll(async() => {
+beforeAll(async () => {
   await checkAndCloneRepo();
   createTestConfig(process.env.TESTING_PATH + "/.fika");
   setAuthToken();
