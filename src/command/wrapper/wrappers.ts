@@ -14,9 +14,7 @@ export async function syncWrapper<T extends any[], K>(
   }
 }
 
-export async function asyncWrapper<T>(
-  prom: Promise<T>
-): Promise<[T | null, any]> {
+export async function asyncWrapper<T>(prom: Promise<T>): Promise<[T | null, any]> {
   try {
     return [await prom, null];
   } catch (e) {
@@ -24,23 +22,19 @@ export async function asyncWrapper<T>(
   }
 }
 
-export async function commandWrapper(
-  func: Function,
-  ...argument: any
-): Promise<any> {
-  const [needForceUpdate] =  await asyncWrapper(updateHandler());
-  if (!needForceUpdate){
+export async function commandWrapper(func: Function, ...argument: any): Promise<any> {
+  const [needForceUpdate] = await asyncWrapper(updateHandler());
+  if (!needForceUpdate) {
     const authHandlerValues = await asyncWrapper(authHandler());
-    if (authHandlerValues){
-      if (authHandlerValues[0]){
+    if (authHandlerValues) {
+      if (authHandlerValues[0]) {
         return asyncWrapper(func(...argument));
       }
-    }
-    else{
-      const e = new NotAuthenticated('NOT_AUTHENTICATED');
+    } else {
+      const e = new NotAuthenticated("NOT_AUTHENTICATED");
       errorHandler(e);
     }
-  }else{
+  } else {
     return;
-  } 
+  }
 }

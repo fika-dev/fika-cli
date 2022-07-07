@@ -2,7 +2,6 @@ import { AddOnType } from "src/domain/entity/add_on.entity";
 import { Config } from "src/domain/entity/config.entity";
 import { ObjectType } from "src/domain/entity/dev_object.entity";
 
-
 export const defaultConfig: Config = {
   notionWorkspace: "NOT_CONNECTED",
   fikaToken: "UN_AUTHENTICATED",
@@ -31,7 +30,7 @@ export const defaultConfig: Config = {
     },
   ],
   git: {
-    baseBranch: 'develop',
-    issueBranchTemplate: 'feature/iss/#<ISSUE_NUMBER>',
-  }
-}
+    baseBranch: "develop",
+    issueBranchTemplate: "feature/iss/#<ISSUE_NUMBER>",
+  },
+};

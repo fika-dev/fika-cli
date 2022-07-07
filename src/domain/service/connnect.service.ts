@@ -3,15 +3,9 @@ import { NotionWorkspace } from "../entity/notion_workspace.entity";
 import { IConnectService, UserWithToken } from "./i_connect.service";
 import open from "open";
 import axios, { AxiosError, AxiosInstance } from "axios";
-import {
-  CreateIssueDto,
-  CreateIssueDtoType,
-} from "src/infrastructure/dto/create_issue.dto";
+import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/create_issue.dto";
 import { inject, injectable } from "inversify";
-import {
-  fikaNotionClientId,
-  notionAuthorizeUri,
-} from "src/config/constants/uri";
+import { fikaNotionClientId, notionAuthorizeUri } from "src/config/constants/uri";
 import { Issue } from "../entity/issue.entity";
 import {
   CreateNotionWorkspaceDto,
@@ -20,9 +14,7 @@ import {
 import { Uuid } from "../value_object/uuid.vo";
 import { NotionUrl } from "../value_object/notion_url.vo";
 import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
-import SERVICE_IDENTIFIER, {
-  PARAMETER_IDENTIFIER,
-} from "@/config/constants/identifiers";
+import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 import {
   ERROR_CODE_STRING,
   NotOnline,
@@ -54,12 +46,9 @@ export class ConnectService implements IConnectService {
       timeout: 5000,
     });
     this.axiosInstance.interceptors.response.use(
-      (response) => response,
+      response => response,
       (error: any) => {
-        if (
-          error.syscall === SYS_CALL_STRING &&
-          error.code === ERROR_CODE_STRING
-        ) {
+        if (error.syscall === SYS_CALL_STRING && error.code === ERROR_CODE_STRING) {
           throw new NotOnline("NotOnline");
         } else {
           throw error;
@@ -78,17 +67,16 @@ export class ConnectService implements IConnectService {
           },
         }
       );
-      if (response.data){
+      if (response.data) {
         return {
           notionUrl: response.data.notionPageUrl,
           title: response.data.title,
           issueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
           labels: [],
         };
-      }else{
+      } else {
         return;
       }
-      
     } catch (e) {
       const axiosError = e as AxiosError;
       console.log(
@@ -101,7 +89,12 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async createPullRequest(gitRepoUrl: string, notionPageUrl: string, issueNumber: number, prNumber: number): Promise<string> {
+  async createPullRequest(
+    gitRepoUrl: string,
+    notionPageUrl: string,
+    issueNumber: number,
+    prNumber: number
+  ): Promise<string> {
     try {
       const response = await this.axiosInstance.post(
         "/git/pull-request",
@@ -121,12 +114,7 @@ export class ConnectService implements IConnectService {
       return response.data.id;
     } catch (e) {
       const axiosError = e as AxiosError;
-      console.log(
-        "🧪",
-        " in ConnnectService: ",
-        "error code: ",
-        axiosError.code
-      );
+      console.log("🧪", " in ConnnectService: ", "error code: ", axiosError.code);
       throw new Error(axiosError.message);
     }
   }
@@ -153,20 +141,11 @@ export class ConnectService implements IConnectService {
       return response.data.id;
     } catch (e) {
       const axiosError = e as AxiosError;
-      console.log(
-        "🧪",
-        " in ConnnectService: ",
-        "error code: ",
-        axiosError.code
-      );
+      console.log("🧪", " in ConnnectService: ", "error code: ", axiosError.code);
       throw new Error(axiosError.message);
     }
   }
-  async createReleaseNotionPage(
-    botId: Uuid,
-    commitId: string,
-    releaseId: string
-  ): Promise<string> {
+  async createReleaseNotionPage(botId: Uuid, commitId: string, releaseId: string): Promise<string> {
     try {
       const response = await this.axiosInstance.post(
         "/notion/release",
@@ -180,12 +159,7 @@ export class ConnectService implements IConnectService {
       return response.data;
     } catch (e) {
       const axiosError = e as AxiosError;
-      console.log(
-        "🧪",
-        " in ConnnectService: ",
-        "error code: ",
-        axiosError.code
-      );
+      console.log("🧪", " in ConnnectService: ", "error code: ", axiosError.code);
       throw new Error(axiosError.message);
     }
   }
@@ -259,12 +233,7 @@ export class ConnectService implements IConnectService {
       return updateInfo;
     } catch (e) {
       const axiosError = e as AxiosError;
-      console.log(
-        "🧪",
-        " in ConnnectService: ",
-        "error code: ",
-        axiosError.code
-      );
+      console.log("🧪", " in ConnnectService: ", "error code: ", axiosError.code);
       throw new Error(axiosError.message);
     }
   }
@@ -287,12 +256,7 @@ export class ConnectService implements IConnectService {
       if (responseData && responseData.statusCode === 409) {
         return false;
       }
-      console.log(
-        "🧪",
-        " in ConnnectService: ",
-        "error code: ",
-        axiosError.response.data
-      );
+      console.log("🧪", " in ConnnectService: ", "error code: ", axiosError.response.data);
       throw new Error(axiosError.message);
     }
   }
@@ -306,21 +270,12 @@ export class ConnectService implements IConnectService {
       );
     } catch (e) {
       const axiosError = e as AxiosError;
-      console.log(
-        "🧪",
-        " in ConnnectService: ",
-        "error code: ",
-        axiosError.code
-      );
+      console.log("🧪", " in ConnnectService: ", "error code: ", axiosError.code);
       throw new Error(axiosError.message);
     }
   }
 
-  async signup(
-    email: string,
-    password: string,
-    otpToken: string
-  ): Promise<UserWithToken> {
+  async signup(email: string, password: string, otpToken: string): Promise<UserWithToken> {
     try {
       const response = await this.axiosInstance.post(
         `/auth/cli/signup`,
@@ -330,12 +285,7 @@ export class ConnectService implements IConnectService {
       return { accessToken: response.data.token.access_token };
     } catch (e) {
       const axiosError = e as AxiosError;
-      console.log(
-        "🧪",
-        " in ConnnectService: ",
-        "error code: ",
-        axiosError.code
-      );
+      console.log("🧪", " in ConnnectService: ", "error code: ", axiosError.code);
       throw new Error(axiosError.message);
     }
   }
@@ -350,12 +300,7 @@ export class ConnectService implements IConnectService {
       return { accessToken: response.data.token.access_token };
     } catch (e) {
       const axiosError = e as AxiosError;
-      console.log(
-        "🧪",
-        " in ConnnectService: ",
-        "error code: ",
-        axiosError.code
-      );
+      console.log("🧪", " in ConnnectService: ", "error code: ", axiosError.code);
       throw new Error(axiosError.message);
     }
   }
@@ -416,7 +361,7 @@ export class ConnectService implements IConnectService {
         " in ConnnectService: ",
         " in updateIssue:",
         "error code: ",
-        axiosError.code,
+        axiosError.code
       );
       throw new Error(axiosError.message);
     }
@@ -438,22 +383,13 @@ export class ConnectService implements IConnectService {
   }
   async requestNotionWorkspace(botId: Uuid): Promise<NotionWorkspace> {
     try {
-      const response = await this.axiosInstance.get(
-        `/notion/workspace?id=${botId.asString()}`
-      );
-      const dto = new CreateNotionWorkspaceDto(
-        response.data as CreateNotionWorkspaceDtoType
-      );
+      const response = await this.axiosInstance.get(`/notion/workspace?id=${botId.asString()}`);
+      const dto = new CreateNotionWorkspaceDto(response.data as CreateNotionWorkspaceDtoType);
       return dto.toEntity();
     } catch (e) {
       const axiosError = e as AxiosError;
       if (e.response?.data) {
-        console.log(
-          "🧪",
-          " in ConnnectService: ",
-          "error code: ",
-          e.response.data
-        );
+        console.log("🧪", " in ConnnectService: ", "error code: ", e.response.data);
         throw new Error(`${e.response.data.error}: ${e.response.data.message}`);
       } else {
         throw new Error(e);

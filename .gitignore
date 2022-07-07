@@ -2,6 +2,5 @@ node_modules
 coverage
 test/.fika
 dist
-.prettierrc
 .vscode
 test/testing-env

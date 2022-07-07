@@ -1,7 +1,7 @@
 import { Snapshot } from "src/domain/entity/snapshot.entity";
 import { BaseRepository } from "src/domain/repository/base-repository";
 
-export class SnapshotRepository implements BaseRepository<Snapshot>{
+export class SnapshotRepository implements BaseRepository<Snapshot> {
   create(entity: Snapshot): Promise<void> {
     throw new Error("Method not implemented.");
   }
@@ -14,5 +14,4 @@ export class SnapshotRepository implements BaseRepository<Snapshot>{
   delete(id: string): Promise<Snapshot> {
     throw new Error("Method not implemented.");
   }
-
 }

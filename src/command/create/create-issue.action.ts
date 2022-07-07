@@ -7,20 +7,22 @@ import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
 import { IConfigService } from "src/domain/service/i_config.service";
 import { IConnectService } from "src/domain/service/i_connect.service";
 
-export const createIssueAction = async (documentUrlString: string)=>{
+export const createIssueAction = async (documentUrlString: string) => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   const gitPlatformConfig = configService.getGitPlatformConfig();
-  const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
+  const gitPlatformService = container.get<IGitPlatformService>(
+    SERVICE_IDENTIFIER.GitPlatformService
+  );
   const gitRepoUrl = await gitPlatformService.getGitRepoUrl();
   const notionDocumentUrl = new NotionUrl(documentUrlString);
-  const existingIssue =  await connectService.getIssueRecordByPage(notionDocumentUrl, gitRepoUrl);
-  if (existingIssue){
+  const existingIssue = await connectService.getIssueRecordByPage(notionDocumentUrl, gitRepoUrl);
+  if (existingIssue) {
     const branch = configService.getIssueBranch(Issue.parseNumberFromUrl(existingIssue.issueUrl));
     gitPlatformService.checkoutToBranchWithoutReset(branch);
     messageService.showCheckoutToExistingIssue(existingIssue, branch);
-  }else{
+  } else {
     messageService.showGettingIssue();
     const botId = configService.getNotionBotId();
     const issue = await connectService.getIssue(notionDocumentUrl, botId);
@@ -31,5 +33,4 @@ export const createIssueAction = async (documentUrlString: string)=>{
     await connectService.createIssueRecord(updatedIssue);
     messageService.showCreateIssueSuccess(updatedIssue);
   }
-  
-}
+};

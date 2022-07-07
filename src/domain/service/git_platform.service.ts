@@ -6,10 +6,7 @@ import { promisify } from "util";
 import { AddOnType } from "../entity/add_on.entity";
 import { GitPlatform } from "../entity/git_platform.entity";
 import { Issue } from "../entity/issue.entity";
-import {
-  IGitPlatformService,
-  IssueWithPR
-} from "../entity/i_git_platform.service";
+import { IGitPlatformService, IssueWithPR } from "../entity/i_git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
@@ -27,29 +24,23 @@ export class GitPlatformService implements IGitPlatformService {
     this.gitRepoPath = gitRepoPath;
   }
   async deleteRemoteBranch(branchName: string): Promise<void> {
-    await this.execP(
-      `git push origin --delete "${branchName}"`,
-    );
+    await this.execP(`git push origin --delete "${branchName}"`);
   }
   async commitWithMessage(message: string): Promise<void> {
-    await this.execP(
-      `git commit -m "${message}"`,
-    );
+    await this.execP(`git commit -m "${message}"`);
   }
   async stageAllChanges(): Promise<void> {
-    await this.execP(
-      `git add .`,
-    );
+    await this.execP(`git add .`);
   }
-  
-  private async execP(command){
+
+  private async execP(command) {
     const execP = promisify(exec);
-    return await execP(command, {cwd: this.gitRepoPath});
+    return await execP(command, { cwd: this.gitRepoPath });
   }
 
   async checkoutToBranchWithoutReset(branchName: string): Promise<void> {
     const { stdout: commitId, stderr: branchNameErr } = await this.execP(
-      `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName};`,
+      `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName};`
     );
   }
   async getLatestTag(): Promise<VersionTag> {
@@ -81,7 +72,7 @@ export class GitPlatformService implements IGitPlatformService {
     return mergedLogs
       .trim()
       .split("\n")
-      .map((log) => this.parseMergedLog(log, issueBranchPattern));
+      .map(log => this.parseMergedLog(log, issueBranchPattern));
   }
   async getLatestCommitId(branchName: string): Promise<string> {
     const { stdout: commitId, stderr: branchNameErr } = await this.execP(
@@ -115,9 +106,7 @@ export class GitPlatformService implements IGitPlatformService {
   }
 
   async pushBranch(branchName: string): Promise<void> {
-    const { stdout: pushOut, stderr: pushErr } = await this.execP(
-      `git push origin ${branchName}`
-    );
+    const { stdout: pushOut, stderr: pushErr } = await this.execP(`git push origin ${branchName}`);
   }
 
   async createIssue(issue: Issue): Promise<Issue> {
@@ -135,11 +124,7 @@ export class GitPlatformService implements IGitPlatformService {
     }
   }
 
-  async createPR(
-    issue: Issue,
-    branchName: string,
-    baseBranch?: string
-  ): Promise<Issue> {
+  async createPR(issue: Issue, branchName: string, baseBranch?: string): Promise<Issue> {
     if (this._gitPlatform) {
       let baseBranchName: string;
       if (!baseBranch) {
@@ -147,11 +132,7 @@ export class GitPlatformService implements IGitPlatformService {
       } else {
         baseBranchName = baseBranch;
       }
-      return await this._gitPlatform.createPR(
-        issue,
-        branchName,
-        baseBranchName
-      );
+      return await this._gitPlatform.createPR(issue, branchName, baseBranchName);
     } else {
       throw new Error("Git Platform is not defined, need to config first");
     }

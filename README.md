@@ -86,7 +86,7 @@ To register components please insert commented decoration `//@Fika()` like below
 
 ```tsx
 //@Fika('React.Component')
-const Welcome: React.FC<WelcomeProps> = (props) => <h1>Hello, {props.name}</h1>;
+const Welcome: React.FC<WelcomeProps> = props => <h1>Hello, {props.name}</h1>;
 ```
 
 `fika analyze` or `fika push —analyze` comands analyze code files in the initialized directory and extract registered components. The automatically extracted components will be stored in `.fika/components.g.ts` file.

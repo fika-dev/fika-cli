@@ -1,7 +1,7 @@
 import { NotionWorkspace } from "src/domain/entity/notion_workspace.entity";
 import { BaseRepository } from "src/domain/repository/base-repository";
 
-export class NotionWorkspaceRepository implements BaseRepository<NotionWorkspace>{
+export class NotionWorkspaceRepository implements BaseRepository<NotionWorkspace> {
   create(entity: NotionWorkspace): Promise<void> {
     throw new Error("Method not implemented.");
   }
@@ -14,5 +14,4 @@ export class NotionWorkspaceRepository implements BaseRepository<NotionWorkspace
   delete(id: string): Promise<NotionWorkspace> {
     throw new Error("Method not implemented.");
   }
-
 }

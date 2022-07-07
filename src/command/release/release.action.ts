@@ -7,18 +7,10 @@ import { IConfigService } from "src/domain/service/i_config.service";
 import { IConnectService } from "src/domain/service/i_connect.service";
 
 export const releaseAction = async () => {
-  const configService = container.get<IConfigService>(
-    SERVICE_IDENTIFIER.ConfigService
-  );
-  const messageService = container.get<IMessageService>(
-    SERVICE_IDENTIFIER.MessageService
-  );
-  const connectService = container.get<IConnectService>(
-    SERVICE_IDENTIFIER.ConnectService
-  );
-  const promptService = container.get<IPromptService>(
-    SERVICE_IDENTIFIER.PromptService
-  );
+  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
+  const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
+  const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
+  const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
@@ -33,17 +25,9 @@ export const releaseAction = async () => {
     issueBranchPattern
   );
   const gitRepoUrl = await gitPlatformService.getGitRepoUrl();
-  const releaseId = await connectService.createRelease(
-    gitRepoUrl,
-    tag,
-    issueWithPRList
-  );
+  const releaseId = await connectService.createRelease(gitRepoUrl, tag, issueWithPRList);
   const commitId = await gitPlatformService.getLatestCommitId("origin/master");
   const botId = configService.getNotionBotId();
-  const notionPageUrl = await connectService.createReleaseNotionPage(
-    botId,
-    commitId,
-    releaseId
-  );
+  const notionPageUrl = await connectService.createReleaseNotionPage(botId, commitId, releaseId);
   messageService.showNotionPage(notionPageUrl);
 };

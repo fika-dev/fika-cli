@@ -1,7 +1,11 @@
-import { NotionUser, NotionWorkspace, WorkspaceLevel } from "src/domain/entity/notion_workspace.entity";
+import {
+  NotionUser,
+  NotionWorkspace,
+  WorkspaceLevel,
+} from "src/domain/entity/notion_workspace.entity";
 import { BaseDto } from "./base_dto";
 
-export interface CreateNotionWorkspaceDtoType{
+export interface CreateNotionWorkspaceDtoType {
   id: string;
   accessToken: string;
   workspaceId: string;
@@ -10,34 +14,36 @@ export interface CreateNotionWorkspaceDtoType{
   ownerJsonString: any;
 }
 
-export class CreateNotionWorkspaceDto extends BaseDto<NotionWorkspace,CreateNotionWorkspaceDtoType> {
-  constructor(dto: CreateNotionWorkspaceDtoType){
+export class CreateNotionWorkspaceDto extends BaseDto<
+  NotionWorkspace,
+  CreateNotionWorkspaceDtoType
+> {
+  constructor(dto: CreateNotionWorkspaceDtoType) {
     super(dto);
   }
-  toEntity(): NotionWorkspace{
+  toEntity(): NotionWorkspace {
     return {
       id: this.dto.workspaceId,
       botId: this.dto.id,
       name: this.dto.workspaceName,
       icon: this.dto.workspaceIcon,
-      owner: this._parseOwnerJsonString(this.dto.ownerJsonString)
-    }
+      owner: this._parseOwnerJsonString(this.dto.ownerJsonString),
+    };
   }
 
-  _parseOwnerJsonString(ownerJsonString: any): WorkspaceLevel | NotionUser{
-    if (ownerJsonString.workspace){
+  _parseOwnerJsonString(ownerJsonString: any): WorkspaceLevel | NotionUser {
+    if (ownerJsonString.workspace) {
       return {
-        workspace: true
-      }
-    }else{
+        workspace: true,
+      };
+    } else {
       return {
         object: "user",
         id: ownerJsonString.id,
         type: ownerJsonString.type,
         name: ownerJsonString.name,
         avatar_url: ownerJsonString.avatar_url,
-      }
+      };
     }
   }
-
 }

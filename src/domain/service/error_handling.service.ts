@@ -11,22 +11,18 @@ import { IMessageService } from "./i_message.service";
 @injectable()
 export class ErrorHandlingService implements IErrorHandlingService {
   handle(exception: BaseException): void {
-    const messageService = container.get<IMessageService>(
-      SERVICE_IDENTIFIER.MessageService
-    );
+    const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
     if (exception.name === "GH_CLI_NOT_LOGGEDIN") {
       messageService.showError({
         message: `github client 에 로그인이 되지 않았습니다.\n\n gh auth login\n\n 으로 login 을 해주세요.`,
         code: exception.name,
-        guideUrl:
-          "https://www.notion.so/haamki/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
+        guideUrl: "https://www.notion.so/haamki/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
       });
     } else if (exception.name === "NO_GH_CLI") {
       messageService.showError({
         message: `github client 가 설치되지 않았습니다.\n설치 후 다시 시도해주세요.`,
         code: exception.name,
-        guideUrl:
-          "https://www.notion.so/haamki/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
+        guideUrl: "https://www.notion.so/haamki/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
       });
     } else if (exception.name === "GhPrAlreadyExists") {
       messageService.showError({
@@ -42,8 +38,7 @@ export class ErrorHandlingService implements IErrorHandlingService {
       messageService.showError({
         message: `notion 이 fika 와 연결되지 않았습니다.\n\n fika connect \n\n 위의 커맨드를 통해 fika 와 notion 을 연결해주세요.`,
         code: exception.name,
-        guideUrl:
-          "https://www.notion.so/haamki/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
+        guideUrl: "https://www.notion.so/haamki/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
       });
     } else if (exception.name === "WRONG_PROPERTY_TITLE_NAME") {
       messageService.showError({
@@ -85,12 +80,12 @@ export class ErrorHandlingService implements IErrorHandlingService {
         message: `\n\nGit remotes are not found \nPlease set remotes like (git remote add origin <REMOTE_REPO>) \n\n`,
         code: exception.name,
       });
-    }else if (exception.name === NO_BASE_BRANCH_MESSAGE) {
+    } else if (exception.name === NO_BASE_BRANCH_MESSAGE) {
       messageService.showError({
         message: `\n\nNo base branch is found \nPlease check base branch is well configured (e.g. develop branch) \n\n`,
         code: exception.name,
       });
-    }else {
+    } else {
       messageService.showError({
         message: exception.message,
         code: exception.name,

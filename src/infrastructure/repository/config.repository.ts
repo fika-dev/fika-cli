@@ -1,7 +1,7 @@
 import { Config } from "src/domain/entity/config.entity";
 import { BaseRepository } from "src/domain/repository/base-repository";
 
-export class ConfigRepository implements BaseRepository<Config>{
+export class ConfigRepository implements BaseRepository<Config> {
   create(entity: Config): Promise<void> {
     throw new Error("Method not implemented.");
   }
@@ -14,5 +14,4 @@ export class ConfigRepository implements BaseRepository<Config>{
   delete(id: string): Promise<Config> {
     throw new Error("Method not implemented.");
   }
-
 }

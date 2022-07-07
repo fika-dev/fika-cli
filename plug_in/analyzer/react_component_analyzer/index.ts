@@ -6,19 +6,19 @@ import { INode } from "src/domain/entity/i_node";
 import { Morpher } from "src/domain/entity/morpher.entity";
 import { AddOnConfig } from "src/domain/value_object/add_on_config.vo";
 
-export class ReactComponentAnalyzer extends Analyzer{
+export class ReactComponentAnalyzer extends Analyzer {
   private _componentNodes: INode[];
-  constructor(config: AddOnConfig){
+  constructor(config: AddOnConfig) {
     super(config);
     this.addonType = AddOnType.Analyzer;
     this.analyze = this.analyze.bind(this);
   }
   async analyze(morpher: Morpher): Promise<DevObject[]> {
     this._componentNodes = morpher.getFikaNodes(ComponentType.ReactComponent);
-    return this._componentNodes.map((node)=> this._analyzeNode(node, morpher));
+    return this._componentNodes.map(node => this._analyzeNode(node, morpher));
   }
 
-  private _analyzeNode(node: INode, morpher: Morpher): Component{
+  private _analyzeNode(node: INode, morpher: Morpher): Component {
     let component: Component = Component.getEmptyComponent();
     component.id = node.getId();
     component.title = morpher.getSymbolText(node);
