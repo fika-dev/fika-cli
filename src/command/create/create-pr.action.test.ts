@@ -24,7 +24,7 @@ beforeAll(() => {
 });
 
 beforeEach(async () => {
-  await checkOutToBranch(TEST_CPR_BRANCH_NAME);
+  // await checkOutToBranch(TEST_CPR_BRANCH_NAME);
   // makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
   // await stageAndCommit(TEST_CPR_COMMIT_MESSAGE);
 });
