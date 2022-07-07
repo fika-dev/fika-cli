@@ -8,6 +8,8 @@ export const TEST_CI_DOC_ID = 'https://www.notion.so/test-document-8d3ec82f2fc14
 
 export const TEST_CPR_DOC_ID =  'https://www.notion.so/for-pull-request-test-document-643f1f31906d498c8556d92fc1c614dc'
 
+export const TEST_CPR_BRANCH_NAME = 'feature/iss/#2';
+
 export const testUserConfig: Config = {
   notionWorkspace: {
     "id": "6e9f6c0d-9018-43cf-8081-9ddb21368fc2",
