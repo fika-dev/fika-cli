@@ -21,6 +21,7 @@ jobs:
         run: |
           # Stage the file, commit and push
           cd ./test/testing-env/fika-cli-test-samples
+          touch time.txt
           git add time.txt
           git commit -m "new date commit"
           git push origin master
