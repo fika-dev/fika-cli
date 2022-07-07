@@ -87,6 +87,7 @@ const _checkTestingRepo = async (repoPath: string): Promise<boolean> =>{
     if (remoteUrl === process.env.TESTING_REPO_GIT_URL){
       return true;
     }else{
+      console.log('🧪', ' in Index: ', 'remoteUrl: ',remoteUrl);
       return false;
     }
   }catch(e){
