@@ -15,7 +15,7 @@ jobs:
       - name: Cache node_modules
         uses: actions/cache@v1
         with:
-          path: ~/.yarn
+          path: '**/node_modules'
           key: fika-cli-node-${{hashFiles('**/yarn.lock')}}
           restore-keys: |
             fika-cli-node-
