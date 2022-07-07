@@ -26,6 +26,11 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
+  async commitWithMessage(message: string): Promise<void> {
+    await this.execP(
+      `git commit -m "${message}"`,
+    );
+  }
   async stageAllChanges(): Promise<void> {
     await this.execP(
       `git add .`,
