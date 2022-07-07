@@ -13,12 +13,10 @@ jobs:
         with:
           repository: fika-dev/fika-cli-test-samples
           path: "./test/testing-env/fika-cli-test-samples"
-          github_token: ${{ secrets.GH_TOKEN_FOR_CLI }}
       - name: setup git config
         run: |
           git config --global user.name "croquies"
           git config --global user.email "${{ secrets.GH_USER_EMAIL }}"
-            - name: commit
       - name: git commands
         run: |
           # Stage the file, commit and push
