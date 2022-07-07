@@ -1,6 +1,6 @@
 import { createIssueAction } from "@/command/create/create-issue.action";
-import { TEST_CPR_BRANCH_NAME, TEST_CPR_DOC_ID } from "test/test-constants";
-import { checkOutToBranch, createTestConfig, setAuthToken } from "test/test-utils";
+import { TEST_CHANGE_FILE_PATH, TEST_CPR_BRANCH_NAME, TEST_CPR_DOC_ID } from "test/test-constants";
+import { checkOutToBranch, createTestConfig, makeMeaninglessChange, setAuthToken } from "test/test-utils";
 
 
 beforeAll(() => {
@@ -10,6 +10,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   checkOutToBranch(TEST_CPR_BRANCH_NAME);
+  makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
 });
 
 afterAll(() => {
