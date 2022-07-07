@@ -99,6 +99,11 @@ export const checkOutToBranch = async (branchName: string)=> {
   await gitService.checkoutToBranchWithReset(branchName);
 }
 
+export const deleteBranch = async (branchName: string)=> {
+  const gitService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
+  await gitService.deleteRemoteBranch(branchName);
+}
+
 export const stageAndCommit = async (message: string)=> {
   const gitService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
   await gitService.stageAllChanges();
