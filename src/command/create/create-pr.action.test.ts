@@ -18,7 +18,7 @@ import {
 import { createPRAction } from "./create-pr.action";
 
 beforeAll(() => {
-  checkAndCloneRepo()
+  checkAndCloneRepo();
   createTestConfig(process.env.TESTING_PATH + "/.fika");
   setAuthToken();
 });
