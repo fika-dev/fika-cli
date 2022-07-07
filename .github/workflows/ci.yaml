@@ -21,10 +21,7 @@ jobs:
         run: |
           # Stage the file, commit and push
           cd ./test/testing-env/fika-cli-test-samples
-          touch time.txt
-          git add time.txt
-          git commit -m "new date commit"
-          git push origin develop
+          git remote add origin "https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
       - name: Cache node_modules
         uses: actions/cache@v1
         with:
