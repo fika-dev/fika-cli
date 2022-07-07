@@ -28,6 +28,8 @@ export interface IGitPlatformService {
   getLatestCommitId(branchName: string): Promise<string>;
   checkoutToBranchWithReset(branchName: string): Promise<void>;
   checkoutToBranchWithoutReset(branchName: string): Promise<void>;
-
+  stageAllChanges(): Promise<void>;
+  commitWithMessage(message: string): Promise<void>;
+  deleteRemoteBranch(branchName: string): Promise<void>;
   tagCommit(branchName: string, tag: VersionTag): Promise<void>;
 }
