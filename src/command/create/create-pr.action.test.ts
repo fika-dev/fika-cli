@@ -17,16 +17,16 @@ import {
 } from "test/test-utils";
 import { createPRAction } from "./create-pr.action";
 
-beforeAll(() => {
-  checkAndCloneRepo();
+beforeAll(async() => {
+  await checkAndCloneRepo();
   createTestConfig(process.env.TESTING_PATH + "/.fika");
   setAuthToken();
 });
 
 beforeEach(async () => {
   // await checkOutToBranch(TEST_CPR_BRANCH_NAME);
-  // makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
-  // await stageAndCommit(TEST_CPR_COMMIT_MESSAGE);
+  makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
+  await stageAndCommit(TEST_CPR_COMMIT_MESSAGE);
 });
 
 afterEach(async () => {
