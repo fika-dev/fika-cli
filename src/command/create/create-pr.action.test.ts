@@ -6,6 +6,7 @@ import {
   TEST_CPR_DOC_ID,
 } from "test/test-constants";
 import {
+  checkAndCloneRepo,
   checkOutToBranch,
   createTestConfig,
   deleteBranch,
@@ -17,6 +18,7 @@ import {
 import { createPRAction } from "./create-pr.action";
 
 beforeAll(() => {
+  checkAndCloneRepo()
   createTestConfig(process.env.TESTING_PATH + "/.fika");
   setAuthToken();
 });
