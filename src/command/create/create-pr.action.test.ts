@@ -25,14 +25,14 @@ beforeAll(() => {
 
 beforeEach(async () => {
   await checkOutToBranch(TEST_CPR_BRANCH_NAME);
-  makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
-  await stageAndCommit(TEST_CPR_COMMIT_MESSAGE);
+  // makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
+  // await stageAndCommit(TEST_CPR_COMMIT_MESSAGE);
 });
 
 afterEach(async () => {
-  await deleteBranch(TEST_CPR_BRANCH_NAME);
-  const config = readTestFikaConfig(process.env.TESTING_PATH);
-  await checkOutToBranch(config.git.baseBranch);
+  // await deleteBranch(TEST_CPR_BRANCH_NAME);
+  // const config = readTestFikaConfig(process.env.TESTING_PATH);
+  // await checkOutToBranch(config.git.baseBranch);
 });
 
 afterAll(() => {});
