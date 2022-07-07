@@ -98,3 +98,7 @@ export const checkOutToBranch = async (branchName: string)=> {
   const gitService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
   await gitService.checkoutToBranchWithReset(branchName);
 }
+
+export const makeMeaninglessChange = (filePath: string)=> {
+  fs.appendFileSync(filePath, '\n');
+}
