@@ -10,12 +10,13 @@ jobs:
       CI: true
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_CLI }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: fika-dev/fika-cli-test-samples
           path: "./test/testing-env/fika-cli-test-samples"
+          token: ${{ secrets.GH_TOKEN_FOR_CLI }}
       - name: setup git config
         run: |
           git config --global user.name "croquies"
