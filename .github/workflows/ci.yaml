@@ -22,7 +22,7 @@ jobs:
           # Stage the file, commit and push
           cd ./test/testing-env/fika-cli-test-samples
           git remote remove origin
-          git remote add origin "https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/fika-dev/fika-cli-test-samples.git"
+          git remote add origin "https://croquies:${{ secrets.GH_TOKEN_FOR_CLI }}@github.com/fika-dev/fika-cli-test-samples.git"
           git push origin main
       - name: Cache node_modules
         uses: actions/cache@v1
