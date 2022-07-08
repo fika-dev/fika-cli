@@ -6,6 +6,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CI: true
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_CLI }}
     steps:
       - uses: actions/checkout@v2
       - name: Checkout
@@ -17,13 +20,6 @@ jobs:
         run: |
           git config --global user.name "croquies"
           git config --global user.email "${{ secrets.GH_USER_EMAIL }}"
-      - name: git commands
-        run: |
-          # Stage the file, commit and push
-          cd ./test/testing-env/fika-cli-test-samples
-          git remote remove origin
-          git remote add origin "https://croquies:${{ secrets.GH_TOKEN_FOR_CLI }}@github.com/fika-dev/fika-cli-test-samples.git"
-          git push origin main
       - name: Cache node_modules
         uses: actions/cache@v1
         with:
