@@ -43,7 +43,7 @@ export class ConnectService implements IConnectService {
     this.configService = configService;
     this.axiosInstance = axios.create({
       baseURL: this.domain,
-      timeout: 5000,
+      timeout: 10000,
     });
     this.axiosInstance.interceptors.response.use(
       response => response,
