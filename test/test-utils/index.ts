@@ -114,3 +114,11 @@ export const stageAndCommit = async (message: string)=> {
 export const makeMeaninglessChange = (filePath: string)=> {
   fs.appendFileSync(filePath, '\n');
 }
+
+export const sendPromptData = (line: string, delay = 0)=> {
+  if (!delay) {
+      setImmediate(() => process.stdin.emit('data', `${line}\n`));
+  } else {
+      setTimeout(() => process.stdin.emit('data', `${line}\n`), delay);
+  }
+}

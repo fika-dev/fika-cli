@@ -5,6 +5,23 @@ import { VersionTag } from "../value_object/version_tag.vo";
 
 @injectable()
 export class PromptService implements IPromptService {
+  async askBranchName(message: string, defaultName: string, candidates: string[]): Promise<string> {
+    const validator = function (value) {
+      if (value.length < 1) {
+        throw new Error("Min length of 1");
+      }
+      return value;
+    };
+
+    const candidatesText = candidates.join(", ");
+    const question = `${message} (already defined branches: ${candidatesText}): `;
+    const answer = await promptly.prompt(question, {
+      default: defaultName,
+      validator,
+      retry: true,
+    });
+    return answer;
+  }
   async askTagInfo(latestTag: VersionTag): Promise<VersionTag> {
     let question: string;
 

@@ -8,4 +8,5 @@ export interface IPromptService {
   askPassword(): Promise<string>;
   askOtpToken(email: string): Promise<string>;
   askTagInfo(latestTag: VersionTag | undefined): Promise<VersionTag>;
+  askBranchName(message: string, defaultName: string, candidates: string[]): Promise<string>;
 }
