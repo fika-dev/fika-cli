@@ -27,7 +27,7 @@ export class ConfigService implements IConfigService {
     this.readConfig();
   }
   filterFromCandidates(filterIn: string[], candidates: string[]) {
-    throw new Error("Method not implemented.");
+    return filterIn.filter((item)=>candidates.includes(item));
   }
   getIssueBranchPattern(): string {
     if (!this.config.git) {
