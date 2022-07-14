@@ -2,8 +2,8 @@ import { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 import fs from "fs";
 import { inject, injectable } from "inversify";
 import path from "path";
-import { defaultConfig } from "src/config/constants/default_config";
-import { CONFIG_FILE_NAME } from "src/config/constants/path";
+import { defaultConfig, defaultLocalConfig } from "src/config/constants/default_config";
+import { CONFIG_FILE_NAME, LOCAL_CONFIG_NAME } from "src/config/constants/path";
 import { version } from "../../../package.json";
 import { AddOnType } from "../entity/add_on.entity";
 import { Config } from "../entity/config.entity";
@@ -12,12 +12,13 @@ import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { NotionNotConnected } from "../value_object/exceptions/notion_not_connected";
 import { GitConfig } from "../value_object/git_config.vo";
 import { Uuid } from "../value_object/uuid.vo";
-import { IConfigService, InitialConfigInput } from "./i_config.service";
+import { IConfigService, InitialConfigInput, LocalConfig } from "./i_config.service";
 
 @injectable()
 export class ConfigService implements IConfigService {
   private config: Config = defaultConfig;
   private fikaConfigFilePath?: string;
+  private fikaLocalConfigPath?: string;
   private fikaPath: string;
 
   constructor(@inject(PARAMETER_IDENTIFIER.FikaPath) fikaPath: string) {
@@ -26,8 +27,11 @@ export class ConfigService implements IConfigService {
     this.fikaPath = fikaPath;
     this.readConfig();
   }
-  createLocalConfig(initialConfigInput: InitialConfigInput): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  createLocalConfig(initialConfigInput: InitialConfigInput): void {
+    const currentPath = process.cwd();
+    const localConfig: LocalConfig = defaultLocalConfig;
+    localConfig.branchNames = initialConfigInput.branchNames;
+    this._createConfig(currentPath, LOCAL_CONFIG_NAME, localConfig);
   }
   filterFromCandidates(filterIn: string[], candidates: string[]) {
     return filterIn.filter((item)=>candidates.includes(item));
@@ -171,4 +175,16 @@ export class ConfigService implements IConfigService {
       throw Error("Git Platform Config is not found");
     }
   }
+
+  _createConfig(directory: string, fileName: string, contents: any): void {
+    if (!fs.existsSync(directory)) {
+      fs.mkdirSync(directory);
+    }
+    const filePath = path.join(directory, fileName);
+    if (!fs.existsSync(filePath)) {
+      const configString = JSON.stringify(contents, undefined, 2);
+      fs.writeFileSync(filePath, configString);
+    }
+  }
+
 }
