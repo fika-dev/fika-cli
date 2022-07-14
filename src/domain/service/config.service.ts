@@ -20,21 +20,25 @@ export class ConfigService implements IConfigService {
   private fikaConfigFilePath?: string;
   private fikaLocalConfigPath?: string;
   private fikaPath: string;
+  private localPath: string;
 
-  constructor(@inject(PARAMETER_IDENTIFIER.FikaPath) fikaPath: string) {
+  constructor(
+    @inject(PARAMETER_IDENTIFIER.FikaPath) fikaPath: string,
+    @inject(PARAMETER_IDENTIFIER.GitRepoPath) localPath: string
+  ) {
     this.updateNotionWorkspace = this.updateNotionWorkspace.bind(this);
     this.createConfig = this.createConfig.bind(this);
     this.fikaPath = fikaPath;
+    this.localPath = localPath;
     this.readConfig();
   }
   createLocalConfig(initialConfigInput: InitialConfigInput): void {
-    const currentPath = process.cwd();
     const localConfig: LocalConfig = defaultLocalConfig;
     localConfig.branchNames = initialConfigInput.branchNames;
-    this._createConfig(currentPath, LOCAL_CONFIG_NAME, localConfig);
+    this._createConfig(this.localPath, LOCAL_CONFIG_NAME, localConfig);
   }
   filterFromCandidates(filterIn: string[], candidates: string[]) {
-    return filterIn.filter((item)=>candidates.includes(item));
+    return filterIn.filter(item => candidates.includes(item));
   }
   getIssueBranchPattern(): string {
     if (!this.config.git) {
@@ -186,5 +190,4 @@ export class ConfigService implements IConfigService {
       fs.writeFileSync(filePath, configString);
     }
   }
-
 }
