@@ -9,6 +9,22 @@ export interface InitialConfigInput {
     release: string;
   }
 }
+
+export interface LocalConfig {
+  branchNames: {
+    develop: string;
+    main: string;
+    release: string;
+  }
+  start: {
+    fromDevelopOnly: boolean;
+    pullBeforeAlways: boolean;
+    checkoutToFeature: boolean;
+  }
+  finish: {
+    checkOutToDevelop: boolean;
+  }
+}
 export interface IConfigService {
   getNotionBotId(): Uuid;
   createConfig(): void;
@@ -30,5 +46,5 @@ export interface IConfigService {
   getIssueBranchPattern(): string;
 
   filterFromCandidates(filterIn: string[], candidates: string[]);
-  createLocalConfig(initialConfigInput: InitialConfigInput): Promise<boolean>;
+  createLocalConfig(initialConfigInput: InitialConfigInput): void;
 }
