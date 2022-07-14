@@ -21,4 +21,6 @@ export interface IConfigService {
 
   parseIssueNumber(branch: string): number;
   getIssueBranchPattern(): string;
+
+  filterFromCandidates(filterIn: string[], candidates: string[]);
 }

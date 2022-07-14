@@ -26,6 +26,9 @@ export class ConfigService implements IConfigService {
     this.fikaPath = fikaPath;
     this.readConfig();
   }
+  filterFromCandidates(filterIn: string[], candidates: string[]) {
+    throw new Error("Method not implemented.");
+  }
   getIssueBranchPattern(): string {
     if (!this.config.git) {
       this.updateGitConfig();
