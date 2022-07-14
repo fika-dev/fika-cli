@@ -1,6 +1,6 @@
 import fs from "fs"
 import path from "path";
-import { CONFIG_FILE_NAME, FIKA_PATH, SNAPSHOT_FILE_NAME } from "@/config/constants/path";
+import { CONFIG_FILE_NAME, FIKA_PATH, LOCAL_CONFIG_NAME, SNAPSHOT_FILE_NAME } from "@/config/constants/path";
 import { Config } from "@/domain/entity/config.entity";
 import { SyncedSnapshot } from "@/domain/entity/synced_snapshot.entity";
 import {promisify} from 'util';
@@ -9,11 +9,19 @@ import { testUserConfig } from "test/test-constants";
 import container from "@/config/ioc_config";
 import { IConnectService } from "@/domain/service/i_connect.service";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
-import { IConfigService } from "@/domain/service/i_config.service";
+import { IConfigService, LocalConfig } from "@/domain/service/i_config.service";
 import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 
 export const clearTestFikaPath = (currentPath: string)=>{
   const fikaPath = currentPath + '/.fika';
+  if (fs.existsSync(fikaPath))
+  fs.rmSync(fikaPath, {
+    recursive: true,
+  });
+}
+
+export const clearLocalConfig = (currentPath: string)=>{
+  const fikaPath = path.join(currentPath, LOCAL_CONFIG_NAME);
   if (fs.existsSync(fikaPath))
   fs.rmSync(fikaPath, {
     recursive: true,
@@ -43,6 +51,17 @@ export const readTestFikaConfig = (currentPath: string): Config=>{
   if (fikaConfigFilePath){
     const configString = fs.readFileSync(fikaConfigFilePath, 'utf-8');
     const config = JSON.parse(configString) as Config;
+    return config;
+  }else{
+    throw new Error("Fika config file path is not set");
+  }
+}
+
+export const readLocalConfig = (currentPath: string): LocalConfig=>{
+  const fikaConfigFilePath = path.join(currentPath, LOCAL_CONFIG_NAME);
+  if (fikaConfigFilePath){
+    const configString = fs.readFileSync(fikaConfigFilePath, 'utf-8');
+    const config = JSON.parse(configString) as LocalConfig;
     return config;
   }else{
     throw new Error("Fika config file path is not set");
