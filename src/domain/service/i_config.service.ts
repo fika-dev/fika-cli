@@ -7,7 +7,7 @@ export interface InitialConfigInput {
     develop: string;
     main: string;
     release: string;
-  }
+  };
 }
 
 export interface LocalConfig {
@@ -15,15 +15,15 @@ export interface LocalConfig {
     develop: string;
     main: string;
     release: string;
-  }
+  };
   start: {
     fromDevelopOnly: boolean;
     pullBeforeAlways: boolean;
     checkoutToFeature: boolean;
-  }
+  };
   finish: {
     checkOutToDevelop: boolean;
-  }
+  };
 }
 export interface IConfigService {
   getNotionBotId(): Uuid;

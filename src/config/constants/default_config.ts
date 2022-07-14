@@ -38,9 +38,9 @@ export const defaultConfig: Config = {
 
 export const defaultLocalConfig: LocalConfig = {
   branchNames: {
-    develop: 'develop',
-    main: 'master',
-    release: 'release',
+    develop: "develop",
+    main: "master",
+    release: "release",
   },
   start: {
     fromDevelopOnly: true,
@@ -49,5 +49,5 @@ export const defaultLocalConfig: LocalConfig = {
   },
   finish: {
     checkOutToDevelop: false,
-  }
-}
+  },
+};
