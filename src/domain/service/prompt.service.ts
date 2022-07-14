@@ -5,6 +5,9 @@ import { VersionTag } from "../value_object/version_tag.vo";
 
 @injectable()
 export class PromptService implements IPromptService {
+  askBranchName(message: string, defaultName: string, candidates: string[]): Promise<string> {
+    throw new Error("Method not implemented.");
+  }
   async askTagInfo(latestTag: VersionTag): Promise<VersionTag> {
     let question: string;
 
