@@ -1,3 +1,4 @@
+import { LocalConfig } from "@/domain/service/i_config.service";
 import { AddOnType } from "src/domain/entity/add_on.entity";
 import { Config } from "src/domain/entity/config.entity";
 import { ObjectType } from "src/domain/entity/dev_object.entity";
@@ -34,3 +35,19 @@ export const defaultConfig: Config = {
     issueBranchTemplate: "feature/iss/#<ISSUE_NUMBER>",
   },
 };
+
+export const defaultLocalConfig: LocalConfig = {
+  branchNames: {
+    develop: 'develop',
+    main: 'master',
+    release: 'release',
+  },
+  start: {
+    fromDevelopOnly: true,
+    pullBeforeAlways: true,
+    checkoutToFeature: true,
+  },
+  finish: {
+    checkOutToDevelop: false,
+  }
+}
