@@ -3,7 +3,8 @@ import fs from "fs";
 import { inject, injectable } from "inversify";
 import path from "path";
 import { defaultConfig } from "src/config/constants/default_config";
-import { CONFIG_FILE_NAME, FIKA_PATH } from "src/config/constants/path";
+import { CONFIG_FILE_NAME } from "src/config/constants/path";
+import { version } from "../../../package.json";
 import { AddOnType } from "../entity/add_on.entity";
 import { Config } from "../entity/config.entity";
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
@@ -11,8 +12,7 @@ import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { NotionNotConnected } from "../value_object/exceptions/notion_not_connected";
 import { GitConfig } from "../value_object/git_config.vo";
 import { Uuid } from "../value_object/uuid.vo";
-import { IConfigService } from "./i_config.service";
-import { version } from "../../../package.json";
+import { IConfigService, InitialConfigInput } from "./i_config.service";
 
 @injectable()
 export class ConfigService implements IConfigService {
@@ -25,6 +25,9 @@ export class ConfigService implements IConfigService {
     this.createConfig = this.createConfig.bind(this);
     this.fikaPath = fikaPath;
     this.readConfig();
+  }
+  createLocalConfig(initialConfigInput: InitialConfigInput): Promise<boolean> {
+    throw new Error("Method not implemented.");
   }
   filterFromCandidates(filterIn: string[], candidates: string[]) {
     return filterIn.filter((item)=>candidates.includes(item));
