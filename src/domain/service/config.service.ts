@@ -2,8 +2,9 @@ import { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 import fs from "fs";
 import { inject, injectable } from "inversify";
 import path from "path";
-import { defaultConfig } from "src/config/constants/default_config";
-import { CONFIG_FILE_NAME, FIKA_PATH } from "src/config/constants/path";
+import { defaultConfig, defaultLocalConfig } from "src/config/constants/default_config";
+import { CONFIG_FILE_NAME, LOCAL_CONFIG_NAME } from "src/config/constants/path";
+import { version } from "../../../package.json";
 import { AddOnType } from "../entity/add_on.entity";
 import { Config } from "../entity/config.entity";
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
@@ -11,20 +12,33 @@ import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { NotionNotConnected } from "../value_object/exceptions/notion_not_connected";
 import { GitConfig } from "../value_object/git_config.vo";
 import { Uuid } from "../value_object/uuid.vo";
-import { IConfigService } from "./i_config.service";
-import { version } from "../../../package.json";
+import { IConfigService, InitialConfigInput, LocalConfig } from "./i_config.service";
 
 @injectable()
 export class ConfigService implements IConfigService {
   private config: Config = defaultConfig;
   private fikaConfigFilePath?: string;
+  private fikaLocalConfigPath?: string;
   private fikaPath: string;
+  private localPath: string;
 
-  constructor(@inject(PARAMETER_IDENTIFIER.FikaPath) fikaPath: string) {
+  constructor(
+    @inject(PARAMETER_IDENTIFIER.FikaPath) fikaPath: string,
+    @inject(PARAMETER_IDENTIFIER.GitRepoPath) localPath: string
+  ) {
     this.updateNotionWorkspace = this.updateNotionWorkspace.bind(this);
     this.createConfig = this.createConfig.bind(this);
     this.fikaPath = fikaPath;
+    this.localPath = localPath;
     this.readConfig();
+  }
+  createLocalConfig(initialConfigInput: InitialConfigInput): void {
+    const localConfig: LocalConfig = defaultLocalConfig;
+    localConfig.branchNames = initialConfigInput.branchNames;
+    this._createConfig(this.localPath, LOCAL_CONFIG_NAME, localConfig);
+  }
+  filterFromCandidates(filterIn: string[], candidates: string[]) {
+    return filterIn.filter(item => candidates.includes(item));
   }
   getIssueBranchPattern(): string {
     if (!this.config.git) {
@@ -163,6 +177,17 @@ export class ConfigService implements IConfigService {
       return gitPlatformConfig;
     } else {
       throw Error("Git Platform Config is not found");
+    }
+  }
+
+  _createConfig(directory: string, fileName: string, contents: any): void {
+    if (!fs.existsSync(directory)) {
+      fs.mkdirSync(directory);
+    }
+    const filePath = path.join(directory, fileName);
+    if (!fs.existsSync(filePath)) {
+      const configString = JSON.stringify(contents, undefined, 2);
+      fs.writeFileSync(filePath, configString);
     }
   }
 }

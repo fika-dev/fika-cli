@@ -2,6 +2,29 @@ import { NotionWorkspace } from "../entity/notion_workspace.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { Uuid } from "../value_object/uuid.vo";
 
+export interface InitialConfigInput {
+  branchNames: {
+    develop: string;
+    main: string;
+    release: string;
+  };
+}
+
+export interface LocalConfig {
+  branchNames: {
+    develop: string;
+    main: string;
+    release: string;
+  };
+  start: {
+    fromDevelopOnly: boolean;
+    pullBeforeAlways: boolean;
+    checkoutToFeature: boolean;
+  };
+  finish: {
+    checkOutToDevelop: boolean;
+  };
+}
 export interface IConfigService {
   getNotionBotId(): Uuid;
   createConfig(): void;
@@ -21,4 +44,7 @@ export interface IConfigService {
 
   parseIssueNumber(branch: string): number;
   getIssueBranchPattern(): string;
+
+  filterFromCandidates(filterIn: string[], candidates: string[]);
+  createLocalConfig(initialConfigInput: InitialConfigInput): void;
 }
