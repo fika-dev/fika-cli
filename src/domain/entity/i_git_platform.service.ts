@@ -25,4 +25,5 @@ export interface IGitPlatformService {
   commitWithMessage(message: string): Promise<void>;
   deleteRemoteBranch(branchName: string): Promise<void>;
   tagCommit(branchName: string, tag: VersionTag): Promise<void>;
+  getBranches(): Promise<string[]>;
 }

@@ -23,6 +23,9 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
+  getBranches(): Promise<string[]> {
+    throw new Error("Method not implemented.");
+  }
   async deleteRemoteBranch(branchName: string): Promise<void> {
     await this.execP(`git push origin --delete "${branchName}"`);
   }
