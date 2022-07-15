@@ -5,6 +5,10 @@ import { VersionTag } from "../value_object/version_tag.vo";
 
 @injectable()
 export class PromptService implements IPromptService {
+  async confirmAction(message: string): Promise<boolean> {
+    const answer = await promptly.confirm(`${message}: `);
+    return answer;
+  }
   async askBranchName(message: string, defaultName: string, candidates: string[]): Promise<string> {
     const validator = function (value) {
       if (value.length < 1) {
