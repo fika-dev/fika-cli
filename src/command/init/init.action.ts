@@ -1,4 +1,1 @@
-
-export const initAction = (homePath: string) => {
-  
-};
+export const initAction = (homePath: string) => {};
