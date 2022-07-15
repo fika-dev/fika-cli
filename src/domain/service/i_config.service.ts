@@ -47,4 +47,5 @@ export interface IConfigService {
 
   filterFromCandidates(filterIn: string[], candidates: string[]);
   createLocalConfig(initialConfigInput: InitialConfigInput): void;
+  getLocalConfig(): LocalConfig;
 }
