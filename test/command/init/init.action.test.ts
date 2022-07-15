@@ -36,7 +36,7 @@ test('1. test prompt askBranchName', async () => {
 test('2. test prompt askBranchName empty candidates', async () => { 
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   const branchName = 'develop';
-  sendPromptData(branchName), 10;
+  sendPromptData(branchName, 10);
   const devBranchName = await promptService.askBranchName("name for develop branch", "develop", []);
   expect(devBranchName).toBe(branchName);
   expect(process.stdout.write).toHaveBeenCalledWith("name for develop branch: ");
