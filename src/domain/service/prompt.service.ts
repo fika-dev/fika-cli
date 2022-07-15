@@ -15,9 +15,9 @@ export class PromptService implements IPromptService {
     const candidatesText = candidates.join(", ");
     let question: string;
     if (candidatesText.length > 0) {
-      const question = `${message} (already existing branches: ${candidatesText}): `;
+      question = `${message} (already existing branches: ${candidatesText}): `;
     } else {
-      const question = `${message}: `;
+      question = `${message}: `;
     }
     const answer = await promptly.prompt(question, {
       default: defaultName,
