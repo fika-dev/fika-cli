@@ -1,10 +1,6 @@
-import { initAction } from "src/command/init/init.action";
 import container from "src/config/ioc_config";
-import { clearTestFikaPath } from "test/test-utils";
 
 beforeAll(()=>{
-  clearTestFikaPath(process.cwd()+'/test');
-  initAction(process.cwd()+'/test');
 });
 
 beforeEach(()=>{
