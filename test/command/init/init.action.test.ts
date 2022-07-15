@@ -11,6 +11,10 @@ afterEach(()=>{
   clearLocalConfig(process.env.TESTING_REPO_PATH);
 });
 
+beforeEach(()=>{
+  clearLocalConfig(process.env.TESTING_REPO_PATH);
+});
+
 
 
 beforeAll(() => {
@@ -42,10 +46,28 @@ test('1. test prompt askBranchName', async () => {
 //   expect(process.stdout.write).toHaveBeenCalledWith("name for develop branch: ");
 // });
 
-test('2. create local config file', async () => { 
+test('2. get local config before create', async () => { 
+  clearLocalConfig(process.env.TESTING_REPO_PATH);
+  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
+  const config = configService.getLocalConfig();
+  expect(config.branchNames.develop).toBe('develop');
+});
+
+test('3. create local config file', async () => { 
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   configService.createLocalConfig({branchNames: defaultLocalConfig.branchNames});
   const config = readLocalConfig(process.env.TESTING_REPO_PATH);
-  console.log('🧪', ' in InitActionTest: ', 'config: ',config);
   expect(config.branchNames.develop).toBe(defaultLocalConfig.branchNames.develop);
 });
+
+test('4. get local config after creation', async () => { 
+  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
+  configService.createLocalConfig({branchNames: {
+    develop: 'dev',
+    main: 'master',
+    release: 'release',
+  }});
+  const config = configService.getLocalConfig();
+  expect(config.branchNames.develop).toBe('dev');
+});
+
