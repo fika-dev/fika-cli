@@ -23,6 +23,18 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
+  pullFrom(branchName: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  checkUnstagedChanges(): Promise<boolean> {
+    throw new Error("Method not implemented.");
+  }
+  stash(id: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  applyStash(id: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
   async getBranches(): Promise<string[]> {
     const { stdout: branchesText, stderr: getBranchesError } = await this.execP(
       `git branch --format='%(refname:short)'`

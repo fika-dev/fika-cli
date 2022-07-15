@@ -26,4 +26,8 @@ export interface IGitPlatformService {
   deleteRemoteBranch(branchName: string): Promise<void>;
   tagCommit(branchName: string, tag: VersionTag): Promise<void>;
   getBranches(): Promise<string[]>;
+  pullFrom(branchName: string): Promise<void>;
+  checkUnstagedChanges(): Promise<boolean>;
+  stash(id: string): Promise<void>;
+  applyStash(id: string): Promise<void>;
 }
