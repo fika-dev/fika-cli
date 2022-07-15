@@ -51,3 +51,9 @@ export const defaultLocalConfig: LocalConfig = {
     checkOutToDevelop: false,
   },
 };
+
+export const developBranchCandidates: string[] = ["develop", "dev"];
+
+export const mainBranchCandidates: string[] = ["main", "master", "production"];
+
+export const releaseBranchCandidates: string[] = ["release", "test", "staging"];
