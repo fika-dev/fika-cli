@@ -36,11 +36,11 @@ export class GitPlatformService implements IGitPlatformService {
       return false;
     }
   }
-  stash(id: string): Promise<void> {
-    throw new Error("Method not implemented.");
+  async stash(id: string): Promise<void> {
+    await this.execP(`git stash push -m "${id}"`);
   }
-  applyStash(id: string): Promise<void> {
-    throw new Error("Method not implemented.");
+  async applyStash(id: string): Promise<void> {
+    await this.execP(`git stash apply ${id}`);
   }
   async getBranches(): Promise<string[]> {
     const { stdout: branchesText, stderr: getBranchesError } = await this.execP(
