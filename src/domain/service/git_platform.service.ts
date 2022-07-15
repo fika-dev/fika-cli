@@ -37,7 +37,7 @@ export class GitPlatformService implements IGitPlatformService {
     }
   }
   async stash(id: string): Promise<void> {
-    await this.execP(`git stash push -m "${id}"`);
+    await this.execP(`git stash push -u -m "${id}"`);
   }
   async applyStash(id: string): Promise<void> {
     await this.execP(`git stash apply ${id}`);
