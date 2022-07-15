@@ -27,7 +27,14 @@ export class GitPlatformService implements IGitPlatformService {
     await this.execP(`git pull origin ${branchName}`);
   }
   async checkUnstagedChanges(): Promise<boolean> {
-    throw new Error("Method not implemented.");
+    const { stdout: changes, stderr: diffError } = await this.execP(
+      `git --no-pager diff --name-only`
+    );
+    if (changes.trim().length > 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
   stash(id: string): Promise<void> {
     throw new Error("Method not implemented.");
