@@ -17,8 +17,8 @@ import { IConfigService, InitialConfigInput, LocalConfig } from "./i_config.serv
 @injectable()
 export class ConfigService implements IConfigService {
   private config: Config = defaultConfig;
+  private localConfig: LocalConfig;
   private fikaConfigFilePath?: string;
-  private fikaLocalConfigPath?: string;
   private fikaPath: string;
   private localPath: string;
 
@@ -26,11 +26,20 @@ export class ConfigService implements IConfigService {
     @inject(PARAMETER_IDENTIFIER.FikaPath) fikaPath: string,
     @inject(PARAMETER_IDENTIFIER.GitRepoPath) localPath: string
   ) {
-    this.updateNotionWorkspace = this.updateNotionWorkspace.bind(this);
-    this.createConfig = this.createConfig.bind(this);
     this.fikaPath = fikaPath;
     this.localPath = localPath;
     this.readConfig();
+  }
+  getLocalConfig(): LocalConfig {
+    const localConfigFilePath = path.join(this.localPath, LOCAL_CONFIG_NAME);
+    if (fs.existsSync(localConfigFilePath)) {
+      const configString = fs.readFileSync(localConfigFilePath, "utf-8");
+      this.localConfig = JSON.parse(configString) as LocalConfig;
+      return this.localConfig;
+    } else {
+      this.createLocalConfig({ branchNames: defaultLocalConfig.branchNames });
+      return defaultLocalConfig;
+    }
   }
   createLocalConfig(initialConfigInput: InitialConfigInput): void {
     const localConfig: LocalConfig = defaultLocalConfig;
