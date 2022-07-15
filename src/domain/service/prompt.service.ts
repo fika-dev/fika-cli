@@ -12,9 +12,13 @@ export class PromptService implements IPromptService {
       }
       return value;
     };
-
     const candidatesText = candidates.join(", ");
-    const question = `${message} (already defined branches: ${candidatesText}): `;
+    let question: string;
+    if (candidatesText.length > 0) {
+      question = `${message} (already existing branches: ${candidatesText}): `;
+    } else {
+      question = `${message}: `;
+    }
     const answer = await promptly.prompt(question, {
       default: defaultName,
       validator,

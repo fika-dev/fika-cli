@@ -4,6 +4,7 @@ import { createCommand, createIssueShortCommand, createPRShortCommand } from "@/
 import { program } from "commander";
 import dotenv from "dotenv";
 import { version } from "../package.json";
+import { initCommand } from "./command/init";
 import { releaseCommand } from "./command/release";
 import { setCommand } from "./command/set";
 import SERVICE_IDENTIFIER from "./config/constants/identifiers";
@@ -21,6 +22,7 @@ try {
   program.addCommand(connectCommand);
   program.addCommand(setCommand);
   program.addCommand(releaseCommand);
+  program.addCommand(initCommand);
   program.parse(process.argv);
 } catch (e) {
   const errorHandlingService = container.get<IErrorHandlingService>(

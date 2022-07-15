@@ -6,7 +6,10 @@ import { IConfigService } from "@/domain/service/i_config.service";
 import { clearLocalConfig, clearTestFikaPath, readLocalConfig, sendPromptData } from "test/test-utils";
 jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
 
-afterEach(jest.clearAllMocks);
+afterEach(()=>{
+  jest.clearAllMocks();
+  clearLocalConfig(process.env.TESTING_REPO_PATH);
+});
 
 
 
@@ -26,9 +29,18 @@ test('1. test prompt askBranchName', async () => {
   const branchName = 'develop';
   sendPromptData(branchName);
   const devBranchName = await promptService.askBranchName("name for develop branch", "develop", ["develop"]);
-  expect(devBranchName).toBe(branchName);  
-  expect(process.stdout.write).toHaveBeenCalledWith("name for develop branch (already defined branches: develop): ");
+  expect(devBranchName).toBe(branchName);
+  expect(process.stdout.write).toHaveBeenCalledWith("name for develop branch (already existing branches: develop): ");
 });
+
+// test('2. test prompt askBranchName empty candidates', async () => { 
+//   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
+//   const branchName = 'develop';
+//   sendPromptData(branchName, 10);
+//   const devBranchName = await promptService.askBranchName("name for develop branch", "develop", []);
+//   expect(devBranchName).toBe(branchName);
+//   expect(process.stdout.write).toHaveBeenCalledWith("name for develop branch: ");
+// });
 
 test('2. create local config file', async () => { 
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);

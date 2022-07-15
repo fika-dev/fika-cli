@@ -23,11 +23,7 @@ beforeAll(async () => {
   setAuthToken();
 });
 
-beforeEach(async () => {
-  await checkOutToBranch(TEST_CPR_BRANCH_NAME);
-  makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
-  await stageAndCommit(TEST_CPR_COMMIT_MESSAGE);
-});
+beforeEach(async () => {});
 
 afterEach(async () => {
   await deleteBranch(TEST_CPR_BRANCH_NAME);
@@ -38,6 +34,9 @@ afterEach(async () => {
 afterAll(() => {});
 
 test("1. create PR test", async () => {
+  await checkOutToBranch(TEST_CPR_BRANCH_NAME);
+  makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
+  await stageAndCommit(TEST_CPR_COMMIT_MESSAGE);
   const result = await createPRAction();
   expect(result).toBeUndefined();
 });
