@@ -21,17 +21,17 @@ export const initAction = async () => {
   const foundMainBrances = configService.filterFromCandidates(branches, mainBranchCandidates);
   const foundReleaseBrances = configService.filterFromCandidates(branches, releaseBranchCandidates);
   const developBranchName = await promptService.askBranchName(
-    "Develop branch name",
+    "Set develop branch name",
     "develop",
     foundDevBrances
   );
   const mainBranchName = await promptService.askBranchName(
-    "Main branch name",
+    "Set main branch name",
     "master",
     foundMainBrances
   );
   const releaseBranchName = await promptService.askBranchName(
-    "Release branch name",
+    "Set release branch name",
     "release",
     foundReleaseBrances
   );
