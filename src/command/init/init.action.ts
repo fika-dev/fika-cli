@@ -10,7 +10,7 @@ import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 
-export const initAction = async (homePath: string) => {
+export const initAction = async () => {
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
@@ -31,8 +31,8 @@ export const initAction = async (homePath: string) => {
     foundMainBrances
   );
   const releaseBranchName = await promptService.askBranchName(
-    "Main branch name",
-    "master",
+    "Release branch name",
+    "release",
     foundReleaseBrances
   );
   const initialConfig = defaultLocalConfig;
