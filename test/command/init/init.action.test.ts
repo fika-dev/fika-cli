@@ -6,7 +6,10 @@ import { IConfigService } from "@/domain/service/i_config.service";
 import { clearLocalConfig, clearTestFikaPath, readLocalConfig, sendPromptData } from "test/test-utils";
 jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
 
-afterEach(jest.clearAllMocks);
+afterEach(()=>{
+  jest.clearAllMocks();
+  clearLocalConfig(process.env.TESTING_REPO_PATH);
+});
 
 
 
