@@ -1,11 +1,8 @@
-import { initAction } from "src/command/init/init.action";
-import { clearTestFikaPath, readTestSnapshot, restoreGitRepo } from "test/test-utils";
 
 const SAMPLE_1_PATH =  process.cwd()+'/test/test-samples/sample_01'
 
 beforeEach( ()=>{
-  // clearTestFikaPath(SAMPLE_1_PATH);
-  // initAction(SAMPLE_1_PATH);
+  
 });
 
 beforeAll(async ()=>{
