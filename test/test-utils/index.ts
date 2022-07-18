@@ -81,7 +81,7 @@ export const readTestSnapshot = (currentPath: string): SyncedSnapshot=>{
 
 export const restoreGitRepo = async (repoPath: string) =>{
   const execP =promisify(exec);
-  const {stdout, stderr} = await execP(`cd ${repoPath} && git restore . && git clean -f`);
+  const {stdout, stderr} = await execP(`git restore . && git clean -f`, { cwd: repoPath });
 }
 
 export const checkAndCloneRepo = async () =>{

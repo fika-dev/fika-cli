@@ -23,6 +23,25 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
+  async pullFrom(branchName: string): Promise<void> {
+    await this.execP(`git pull origin ${branchName}`);
+  }
+  async checkUnstagedChanges(): Promise<boolean> {
+    const { stdout: changes, stderr: diffError } = await this.execP(
+      `git --no-pager diff --name-only`
+    );
+    if (changes.trim().length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  async stash(id: string): Promise<void> {
+    await this.execP(`git stash push -u -m "${id}"`);
+  }
+  async applyStash(id: string): Promise<void> {
+    await this.execP(`git stash apply stash^{/${id}}`);
+  }
   async getBranches(): Promise<string[]> {
     const { stdout: branchesText, stderr: getBranchesError } = await this.execP(
       `git branch --format='%(refname:short)'`
