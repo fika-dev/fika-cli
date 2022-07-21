@@ -1,16 +1,18 @@
-import fs from "fs"
-import path from "path";
-import { CONFIG_FILE_NAME, FIKA_PATH, LOCAL_CONFIG_NAME, SNAPSHOT_FILE_NAME } from "@/config/constants/path";
-import { Config } from "@/domain/entity/config.entity";
-import { SyncedSnapshot } from "@/domain/entity/synced_snapshot.entity";
-import {promisify} from 'util';
-import { exec } from 'child_process';
-import { testUserConfig } from "test/test-constants";
-import container from "@/config/ioc_config";
-import { IConnectService } from "@/domain/service/i_connect.service";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
-import { IConfigService, LocalConfig } from "@/domain/service/i_config.service";
+import { CONFIG_FILE_NAME, FIKA_PATH, LOCAL_CONFIG_NAME, SNAPSHOT_FILE_NAME } from "@/config/constants/path";
+import container from "@/config/ioc_config";
+import { Config } from "@/domain/entity/config.entity";
+import { Issue } from "@/domain/entity/issue.entity";
 import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
+import { SyncedSnapshot } from "@/domain/entity/synced_snapshot.entity";
+import { IConfigService, LocalConfig } from "@/domain/service/i_config.service";
+import { IConnectService } from "@/domain/service/i_connect.service";
+import { NotionUrl } from "@/domain/value_object/notion_url.vo";
+import { exec } from 'child_process';
+import fs from "fs";
+import path from "path";
+import { testUserConfig } from "test/test-constants";
+import { promisify } from 'util';
 
 export const clearTestFikaPath = (currentPath: string)=>{
   const fikaPath = currentPath + '/.fika';
@@ -41,6 +43,7 @@ export const setAuthToken = ()=> {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const token = configService.getFikaToken();
   const connectionService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
+  console.log('🧪', ' in Index: ', 'token: ',token);
   connectionService.useToken(token);
 }
 
@@ -122,6 +125,16 @@ export const checkOutToBranch = async (branchName: string)=> {
 export const deleteBranch = async (branchName: string)=> {
   const gitService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
   await gitService.deleteRemoteBranch(branchName);
+}
+
+
+export const checkAndDeleteIssue = async (documentUrl: string)=> {
+  const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
+  const urlWithoutGit = process.env.TESTING_REPO_GIT_URL.replace('.git', '');
+  const issue = await connectService.getIssueRecordByPage(new NotionUrl(documentUrl), urlWithoutGit);
+  if (issue){
+    await connectService.deleteIssue(urlWithoutGit, Issue.parseNumberFromUrl(issue.issueUrl));
+  }
 }
 
 export const stageAndCommit = async (message: string)=> {
