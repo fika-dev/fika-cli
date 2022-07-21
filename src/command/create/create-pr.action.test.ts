@@ -12,6 +12,7 @@ import {
   deleteBranch,
   makeMeaninglessChange,
   readTestFikaConfig,
+  restoreGitRepo,
   setAuthToken,
   stageAndCommit,
 } from "test/test-utils";
@@ -23,7 +24,9 @@ beforeAll(async () => {
   setAuthToken();
 });
 
-beforeEach(async () => {});
+beforeEach(async () => {
+  jest.spyOn(console, "log").mockImplementation(() => true);
+});
 
 afterEach(async () => {
   await deleteBranch(TEST_CPR_BRANCH_NAME);
@@ -35,6 +38,7 @@ afterAll(() => {});
 
 test("1. create PR test", async () => {
   await checkOutToBranch(TEST_CPR_BRANCH_NAME);
+  await restoreGitRepo(process.env.TESTING_REPO_PATH);
   makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
   await stageAndCommit(TEST_CPR_COMMIT_MESSAGE);
   const result = await createPRAction();
