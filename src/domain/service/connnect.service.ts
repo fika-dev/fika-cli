@@ -56,6 +56,25 @@ export class ConnectService implements IConnectService {
       }
     );
   }
+  async deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void> {
+    try {
+      const response = await this.axiosInstance.delete("/git/pull-request", {
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+        },
+        data: {
+          gitRepoUrl: gitRepoUrl,
+          issueNumber: issueNumber,
+        },
+      });
+      return response.data.id;
+    } catch (e) {
+      const axiosError = e as AxiosError;
+      console.log("🧪", " in ConnnectService: ", "error code: ", axiosError.code);
+      throw new Error(axiosError.message);
+    }
+  }
   async getIssueRecordByPage(notionPageUrl: NotionUrl, gitRepoUrl: string): Promise<Issue> {
     try {
       const response = await this.axiosInstance.get(

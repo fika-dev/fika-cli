@@ -19,6 +19,7 @@ export interface IConnectService {
   remove(devObj: DevObject): Promise<string>;
   getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue>;
   updateIssue(updatedIssue: Issue, botId: Uuid): Promise<Issue>;
+  deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void>;
   useToken(token: string): void;
   isAvailableEmail(email: string): Promise<boolean>;
   requestOtpEmail(email: string, password: string): Promise<void>;
