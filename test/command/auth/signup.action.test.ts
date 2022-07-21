@@ -3,7 +3,7 @@ import container from "src/config/ioc_config";
 import { IConnectService } from "src/domain/service/i_connect.service";
 
 beforeAll(()=>{
-  
+  jest.spyOn(console, "log").mockImplementation(() => true);
 });
 
 beforeEach(()=>{

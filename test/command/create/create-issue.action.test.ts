@@ -4,6 +4,7 @@ import { createTestConfig, setAuthToken } from "test/test-utils";
 
 
 beforeAll(() => {
+  jest.spyOn(console, "log").mockImplementation(() => true);
   createTestConfig(process.env.TESTING_PATH+'/.fika')
   setAuthToken();
 });
