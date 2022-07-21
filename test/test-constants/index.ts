@@ -4,7 +4,7 @@ import { ObjectType } from "src/domain/entity/dev_object.entity";
 
 export const TEST_FIKA_BOT_ID = 'd3224eba-6e67-4730-9b6f-a9ef1dc7e4ac';
 
-export const TEST_START_DOC_ID = 'https://www.notion.so/test-start-ci-doc-ddd284fc090f4be3aab936f17c54edbc';
+export const TEST_START_DOC_ID = 'https://www.notion.so/test-fika-start-doc-4af459df4efb448483fe3e2b703d50fd';
 
 export const TEST_CI_DOC_ID = 'https://www.notion.so/test-document-8d3ec82f2fc14b64b150f298c48598ae';
 
