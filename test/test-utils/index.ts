@@ -43,7 +43,6 @@ export const setAuthToken = ()=> {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const token = configService.getFikaToken();
   const connectionService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
-  console.log('🧪', ' in Index: ', 'token: ',token);
   connectionService.useToken(token);
 }
 
