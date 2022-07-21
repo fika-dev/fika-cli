@@ -33,12 +33,19 @@ afterAll(() => {
 test('1. test prompt askBranchName', async () => { 
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   const branchName = 'develop';
+  let correctMessage: boolean;
   const spy = jest.spyOn(promptly, 'prompt').mockImplementation(async (data)=>{
+    if(data.includes("name for develop branch (already existing branches: develop): ")){
+      correctMessage = true;
+    }else{
+      correctMessage = false;
+    }
     return branchName;
   })
   const devBranchName = await promptService.askBranchName("name for develop branch", "develop", ["develop"]);
   expect(devBranchName).toBe(branchName);
-  expect(spy).toHaveBeenCalledWith("name for develop branch (already existing branches: develop): ");
+  expect(spy).toBeCalled();
+  expect(correctMessage).toEqual(true);
 });
 
 // test('2. test prompt askBranchName empty candidates', async () => { 
