@@ -30,7 +30,7 @@ export const startAction = async (documentUrlString: string) => {
   ): Promise<boolean> => {
     if (localConfig.start.fromDevelopOnly && currentBranch !== localConfig.branchNames.develop) {
       messageService.showWarning(
-        `${localConfig.branchNames.develop} is the only allowed branch to start from`
+        `current branch: ${currentBranch}: ${localConfig.branchNames.develop} is the only allowed branch to start from`
       );
       return false;
     } else {
@@ -79,7 +79,7 @@ export const startAction = async (documentUrlString: string) => {
   const currentBranch = await gitPlatformService.getBranchName();
   if (existingIssue) {
     const branch = configService.getIssueBranch(Issue.parseNumberFromUrl(existingIssue.issueUrl));
-    gitPlatformService.checkoutToBranchWithoutReset(branch);
+    await gitPlatformService.checkoutToBranchWithoutReset(branch);
     messageService.showCheckoutToExistingIssue(existingIssue, branch);
   } else {
     const localConfig = configService.getLocalConfig();
