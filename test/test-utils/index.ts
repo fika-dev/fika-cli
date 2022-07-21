@@ -46,6 +46,11 @@ export const setAuthToken = ()=> {
   connectionService.useToken(token);
 }
 
+export const setUseToken = (token)=> {
+  const connectionService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
+  connectionService.useToken(token);
+}
+
 
 
 export const readTestFikaConfig = (currentPath: string): Config=>{
