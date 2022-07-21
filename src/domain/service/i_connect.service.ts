@@ -19,6 +19,7 @@ export interface IConnectService {
   remove(devObj: DevObject): Promise<string>;
   getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue>;
   updateIssue(updatedIssue: Issue, botId: Uuid): Promise<Issue>;
+  deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void>;
   useToken(token: string): void;
   isAvailableEmail(email: string): Promise<boolean>;
   requestOtpEmail(email: string, password: string): Promise<void>;
@@ -26,7 +27,7 @@ export interface IConnectService {
   signin(email: string, password: string): Promise<UserWithToken>;
   checkUpdate(currentVersion: string): Promise<UpdateInfo>;
   createIssueRecord(issue: Issue): Promise<void>;
-  getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue>;
+  getIssueRecord(issueNumber: number, gitRepoUrl: string): Promise<Issue>;
   getIssueRecordByPage(notionPageUrl: NotionUrl, gitRepoUrl: string): Promise<Issue>;
   createRelease(
     gitRepoUrl: string,

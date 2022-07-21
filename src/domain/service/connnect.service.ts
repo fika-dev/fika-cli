@@ -56,6 +56,25 @@ export class ConnectService implements IConnectService {
       }
     );
   }
+  async deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void> {
+    try {
+      const response = await this.axiosInstance.delete("/git/issue", {
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+        },
+        data: {
+          gitRepoUrl: gitRepoUrl,
+          issueNumber: issueNumber,
+        },
+      });
+      return response.data.id;
+    } catch (e) {
+      const axiosError = e as AxiosError;
+      console.log("🧪", " in ConnnectService: ", "error code: ", axiosError.code);
+      throw new Error(axiosError.message);
+    }
+  }
   async getIssueRecordByPage(notionPageUrl: NotionUrl, gitRepoUrl: string): Promise<Issue> {
     try {
       const response = await this.axiosInstance.get(
@@ -194,9 +213,8 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue> {
+  async getIssueRecord(issueNumber: number, gitRepoUrl: string): Promise<Issue> {
     try {
-      const issueNumber = this.configService.parseIssueNumber(branchName);
       const response = await this.axiosInstance.get(
         `/git/issue?gitRepoUrl=${gitRepoUrl}&issueNumber=${issueNumber}`,
         {

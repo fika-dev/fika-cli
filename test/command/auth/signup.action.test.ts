@@ -3,7 +3,7 @@ import container from "src/config/ioc_config";
 import { IConnectService } from "src/domain/service/i_connect.service";
 
 beforeAll(()=>{
-  
+  jest.spyOn(console, "log").mockImplementation(() => true);
 });
 
 beforeEach(()=>{
@@ -32,7 +32,6 @@ test('3. test invalid email', async () => {
   try{
     const userWithToken = await connectService.signup('untested@test.com', 'testtest', 'WRONG_TOKEN');
   }catch(e){
-    console.log(e);
     expect(e).toBeDefined();
   }
 });

@@ -11,6 +11,9 @@ export class MessageService implements IMessageService {
   constructor(@inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService) {
     this.configService = configService;
   }
+  showWarning(message: string): void {
+    console.log(`Warning: ${this._withYellowBoldChalk(message)}`);
+  }
   showCheckoutToExistingIssue(issue: Issue, branchName: string): void {
     console.log(`\n해당 page 와 관련되어, 이미 생성된 issue 를 확인하였습니다.
 “${this._withGreenBoldChalk(issue.title)}”\n
