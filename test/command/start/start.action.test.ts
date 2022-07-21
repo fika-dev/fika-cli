@@ -7,7 +7,7 @@ import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import { TEST_CHANGE_FILE_PATH, TEST_CPR_BRANCH_NAME, TEST_START_DOC_ID } from "test/test-constants";
-import { checkAndCloneRepo, checkAndDeleteIssue, createTestConfig, makeMeaninglessChange, restoreGitRepo, setAuthToken } from "test/test-utils";
+import { checkAndCloneRepo, checkAndDeleteIssue, createTestConfig, makeMeaninglessChange, restoreGitRepo, setAuthToken, setUseToken } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
@@ -17,7 +17,7 @@ const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptSer
 beforeAll(async () => {
   await checkAndCloneRepo();
   createTestConfig(process.env.TESTING_PATH + "/.fika");
-  setAuthToken();
+  setUseToken(process.env.TESTING_USER_TOKEN);
 });
 
 beforeEach(async()=>{
