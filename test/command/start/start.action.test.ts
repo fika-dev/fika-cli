@@ -112,15 +112,16 @@ test('7. test nok OK to start ', async () => {
   const localConfig = defaultLocalConfig;
   localConfig.start.fromDevelopOnly = false;
   localConfig.start.pullBeforeAlways = false;
+  localConfig.start.checkoutToFeature = true;
   jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
   const spyConfirm = jest.spyOn(promptService, 'confirmAction').mockImplementation(async () => true);
   const spySuccess = jest.spyOn(messageService, 'showCreateIssueSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('something');
   await startAction(TEST_START_DOC_ID);
   const branchName = await gitPlatformService.getBranchName();
-  expect(branchName).toContain('feat');
   expect(spyConfirm).toBeCalled();
   expect(spySuccess).toBeCalled();
+  expect(branchName).toContain('feat');
 });
 
 
