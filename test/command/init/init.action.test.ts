@@ -32,7 +32,10 @@ afterAll(() => {
 test('1. test prompt askBranchName', async () => { 
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   const branchName = 'develop';
-  sendPromptData(branchName);
+  jest.spyOn(process.stdout, 'write').mockImplementation(()=>{
+    sendPromptData(branchName);
+    return true;
+  })
   const devBranchName = await promptService.askBranchName("name for develop branch", "develop", ["develop"]);
   expect(devBranchName).toBe(branchName);
   expect(process.stdout.write).toHaveBeenCalledWith("name for develop branch (already existing branches: develop): ");
