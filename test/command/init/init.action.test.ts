@@ -4,6 +4,7 @@ import container from "@/config/ioc_config";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { clearLocalConfig, clearTestFikaPath, readLocalConfig, sendPromptData } from "test/test-utils";
+import promptly from "promptly";
 
 jest.spyOn(process.stdout, 'write').mockImplementation(()=>true)
 
@@ -32,13 +33,12 @@ afterAll(() => {
 test('1. test prompt askBranchName', async () => { 
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   const branchName = 'develop';
-  jest.spyOn(process.stdout, 'write').mockImplementation(()=>{
-    sendPromptData(branchName);
-    return true;
+  const spy = jest.spyOn(promptly, 'prompt').mockImplementation(async (data)=>{
+    return branchName;
   })
   const devBranchName = await promptService.askBranchName("name for develop branch", "develop", ["develop"]);
   expect(devBranchName).toBe(branchName);
-  expect(process.stdout.write).toHaveBeenCalledWith("name for develop branch (already existing branches: develop): ");
+  expect(spy).toHaveBeenCalledWith("name for develop branch (already existing branches: develop): ");
 });
 
 // test('2. test prompt askBranchName empty candidates', async () => { 
