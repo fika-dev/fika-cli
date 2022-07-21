@@ -127,7 +127,7 @@ export class GitPlatformService implements IGitPlatformService {
     const { stdout: branchName, stderr: branchNameErr } = await this.execP(
       "git rev-parse --abbrev-ref HEAD"
     );
-    return branchName;
+    return branchName.trim();
   }
 
   async pushBranch(branchName: string): Promise<void> {
