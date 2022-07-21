@@ -27,7 +27,7 @@ export interface IConnectService {
   signin(email: string, password: string): Promise<UserWithToken>;
   checkUpdate(currentVersion: string): Promise<UpdateInfo>;
   createIssueRecord(issue: Issue): Promise<void>;
-  getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue>;
+  getIssueRecord(issueNumber: number, gitRepoUrl: string): Promise<Issue>;
   getIssueRecordByPage(notionPageUrl: NotionUrl, gitRepoUrl: string): Promise<Issue>;
   createRelease(
     gitRepoUrl: string,

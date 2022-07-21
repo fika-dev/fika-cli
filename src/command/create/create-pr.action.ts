@@ -19,7 +19,10 @@ export const createPRAction = async (baseBranch?: string) => {
   const botId = configService.getNotionBotId();
   const branchName = await gitPlatformService.getBranchName();
   const gitRepoUrl = await gitPlatformService.getGitRepoUrl();
-  const issue = await connectService.getIssueRecord(branchName, gitRepoUrl);
+  const issue = await connectService.getIssueRecord(
+    configService.parseIssueNumber(branchName),
+    gitRepoUrl
+  );
   messageService.showGitPush(branchName);
   await gitPlatformService.pushBranch(branchName);
   gitPlatformService.configGitPlatform(gitPlatformConfig);

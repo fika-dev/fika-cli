@@ -213,9 +213,8 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async getIssueRecord(branchName: string, gitRepoUrl: string): Promise<Issue> {
+  async getIssueRecord(issueNumber: number, gitRepoUrl: string): Promise<Issue> {
     try {
-      const issueNumber = this.configService.parseIssueNumber(branchName);
       const response = await this.axiosInstance.get(
         `/git/issue?gitRepoUrl=${gitRepoUrl}&issueNumber=${issueNumber}`,
         {
