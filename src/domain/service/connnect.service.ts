@@ -58,7 +58,7 @@ export class ConnectService implements IConnectService {
   }
   async deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void> {
     try {
-      const response = await this.axiosInstance.delete("/git/pull-request", {
+      const response = await this.axiosInstance.delete("/git/issue", {
         headers: {
           "content-type": "application/json",
           Authorization: `Bearer ${this.token}`,
