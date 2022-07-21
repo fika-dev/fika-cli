@@ -8,6 +8,7 @@ export interface ErrorMessage {
 export interface IMessageService {
   showSuccess(message: string): void;
   showError(message: ErrorMessage): void;
+  showWarning(message: string): void;
   showNotionPage(url: string): void;
   showCheckoutToExistingIssue(issue: Issue, branchName: string): void;
   showCreateIssueSuccess(issue: Issue): void;
