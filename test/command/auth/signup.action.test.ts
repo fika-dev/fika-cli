@@ -32,7 +32,6 @@ test('3. test invalid email', async () => {
   try{
     const userWithToken = await connectService.signup('untested@test.com', 'testtest', 'WRONG_TOKEN');
   }catch(e){
-    console.log(e);
     expect(e).toBeDefined();
   }
 });
