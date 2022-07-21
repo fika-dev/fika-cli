@@ -71,10 +71,7 @@ if (!process.env.FIKA_ENV) {
   container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue(`${homePath}/${FIKA_PATH}`);
   container.bind<string>(PARAMETER_IDENTIFIER.GitRepoPath).toConstantValue(process.cwd());
 } else if (process.env.FIKA_ENV === "test") {
-  console.log("🧪", " in IocConfig: ", "running in test mode!!: ");
-  console.log("🧪", " in IocConfig: ", "process.env.FIKA_ENV: ", process.env.FIKA_ENV);
   const apiAddress = process.env.TEST_API_ADDRESS;
-  console.log("🧪", " in IocConfig: ", "apiAddress: ", apiAddress);
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(apiAddress);
   container
     .bind<string>(PARAMETER_IDENTIFIER.GitRepoPath)
@@ -83,10 +80,7 @@ if (!process.env.FIKA_ENV) {
     .bind<string>(PARAMETER_IDENTIFIER.FikaPath)
     .toConstantValue(`${process.env.TESTING_PATH}/${FIKA_PATH}`);
 } else {
-  console.log("🧪", " in IocConfig: ", "running in develop mode!!: ");
-  console.log("🧪", " in IocConfig: ", "process.env.FIKA_ENV: ", process.env.FIKA_ENV);
   const apiAddress = process.env.LOCAL_API_ADDRESS;
-  console.log("🧪", " in IocConfig: ", "apiAddress: ", apiAddress);
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(apiAddress);
   container
     .bind<string>(PARAMETER_IDENTIFIER.FikaPath)
