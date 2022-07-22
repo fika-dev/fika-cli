@@ -28,6 +28,7 @@ export class GitPlatformService implements IGitPlatformService {
   }
   async checkConflict(): Promise<boolean> {
     const { stdout: statusOutput, stderr: diffError } = await this.execP("git status");
+    console.log("🧪", " in GitPlatformService: ", "statusOutput: ", statusOutput);
     if (statusOutput.includes("git merge --abort")) {
       return true;
     } else {
