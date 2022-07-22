@@ -31,4 +31,5 @@ export interface IGitPlatformService {
   stash(id: string): Promise<void>;
   applyStash(id: string): Promise<void>;
   checkConflict(): Promise<boolean>;
+  abortMerge(): Promise<void>;
 }
