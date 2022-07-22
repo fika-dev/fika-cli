@@ -35,15 +35,19 @@ export class GitPlatformService implements IGitPlatformService {
       return false;
     }
   }
-  async pullFrom(branchName: string): Promise<void> {
+  async pullFrom(branchName: string): Promise<boolean> {
     try {
       const { stdout: pullOutput, stderr: pullError } = await this.execP(
         `git pull --no-ff origin ${branchName}`
       );
-      console.log("🧪", " in GitPlatformService: ", "pullOutput: ", pullOutput);
+      if (pullOutput.includes("Already up to date") || pullOutput.includes("이미 업데이트")) {
+        return false;
+      } else {
+        return true;
+      }
     } catch (e) {
-      if (e.stdout.includes("conflict") | e.stdout.includes("충돌")) {
-        console.log("🧪", " in GitPlatformService: ", "e: ", e);
+      if (e.stdout.includes("conflict") || e.stdout.includes("충돌")) {
+        return false;
       } else {
         throw e;
       }
