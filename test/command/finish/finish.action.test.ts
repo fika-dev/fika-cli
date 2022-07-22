@@ -33,8 +33,9 @@ afterAll(() => {
 
 it("1.test git merge conflict", async ()=>{
   await gitPlatformService.checkoutToBranchWithoutReset("conflicting");
-  await gitPlatformService.pullFrom("develop");
+  await gitPlatformService.pullFrom("conflicting_2");
   const isConflictExist = await gitPlatformService.checkConflict();
   expect(isConflictExist).toEqual(true);
   await gitPlatformService.abortMerge();
+  await gitPlatformService.checkoutToBranchWithoutReset("develop");
 })
