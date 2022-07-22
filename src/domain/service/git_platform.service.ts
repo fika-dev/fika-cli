@@ -23,8 +23,13 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
-  checkConflict(): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  async checkConflict(): Promise<boolean> {
+    const { stdout: statusOutput, stderr: diffError } = await this.execP("git status");
+    if (statusOutput.includes("git merge --abort")) {
+      return true;
+    } else {
+      return false;
+    }
   }
   async pullFrom(branchName: string): Promise<void> {
     await this.execP(`git pull origin ${branchName}`);
