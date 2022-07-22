@@ -23,8 +23,31 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
+  async abortMerge(): Promise<void> {
+    await this.execP("git merge --abort");
+  }
+  async checkConflict(): Promise<boolean> {
+    const { stdout: statusOutput, stderr: diffError } = await this.execP("git status");
+    console.log("🧪", " in GitPlatformService: ", "statusOutput: ", statusOutput);
+    if (statusOutput.includes("git merge --abort")) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   async pullFrom(branchName: string): Promise<void> {
-    await this.execP(`git pull origin ${branchName}`);
+    try {
+      const { stdout: pullOutput, stderr: pullError } = await this.execP(
+        `git pull --no-ff origin ${branchName}`
+      );
+      console.log("🧪", " in GitPlatformService: ", "pullOutput: ", pullOutput);
+    } catch (e) {
+      if (e.stdout.includes("conflict") | e.stdout.includes("충돌")) {
+        console.log("🧪", " in GitPlatformService: ", "e: ", e);
+      } else {
+        throw e;
+      }
+    }
   }
   async checkUnstagedChanges(): Promise<boolean> {
     const { stdout: changes, stderr: diffError } = await this.execP(

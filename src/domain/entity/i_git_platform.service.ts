@@ -30,4 +30,6 @@ export interface IGitPlatformService {
   checkUnstagedChanges(): Promise<boolean>;
   stash(id: string): Promise<void>;
   applyStash(id: string): Promise<void>;
+  checkConflict(): Promise<boolean>;
+  abortMerge(): Promise<void>;
 }
