@@ -37,11 +37,13 @@ export class GitPlatformService implements IGitPlatformService {
   }
   async pullFrom(branchName: string): Promise<void> {
     try {
-      const { stdout: statusOutput, stderr: pullError } = await this.execP(
+      const { stdout: pullOutput, stderr: pullError } = await this.execP(
         `git pull origin ${branchName}`
       );
+      console.log("🧪", " in GitPlatformService: ", "pullOutput: ", pullOutput);
     } catch (e) {
       if (e.stdout.includes("conflict") | e.stdout.includes("충돌")) {
+        console.log("🧪", " in GitPlatformService: ", "e: ", e);
       } else {
         throw e;
       }
