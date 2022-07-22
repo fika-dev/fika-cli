@@ -23,6 +23,9 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
+  checkConflict(): Promise<boolean> {
+    throw new Error("Method not implemented.");
+  }
   async pullFrom(branchName: string): Promise<void> {
     await this.execP(`git pull origin ${branchName}`);
   }
