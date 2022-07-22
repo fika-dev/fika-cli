@@ -23,6 +23,7 @@ export interface LocalConfig {
   };
   finish: {
     checkOutToDevelop: boolean;
+    checkMergeConflict: boolean;
   };
 }
 export interface IConfigService {

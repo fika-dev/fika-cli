@@ -49,6 +49,7 @@ export const defaultLocalConfig: LocalConfig = {
   },
   finish: {
     checkOutToDevelop: false,
+    checkMergeConflict: true,
   },
 };
 
