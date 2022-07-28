@@ -1,6 +1,8 @@
 import container from "src/config/ioc_config";
 
 beforeAll(()=>{
+  jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
+  jest.spyOn(console, "log").mockImplementation(()=>true);
 });
 
 beforeEach(()=>{

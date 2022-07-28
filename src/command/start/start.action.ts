@@ -1,4 +1,3 @@
-import { checkoutExistingIssue } from "@/actions/git/checkout-existing-issue.action";
 import { createIssue } from "@/actions/complex/create-issue.action";
 import { checkoutIssueBranch } from "@/actions/git/checkout-issue-branch.action";
 import { gitPullAction } from "@/actions/git/pull.action";
@@ -10,9 +9,12 @@ import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
 import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
 import { IConfigService } from "src/domain/service/i_config.service";
+import { IMessageService } from "@/domain/service/i_message.service";
+import { checkoutExistingIssue } from "@/actions/git/checkout-existing-issue.action";
 
 export const startAction = async (documentUrlString: string) => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
+  const messageSrvice = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
@@ -34,4 +36,5 @@ export const startAction = async (documentUrlString: string) => {
       await checkoutIssueBranch(updatedIssue, stashId);
     }
   }
+  messageSrvice.close();
 };

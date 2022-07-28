@@ -1,3 +1,6 @@
+import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
+import container from "@/config/ioc_config";
+import { IMessageService } from "@/domain/service/i_message.service";
 
 const SAMPLE_1_PATH =  process.cwd()+'/test/test-samples/sample_01'
 
@@ -15,6 +18,12 @@ afterEach(
     //  await restoreGitRepo(SAMPLE_1_PATH)
   }
 )
+
+afterAll(()=>{
+  const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
+  messageService.close();
+});
+
 it('',()=>{})
 // test('1. test push action', 
 //   async ()=>{
