@@ -40,7 +40,7 @@ export class GitPlatformService implements IGitPlatformService {
       const { stdout: pullOutput, stderr: pullError } = await this.execP(
         `git pull --no-ff origin ${branchName}`
       );
-      if (pullOutput.includes("Already up to date") || pullOutput.includes("이미 업데이트")) {
+      if (pullOutput.includes("Already up to date")) {
         return false;
       } else {
         return true;
@@ -87,7 +87,7 @@ export class GitPlatformService implements IGitPlatformService {
 
   private async execP(command) {
     const execP = promisify(exec);
-    return await execP(command, { cwd: this.gitRepoPath });
+    return await execP(`LC_ALL=C  ${command}`, { cwd: this.gitRepoPath });
   }
 
   async checkoutToBranchWithoutReset(branchName: string): Promise<void> {
