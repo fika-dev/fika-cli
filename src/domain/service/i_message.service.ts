@@ -6,6 +6,8 @@ export interface ErrorMessage {
   guideUrl?: string;
 }
 export interface IMessageService {
+  start(): void;
+  close(): void;
   showSuccess(message: string): void;
   showError(message: ErrorMessage): void;
   showWarning(message: string): void;

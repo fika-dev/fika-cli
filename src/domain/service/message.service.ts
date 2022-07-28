@@ -50,6 +50,13 @@ export class MessageService implements IMessageService {
     this.configService = configService;
     this.rl = readline.createInterface({ input, output });
   }
+  start(): void {
+    readline.cursorTo(output, 0, 0);
+    readline.clearScreenDown(output);
+  }
+  close(): void {
+    this.rl.close();
+  }
   showWarning(message: string): void {
     this.rl.write(`Warning: ${this._withYellowBoldChalk(message)}`);
   }
