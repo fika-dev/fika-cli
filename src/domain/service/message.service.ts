@@ -49,6 +49,7 @@ export class MessageService implements IMessageService {
     this.configService = configService;
     this.rl = readline.createInterface({ input, output });
   }
+
   start(): void {
     readline.cursorTo(output, 0, 0);
     readline.clearScreenDown(output);
@@ -56,9 +57,31 @@ export class MessageService implements IMessageService {
   close(): void {
     this.rl.close();
   }
+  showWaiting(message: string): void {
+    throw new Error("Method not implemented.");
+  }
+  endWaiting(): void {
+    throw new Error("Method not implemented.");
+  }
+  showSuccess(message: string): void {
+    this.rl.write(`\n\n🎉 ${message}\n\n`);
+  }
   showWarning(message: string): void {
     this.rl.write(`Warning: ${this._withYellowBoldChalk(message)}`);
   }
+  showError(message: ErrorMessage): void {
+    this.rl.write(`🚨 오류가 발생했습니다.  "${message.code}"`);
+    this.rl.write("");
+    this.rl.write(message.message);
+    if (message.guideUrl) {
+      this.rl.write("");
+      this.rl.write(`🟢 아래 url 에서 더 많은 정보를 확인해 보세요`);
+      this.rl.write(`${message.guideUrl}`);
+    }
+    this.rl.write("");
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   showCheckoutToExistingIssue(issue: Issue, branchName: string): void {
     this.rl.write(`\n해당 page 와 관련되어, 이미 생성된 issue 를 확인하였습니다.
 “${this._withGreenBoldChalk(issue.title)}”\n
@@ -133,9 +156,6 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk("완료")}
     
     ${this._withYellowBoldChalk("Github 이슈 Issue")} 생성 중\n\n`);
   }
-  showSuccess(message: string): void {
-    this.rl.write(`\n\n🎉 ${message}\n\n`);
-  }
 
   showConnectSuccess() {
     this.rl.write(`
@@ -200,17 +220,6 @@ ${branchName} 브랜치를 Github 에 push ${this._withGreenBoldChalk("완료")}
     this.rl.write(`아래 커맨드를 실행해 주세요.\n\n`);
     this.rl.write(`${this._withWhiteBoldChalk(`git checkout ${baseBranch}`)}`);
     this.rl.write(`${this._withWhiteBoldChalk(`git pull origin ${baseBranch}`)}\n\n`);
-  }
-  showError(message: ErrorMessage): void {
-    this.rl.write(`🚨 오류가 발생했습니다.  "${message.code}"`);
-    this.rl.write("");
-    this.rl.write(message.message);
-    if (message.guideUrl) {
-      this.rl.write("");
-      this.rl.write(`🟢 아래 url 에서 더 많은 정보를 확인해 보세요`);
-      this.rl.write(`${message.guideUrl}`);
-    }
-    this.rl.write("");
   }
 
   _parseIssueNumberFromUrl(issueUrl: string): string {

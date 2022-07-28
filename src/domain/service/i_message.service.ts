@@ -25,4 +25,6 @@ export interface IMessageService {
   showInvaildEmail(email: string): void;
   showNeedUpdate(version: string): void;
   showRecommendUpdate(version: string): void;
+  showWaiting(message: string): void;
+  endWaiting(): void;
 }
