@@ -1,102 +1,37 @@
-import { Issue } from "@/domain/entity/issue.entity";
-import { IPromptService } from "@/domain/service/i-prompt.service";
-import { IMessageService } from "@/domain/service/i_message.service";
+import { checkoutExistingIssue } from "@/actions/checkout-existing-issue.action";
+import { createIssueAction } from "@/actions/complex/create-issue.action";
+import { checkoutIssueBranch } from "@/actions/git/checkout-issue-branch.action";
+import { gitPullAction } from "@/actions/git/pull.action";
+import { stashUnstagedChange } from "@/actions/git/stash-unstaged-change.action";
+import { validateStartBranch } from "@/actions/git/validate-start-branch.action";
+import { getExistingIssue } from "@/actions/notion/get-existing-issue.action";
 import { NotionUrl } from "@/domain/value_object/notion_url.vo";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
 import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
-import { IConfigService, LocalConfig } from "src/domain/service/i_config.service";
-import { IConnectService } from "src/domain/service/i_connect.service";
+import { IConfigService } from "src/domain/service/i_config.service";
 
 export const startAction = async (documentUrlString: string) => {
-  const _checkOutToFeature = async (
-    localConfig: LocalConfig,
-    issue: Issue,
-    stashId: string | undefined
-  ): Promise<void> => {
-    if (localConfig.start.checkoutToFeature) {
-      const issueNumber = Issue.parseNumberFromUrl(issue.issueUrl!);
-      const issueBranch = configService.getIssueBranch(issueNumber);
-      await gitPlatformService.checkoutToBranchWithoutReset(issueBranch);
-      if (stashId) {
-        gitPlatformService.applyStash(stashId);
-      }
-    }
-  };
-
-  const _checkCurrentBranch = async (
-    localConfig: LocalConfig,
-    currentBranch: string
-  ): Promise<boolean> => {
-    if (localConfig.start.fromDevelopOnly && currentBranch !== localConfig.branchNames.develop) {
-      messageService.showWarning(
-        `current branch: ${currentBranch}: ${localConfig.branchNames.develop} is the only allowed branch to start from`
-      );
-      return false;
-    } else {
-      if (currentBranch !== localConfig.branchNames.develop) {
-        const answer = await promptService.confirmAction(
-          `current branch: ${currentBranch}\nIs it OK not to start from ${localConfig.branchNames.develop}`
-        );
-        if (!answer) return false;
-      }
-    }
-    return true;
-  };
-
-  const _checkNeedStash = async (
-    localConfig: LocalConfig,
-    currentBranch: string
-  ): Promise<string> => {
-    if (localConfig.start.pullBeforeAlways) {
-      await gitPlatformService.pullFrom(currentBranch);
-      const isChangeExist = await gitPlatformService.checkUnstagedChanges();
-      if (isChangeExist) {
-        const moveChanges = promptService.confirmAction(
-          "There is unstaged changes. Do you wanna move these changes to the new started branch?"
-        );
-        if (moveChanges) {
-          const stashId = `${currentBranch}:${new Date().toISOString()}`;
-          gitPlatformService.stash(stashId);
-          return stashId;
-        }
-      }
-    }
-    return;
-  };
-
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
-  const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
-  const gitPlatformConfig = configService.getGitPlatformConfig();
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
-  const gitRepoUrl = await gitPlatformService.getGitRepoUrl();
   const notionDocumentUrl = new NotionUrl(documentUrlString);
-  const existingIssue = await connectService.getIssueRecordByPage(notionDocumentUrl, gitRepoUrl);
-  const currentBranch = await gitPlatformService.getBranchName();
+  const existingIssue = await getExistingIssue(notionDocumentUrl);
   if (existingIssue) {
-    const branch = configService.getIssueBranch(Issue.parseNumberFromUrl(existingIssue.issueUrl));
-    await gitPlatformService.checkoutToBranchWithoutReset(branch);
-    messageService.showCheckoutToExistingIssue(existingIssue, branch);
+    await checkoutExistingIssue(existingIssue);
   } else {
+    const currentBranch = await gitPlatformService.getBranchName();
     const localConfig = configService.getLocalConfig();
-
-    const isOKToProceed = await _checkCurrentBranch(localConfig, currentBranch);
+    const isOKToProceed = await validateStartBranch(localConfig, currentBranch);
     if (!isOKToProceed) return;
-    const stashId = await _checkNeedStash(localConfig, currentBranch);
-
-    messageService.showGettingIssue();
-    const botId = configService.getNotionBotId();
-    const issue = await connectService.getIssue(notionDocumentUrl, botId);
-    messageService.showCreatingGitIssue();
-    gitPlatformService.configGitPlatform(gitPlatformConfig);
-    const updatedIssue = await gitPlatformService.createIssue(issue);
-    await connectService.updateIssue(updatedIssue, botId);
-    await connectService.createIssueRecord(updatedIssue);
-    messageService.showCreateIssueSuccess(updatedIssue);
-    await _checkOutToFeature(localConfig, updatedIssue, stashId);
+    if (localConfig.start.pullBeforeAlways) {
+      await gitPullAction(currentBranch);
+    }
+    const stashId = await stashUnstagedChange(currentBranch);
+    const updatedIssue = await createIssueAction(notionDocumentUrl);
+    if (localConfig.start.checkoutToFeature) {
+      await checkoutIssueBranch(updatedIssue, stashId);
+    }
   }
 };
