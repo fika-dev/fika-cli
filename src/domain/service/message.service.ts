@@ -45,6 +45,7 @@ const white: TerminalColor = {
 export class MessageService implements IMessageService {
   private configService: IConfigService;
   private rl: readline.Interface;
+  private timer: NodeJS.Timer | undefined = undefined;
   constructor(@inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService) {
     this.configService = configService;
     this.rl = readline.createInterface({ input, output });
@@ -55,13 +56,25 @@ export class MessageService implements IMessageService {
     readline.clearScreenDown(output);
   }
   close(): void {
+    this.rl.write("\r");
     this.rl.close();
   }
   showWaiting(message: string): void {
-    throw new Error("Method not implemented.");
+    const waitingFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+    var i: number = 0;
+    this.timer = setInterval(() => {
+      readline.clearLine(output, 0);
+      readline.cursorTo(output, 0);
+      this.rl.write(`🧘 ${waitingFrames[i % 10]}${message} ${".".repeat(i % 6)}`);
+      i += 1;
+    }, 300);
   }
   endWaiting(): void {
-    throw new Error("Method not implemented.");
+    if (this.timer) {
+      clearInterval(this.timer);
+      readline.clearLine(output, 0);
+      readline.cursorTo(output, 0);
+    }
   }
   showSuccess(message: string): void {
     this.rl.write(`\n\n🎉 ${message}\n\n`);
