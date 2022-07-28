@@ -8,7 +8,7 @@ import { IConnectService } from "src/domain/service/i_connect.service";
 import { createGitPlatformIssue } from "../git/create-git-platform-issue.action";
 import { getNotionIssue } from "../notion/get-notion-issue.action";
 
-export const createIssueAction = async (notionDocumentUrl: NotionUrl): Promise<Issue> => {
+export const createIssue = async (notionDocumentUrl: NotionUrl): Promise<Issue> => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
