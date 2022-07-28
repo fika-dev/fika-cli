@@ -1,5 +1,5 @@
 import { checkoutExistingIssue } from "@/actions/checkout-existing-issue.action";
-import { createIssueAction } from "@/actions/complex/create-issue.action";
+import { createIssue } from "@/actions/complex/create-issue.action";
 import { checkoutIssueBranch } from "@/actions/git/checkout-issue-branch.action";
 import { gitPullAction } from "@/actions/git/pull.action";
 import { stashUnstagedChange } from "@/actions/git/stash-unstaged-change.action";
@@ -29,7 +29,7 @@ export const startAction = async (documentUrlString: string) => {
       await gitPullAction(currentBranch);
     }
     const stashId = await stashUnstagedChange(currentBranch);
-    const updatedIssue = await createIssueAction(notionDocumentUrl);
+    const updatedIssue = await createIssue(notionDocumentUrl);
     if (localConfig.start.checkoutToFeature) {
       await checkoutIssueBranch(updatedIssue, stashId);
     }
