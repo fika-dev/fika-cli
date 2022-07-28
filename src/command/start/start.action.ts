@@ -1,4 +1,4 @@
-import { checkoutExistingIssue } from "@/actions/checkout-existing-issue.action";
+import { checkoutExistingIssue } from "@/actions/git/checkout-existing-issue.action";
 import { createIssue } from "@/actions/complex/create-issue.action";
 import { checkoutIssueBranch } from "@/actions/git/checkout-issue-branch.action";
 import { gitPullAction } from "@/actions/git/pull.action";
