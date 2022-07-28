@@ -46,7 +46,9 @@ export class GitPlatformService implements IGitPlatformService {
         return true;
       }
     } catch (e) {
-      if (e.stdout.includes("conflict") || e.stdout.includes("충돌")) {
+      if (e.stdout.includes("conflict")) {
+        return false;
+      } else if (e.stdout.includes("couldn't find remote ref")) {
         return false;
       } else {
         throw e;
