@@ -1,7 +1,6 @@
 import { inject, injectable } from "inversify";
 import { Issue } from "../entity/issue.entity";
 import { ErrorMessage, IMessageService } from "./i_message.service";
-import chalk from "chalk";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import { IConfigService } from "./i_config.service";
 import * as readline from "node:readline";
