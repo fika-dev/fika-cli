@@ -8,7 +8,7 @@ export interface ErrorMessage {
 export interface IMessageService {
   start(): void;
   close(): void;
-  showSuccess(message: string): void;
+  showSuccess(message: string, subMessage?: string, link?: string): void;
   showError(message: ErrorMessage): void;
   showWarning(message: string): void;
   showNotionPage(url: string): void;
@@ -25,4 +25,6 @@ export interface IMessageService {
   showInvaildEmail(email: string): void;
   showNeedUpdate(version: string): void;
   showRecommendUpdate(version: string): void;
+  showWaiting(message: string): void;
+  endWaiting(): void;
 }
