@@ -1,9 +1,7 @@
-import { createIssueAction } from "@/command/create/create-issue.action";
 import {
   TEST_CHANGE_FILE_PATH,
   TEST_CPR_BRANCH_NAME,
   TEST_CPR_COMMIT_MESSAGE,
-  TEST_CPR_DOC_ID,
 } from "test/test-constants";
 import {
   checkAndCloneRepo,
@@ -22,11 +20,11 @@ beforeAll(async () => {
   await checkAndCloneRepo();
   createTestConfig(process.env.TESTING_PATH + "/.fika");
   setAuthToken();
-});
-
-beforeEach(async () => {
+  jest.spyOn(process.stdout, "write").mockImplementation(() => true);
   jest.spyOn(console, "log").mockImplementation(() => true);
 });
+
+beforeEach(async () => {});
 
 afterEach(async () => {
   await deleteBranch(TEST_CPR_BRANCH_NAME);

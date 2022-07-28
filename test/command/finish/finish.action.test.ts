@@ -9,6 +9,7 @@ import { IMessageService } from "@/domain/service/i_message.service";
 import { Uuid } from "@/domain/value_object/uuid.vo";
 import { TEST_CPR_BRANCH_NAME } from "test/test-constants";
 import { checkAndCloneRepo, createTestConfig, deleteBranch, restoreGitRepo, setUseToken } from "test/test-utils";
+import { JsxText } from "ts-morph";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
@@ -23,7 +24,8 @@ beforeAll(async () => {
 
 beforeEach(async()=>{
   jest.restoreAllMocks();
-  jest.spyOn(console, "log").mockImplementation(()=>{});
+  jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
+  jest.spyOn(console, "log").mockImplementation(()=>true);
   jest.spyOn(messageService, 'showCreatingGitIssue').mockImplementation(()=>{});
   jest.spyOn(messageService, 'showGettingIssue').mockImplementation(()=>{});
   jest.spyOn(configService, 'getNotionBotId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));

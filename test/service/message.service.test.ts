@@ -12,4 +12,6 @@ function testWrite() {
     messageService.close();
   }, 1000);
 }
-testWrite();
+// testWrite();
+
+it('', ()=>{});
