@@ -51,10 +51,7 @@ export class MessageService implements IMessageService {
     this.rl = readline.createInterface({ input, output });
   }
 
-  start(): void {
-    readline.cursorTo(output, 0, 0);
-    readline.clearScreenDown(output);
-  }
+  start(): void {}
   close(): void {
     this.rl.write("\r");
     this.rl.close();
@@ -85,7 +82,7 @@ export class MessageService implements IMessageService {
       this.rl.write(`${this.withWhiteBoldChalk(` ${subMessage}`)}\n`);
     }
     if (link) {
-      this.rl.write(` link: ${this.withYellowUnderlineChalk(`${link}`)}\n`);
+      this.rl.write(` ${this.withYellowUnderlineChalk(`${link}`)}\n`);
     }
   }
   showWarning(message: string): void {
@@ -201,9 +198,11 @@ ${branchName} 브랜치를 Github 에 push ${this.withGreenBoldChalk("완료")}
 
   showConnecting(connectingUrl: string): void {
     this.rl.write(
-      `\n ${this.withYellowBoldChalk(
-        "fika"
-      )} 가 notion 과의 연결을 위해 아래 👇 웹주소에 접속합니다.\n\n ${connectingUrl}\n`
+      `\n ${this.withCyanBoldChalk(
+        "Fika"
+      )} opens below 👇url to connect with ${this.withYellowBoldChalk(
+        "Notion"
+      )}\n\n ${this.underline(this.colorize(white, connectingUrl))}\n`
     );
   }
 
