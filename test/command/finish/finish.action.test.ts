@@ -30,10 +30,11 @@ beforeEach(async()=>{
 });
 
 afterEach(async ()=>{
-  
+  messageService.endWaiting();
 })
 
 afterAll(() => {
+  
 });
 
 it("1.test git merge conflict", async ()=>{

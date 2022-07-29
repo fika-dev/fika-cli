@@ -29,7 +29,8 @@ beforeEach(async()=>{
   await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });
 
-afterAll(() => {
+afterEach(() => {
+  messageService.endWaiting();
 });
 
 test('1. test pull from develop', async () => {
