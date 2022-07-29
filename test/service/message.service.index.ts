@@ -5,7 +5,6 @@ import { IMessageService } from "@/domain/service/i_message.service";
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
 
 function testWrite() { 
-  messageService.start();
   messageService.showWaiting("Creating issue in Github");
   setTimeout(() => {
     messageService.endWaiting();
@@ -23,7 +22,10 @@ function testWrite() {
     messageService.showSuccess("Issue created", undefined,"https://fikdadev.com");
   }, 6010);
   setTimeout(() => {
-    messageService.close();
-  }, 7000);
+    messageService.showWaiting("Creating issue in Github2");
+  }, 7010);
+  setTimeout(() => {
+    messageService.endWaiting();
+  }, 9010);
 }
 testWrite();
