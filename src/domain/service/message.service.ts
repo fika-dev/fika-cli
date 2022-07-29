@@ -63,13 +63,13 @@ export class MessageService implements IMessageService {
   endWaiting(): void {
     if (this.timer) {
       clearInterval(this.timer);
-      process.stdout.clearLine(0, () => {
-        process.stdout.cursorTo(0);
+      readline.clearLine(process.stdout, 0, () => {
+        readline.cursorTo(process.stdout, 0);
       });
     }
   }
   showSuccess(message: string, subMessage?: string, link?: string): void {
-    process.stdout.cursorTo(0);
+    readline.cursorTo(process.stdout, 0);
     process.stdout.write(`${this.withGreenBoldChalk(`✅ ${message}`)}\n`);
     if (subMessage) {
       process.stdout.write(`${this.withWhiteBoldChalk(` ${subMessage}`)}\n`);
@@ -79,11 +79,11 @@ export class MessageService implements IMessageService {
     }
   }
   showWarning(message: string): void {
-    process.stdout.cursorTo(0);
+    readline.cursorTo(process.stdout, 0);
     process.stdout.write(this.withYellowBoldChalk(`Warning: ${message}\n`));
   }
   showError(message: ErrorMessage): void {
-    process.stdout.cursorTo(0);
+    readline.cursorTo(process.stdout, 0);
     process.stdout.write(`🚨 ${this.withRedBoldChalk(`Error: ${message.code}`)}\n`);
     process.stdout.write(this.withRedBoldChalk(`${message.message}\n`));
     if (message.guideUrl) {
