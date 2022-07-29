@@ -12,7 +12,7 @@ export const validateStartBranch = async (
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   if (localConfig.start.fromDevelopOnly && currentBranch !== localConfig.branchNames.develop) {
     messageService.showWarning(
-      `current branch: ${currentBranch}: ${localConfig.branchNames.develop} is the only allowed branch to start from`
+      `(current branch is ${currentBranch}) ${localConfig.branchNames.develop} is the only allowed branch to start`
     );
     return false;
   } else {
