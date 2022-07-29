@@ -59,11 +59,6 @@ export class MessageService implements IMessageService {
       });
       i += 1;
     }, 300);
-    setTimeout(() => {
-      if (this.timer) {
-        clearInterval(this.timer);
-      }
-    }, 10 * 1000);
   }
   endWaiting(): void {
     if (this.timer) {
