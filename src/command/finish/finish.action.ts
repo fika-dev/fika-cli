@@ -10,7 +10,7 @@ import { IConfigService } from "src/domain/service/i_config.service";
 export const finishAction = async (baseBranch?: string) => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
-  const messageSrvice = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
+  const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
@@ -18,7 +18,7 @@ export const finishAction = async (baseBranch?: string) => {
   const isChangeExist = await gitPlatformService.checkUnstagedChanges();
   if (isChangeExist) {
     const proceed = promptService.confirmAction(
-      "There is uncommited changes, Do you wanna proceed to push and create pull request?"
+      "There is uncommited changes\nDo you wanna continue? (y or n)"
     );
     if (!proceed) return;
   }
@@ -29,6 +29,9 @@ export const finishAction = async (baseBranch?: string) => {
   if (localConfig.finish.checkOutToDevelop) {
     await gitPlatformService.checkoutToBranchWithoutReset(
       baseBranch ? baseBranch : localConfig.branchNames.develop
+    );
+    messageService.showSuccess(
+      `Checkout to branch: ${baseBranch ? baseBranch : localConfig.branchNames.develop}`
     );
   }
 };

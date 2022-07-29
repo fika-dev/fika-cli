@@ -23,14 +23,14 @@ beforeAll(async () => {
 
 beforeEach(async()=>{
   jest.restoreAllMocks();
-  jest.spyOn(messageService, 'showCreatingGitIssue').mockImplementation(()=>{});
-  jest.spyOn(messageService, 'showGettingIssue').mockImplementation(()=>{});
+  jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   jest.spyOn(configService, 'getNotionBotId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   await gitPlatformService.checkoutToBranchWithoutReset('develop');
   await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });
 
-afterAll(() => {
+afterEach(() => {
+  messageService.endWaiting();
 });
 
 test('1. test pull from develop', async () => {
@@ -56,7 +56,7 @@ test('2. check unstaged change', async () => {
 
 test('3. test start action without existing issue', async () => {
   await checkAndDeleteIssue(TEST_START_DOC_ID);
-  const spy = jest.spyOn(messageService, 'showCreateIssueSuccess').mockImplementation(()=>{});
+  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('develop');
   await startAction(TEST_START_DOC_ID);
   const branchName = await gitPlatformService.getBranchName();
@@ -65,7 +65,7 @@ test('3. test start action without existing issue', async () => {
 });
 
 test('4. test checkout to existing issue', async () => {
-  const spy = jest.spyOn(messageService, 'showCheckoutToExistingIssue').mockImplementation(()=>{});;
+  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('develop');
   await startAction(TEST_START_DOC_ID);
   const branchName = await gitPlatformService.getBranchName();
@@ -74,7 +74,6 @@ test('4. test checkout to existing issue', async () => {
 });
 
 test('5. test without checkout ', async () => {
-  const spySuccess = jest.spyOn(messageService, 'showCreateIssueSuccess').mockImplementation(()=>{});
   await checkAndDeleteIssue(TEST_START_DOC_ID);
   const checkoutFalse = defaultLocalConfig;
   checkoutFalse.start.checkoutToFeature = false;
@@ -96,7 +95,7 @@ test('6. test only allowed branch warning ', async () => {
       isWarningMessageCorrect = false;
     }
   });
-  const spySuccess = jest.spyOn(messageService, 'showCreateIssueSuccess').mockImplementation(()=>{});
+  const spySuccess = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('something');
   await startAction(TEST_START_DOC_ID);
   const branchName = await gitPlatformService.getBranchName();
@@ -115,7 +114,7 @@ test('7. test nok OK to start ', async () => {
   localConfig.start.checkoutToFeature = true;
   jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
   const spyConfirm = jest.spyOn(promptService, 'confirmAction').mockImplementation(async () => true);
-  const spySuccess = jest.spyOn(messageService, 'showCreateIssueSuccess').mockImplementation(()=>{});
+  const spySuccess = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('something');
   await startAction(TEST_START_DOC_ID);
   const branchName = await gitPlatformService.getBranchName();

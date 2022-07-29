@@ -12,6 +12,7 @@ import { IMessageService } from "./i_message.service";
 export class ErrorHandlingService implements IErrorHandlingService {
   handle(exception: BaseException): void {
     const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
+    messageService.endWaiting();
     if (exception.name === "GH_CLI_NOT_LOGGEDIN") {
       messageService.showError({
         message: `github client 에 로그인이 되지 않았습니다.\n\n gh auth login\n\n 으로 login 을 해주세요.`,

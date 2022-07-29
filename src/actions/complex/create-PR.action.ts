@@ -23,13 +23,17 @@ export const createPR = async (): Promise<void> => {
   const gitRepoUrl = await gitPlatformService.getGitRepoUrl();
 
   const issue = await getFikaIssue(gitRepoUrl, branchName);
+  messageService.showWaiting("Creating Pull Request");
   const updatedIssue = await createGitPlatformPR(branchName, issue);
-
+  messageService.endWaiting();
+  messageService.showWaiting("Updating Notion Issue");
   const botId = configService.getNotionBotId();
   await connectService.updateIssue(updatedIssue, botId);
   const issueNumber = configService.parseIssueNumber(branchName);
   const prNumber = Issue.parseNumberFromUrl(updatedIssue.prUrl);
   // [TODO] if base branch
   await connectService.createPullRequest(gitRepoUrl, issue.notionUrl, issueNumber, prNumber);
-  messageService.showCreatePRSuccess(updatedIssue);
+  messageService.endWaiting();
+  messageService.showSuccess("Pull Request Created", undefined, updatedIssue.prUrl);
+  messageService.showSuccess("Notion Issue Updated", undefined, updatedIssue.notionUrl);
 };

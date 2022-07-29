@@ -12,5 +12,9 @@ export const setAction = async (botIdString: string) => {
   const botId: Uuid = new Uuid(botIdString);
   const notionWorkspace = await connectService.requestNotionWorkspace(botId);
   configService.updateNotionWorkspace(notionWorkspace);
-  messageService.showConnectSuccess();
+  messageService.showSuccess(
+    "Notion is connected successfully",
+    "Fika Quick Start Documentation",
+    "https://blog.fikadev.com/posts/start-fika"
+  );
 };

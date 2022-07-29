@@ -23,5 +23,5 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "exclude": ["node_modules", "dist", "test/test-samples"]
+  "exclude": ["node_modules", "dist", "test/testing-env"]
 }

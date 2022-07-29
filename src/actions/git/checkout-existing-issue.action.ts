@@ -11,7 +11,9 @@ export const checkoutExistingIssue = async (existingIssue: Issue): Promise<void>
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
+  messageService.showWaiting("Undergoing checkout");
   const branch = configService.getIssueBranch(Issue.parseNumberFromUrl(existingIssue.issueUrl));
   await gitPlatformService.checkoutToBranchWithoutReset(branch);
-  messageService.showCheckoutToExistingIssue(existingIssue, branch);
+  messageService.endWaiting();
+  messageService.showSuccess(`Checkout to given issue branch: ${branch}`);
 };
