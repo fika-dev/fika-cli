@@ -259,8 +259,9 @@ ${branchName} 브랜치를 Github 에 push ${this.withGreenBoldChalk("완료")}
   private _clear = () => {
     const lines = process.stdout.rows;
     for (let index = 0; index < lines; index++) {
-      process.stdout.cursorTo(0, 0);
-      process.stdout.clearLine(0);
+      process.stdout.cursorTo(0, 0, () => {
+        process.stdout.clearLine(0);
+      });
     }
   };
 }
