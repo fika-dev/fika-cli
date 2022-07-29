@@ -18,7 +18,7 @@ export const finishAction = async (baseBranch?: string) => {
   const isChangeExist = await gitPlatformService.checkUnstagedChanges();
   if (isChangeExist) {
     const proceed = promptService.confirmAction(
-      "There is uncommited changes, Do you wanna proceed to push and create pull request?"
+      "There is uncommited changes\nDo you wanna continue? (y or n)"
     );
     if (!proceed) return;
   }
