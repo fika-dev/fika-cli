@@ -17,6 +17,6 @@ export const pullAndCheckConflict = async (baseBranch: string): Promise<void> =>
   } else if (isUpdated) {
     messageService.showSuccess("Successfuly Merged");
   } else {
-    messageService.showSuccess("Nothing to update");
+    messageService.showSuccess("Nothing to update from remote");
   }
 };
