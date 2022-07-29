@@ -10,5 +10,4 @@ export const connectAction = async () => {
   const uri = connectServic.getNotionAuthenticationUri();
   messageService.showConnecting(uri);
   await open(uri);
-  messageService.close();
 };

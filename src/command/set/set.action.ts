@@ -17,5 +17,4 @@ export const setAction = async (botIdString: string) => {
     "Fika Quick Start Documentation",
     "https://blog.fikadev.com/posts/start-fika"
   );
-  messageService.close();
 };
