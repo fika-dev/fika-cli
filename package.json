@@ -1,6 +1,6 @@
 {
   "name": "fika-cli",
-  "version": "0.3.8-beta",
+  "version": "0.3.9-beta",
   "description": "",
   "author": {
     "name": "Wonmo Jung",
@@ -55,7 +55,8 @@
   },
   "scripts": {
     "test": "FIKA_ENV=test jest --config=./jest.config.js  --runInBand",
-    "tsnode": "FIKA_ENV=development ts-node -r tsconfig-paths/register ./src/index.ts",
+    "exec:index": "FIKA_ENV=test ts-node -r tsconfig-paths/register ./src/index.ts",
+    "exec": "FIKA_ENV=development ts-node -r tsconfig-paths/register",
     "build": "FIKA_ENV=production tsc && tsc-alias",
     "prepublishOnly": "npm run build",
     "format:check": "prettier --check \"**/*.{ts,json,yaml,yml,js,md}\"",
