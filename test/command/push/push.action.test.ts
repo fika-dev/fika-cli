@@ -21,7 +21,6 @@ afterEach(
 
 afterAll(()=>{
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  messageService.close();
 });
 
 it('',()=>{})
