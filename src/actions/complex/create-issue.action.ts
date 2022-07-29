@@ -12,12 +12,18 @@ export const createIssue = async (notionDocumentUrl: NotionUrl): Promise<Issue> 
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-
+  messageService.showWaiting("Getting issue from Notion");
   const issue = await getNotionIssue(notionDocumentUrl);
+  messageService.endWaiting();
+  messageService.showWaiting(`Creating Github issue of [${issue.title}]`);
   const updatedIssue = await createGitPlatformIssue(issue);
+  messageService.endWaiting();
+  messageService.showWaiting(`Linking Github issue to Notion`);
   const botId = configService.getNotionBotId();
   await connectService.updateIssue(updatedIssue, botId);
   await connectService.createIssueRecord(updatedIssue);
-  messageService.showCreateIssueSuccess(updatedIssue);
+  messageService.endWaiting();
+  messageService.showSuccess("Github Issue Created", undefined, updatedIssue.issueUrl);
+  messageService.showSuccess("Notion Issue Updated", undefined, updatedIssue.notionUrl);
   return updatedIssue;
 };
