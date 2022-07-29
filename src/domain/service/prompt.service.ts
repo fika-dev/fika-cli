@@ -1,7 +1,42 @@
 import { injectable } from "inversify";
-import { IPromptService } from "./i-prompt.service";
 import promptly from "promptly";
 import { VersionTag } from "../value_object/version_tag.vo";
+import { IPromptService } from "./i-prompt.service";
+
+interface TerminalColor {
+  x: number;
+  y: number;
+}
+
+const yellow: TerminalColor = {
+  x: 93,
+  y: 39,
+};
+
+const green: TerminalColor = {
+  x: 92,
+  y: 39,
+};
+
+const red: TerminalColor = {
+  x: 91,
+  y: 39,
+};
+
+const blue: TerminalColor = {
+  x: 94,
+  y: 39,
+};
+
+const cyan: TerminalColor = {
+  x: 96,
+  y: 39,
+};
+
+const white: TerminalColor = {
+  x: 97,
+  y: 39,
+};
 
 @injectable()
 export class PromptService implements IPromptService {
@@ -19,14 +54,19 @@ export class PromptService implements IPromptService {
     const candidatesText = candidates.join(", ");
     let question: string;
     if (candidatesText.length > 0) {
-      question = `${message} (already existing branches: ${candidatesText}): `;
+      question = `${this.bold(this.colorize(green, "?"))} ${this.bold(
+        this.colorize(white, message)
+      )} (Default: ${defaultName}): `;
     } else {
-      question = `${message}: `;
+      question = `${this.bold(this.colorize(green, "?"))} ${this.bold(
+        this.colorize(white, message)
+      )} (Default: ${defaultName}): `;
     }
     const answer = await promptly.prompt(question, {
       default: defaultName,
       validator,
       retry: true,
+      trim: true,
     });
     return answer;
   }
@@ -42,21 +82,41 @@ export class PromptService implements IPromptService {
     return VersionTag.parseVersion(answer);
   }
   async askAlreadySignedUp(): Promise<boolean> {
-    const answer = await promptly.confirm("이미 Fika 계정이 있으신가요? (y or n)");
+    const answer = await promptly.confirm(
+      `${this.bold(this.colorize(green, "?"))} Do you have ${this.bold(
+        this.colorize(cyan, "Fika account")
+      )}? (y or n)`
+    );
     return answer;
   }
   async askEmailAddress(): Promise<string> {
-    const emailAddress = await promptly.prompt("이메일 주소를 입력해주세요: ");
+    const emailAddress = await promptly.prompt(
+      `${this.bold(this.colorize(green, "?"))} ${this.bold(
+        this.colorize(white, "Email Address")
+      )} : `
+    );
     return emailAddress;
   }
   async askPassword(): Promise<string> {
-    const password = await promptly.password("비밀번호를 입력해주세요: ");
+    const password = await promptly.password(
+      `${this.bold(this.colorize(green, "?"))} ${this.bold(this.colorize(white, "Password"))} : `
+    );
     return password;
   }
   async askOtpToken(email: string): Promise<string> {
     const otpToken = await promptly.password(
-      `${email} 로 OTP 를 전송하였습니다.\n이메일에서 복사한 OTP 를 입력해주세요: `
+      `OTP Token is sent to your email (${email})\n${this.bold(
+        this.colorize(green, "?")
+      )} ${this.bold(this.colorize(white, "OTP Token"))} : `
     );
     return otpToken;
   }
+
+  private colorize = (color: TerminalColor, text) => {
+    return `\x1b[${color.x}m${text}\x1b[${color.y}m`;
+  };
+
+  private bold = text => {
+    return `\x1b[1m${text}\x1b[m`;
+  };
 }
