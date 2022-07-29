@@ -41,7 +41,7 @@ const white: TerminalColor = {
 @injectable()
 export class PromptService implements IPromptService {
   async confirmAction(message: string): Promise<boolean> {
-    const answer = await promptly.confirm(`${message}: `);
+    const answer = await promptly.confirm(`${this.bold(this.colorize(green, "?"))} ${message}: `);
     return answer;
   }
   async askBranchName(message: string, defaultName: string, candidates: string[]): Promise<string> {
