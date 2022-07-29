@@ -3,6 +3,7 @@ import { Issue } from "../entity/issue.entity";
 import { ErrorMessage, IMessageService } from "./i_message.service";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import { IConfigService } from "./i_config.service";
+import * as readline from "readline";
 
 interface TerminalColor {
   x: number;
@@ -51,8 +52,8 @@ export class MessageService implements IMessageService {
     const waitingFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
     var i: number = 0;
     this.timer = setInterval(() => {
-      process.stdout.clearLine(0, () => {
-        process.stdout.cursorTo(0, undefined, () => {
+      readline.clearLine(process.stdout, 0, () => {
+        readline.cursorTo(process.stdout, 0, undefined, () => {
           process.stdout.write(`🧘 ${waitingFrames[i % 10]}${message} ${".".repeat(i % 6)}`);
         });
       });
@@ -262,8 +263,8 @@ ${branchName} 브랜치를 Github 에 push ${this.withGreenBoldChalk("완료")}
   private _clear = () => {
     const lines = process.stdout.rows;
     for (let index = 0; index < lines; index++) {
-      process.stdout.cursorTo(0, 0, () => {
-        process.stdout.clearLine(0);
+      readline.cursorTo(process.stdout, 0, 0, () => {
+        readline.clearLine(process.stdout, 0);
       });
     }
   };
