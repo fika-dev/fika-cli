@@ -31,5 +31,4 @@ export const finishAction = async (baseBranch?: string) => {
       baseBranch ? baseBranch : localConfig.branchNames.develop
     );
   }
-  messageSrvice.close();
 };

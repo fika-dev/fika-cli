@@ -36,5 +36,4 @@ export const startAction = async (documentUrlString: string) => {
       await checkoutIssueBranch(updatedIssue, stashId);
     }
   }
-  messageSrvice.close();
 };
