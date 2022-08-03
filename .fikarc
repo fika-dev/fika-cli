@@ -1,0 +1,16 @@
+{
+  "branchNames": {
+    "develop": "develop",
+    "main": "master",
+    "release": "release"
+  },
+  "start": {
+    "fromDevelopOnly": true,
+    "pullBeforeAlways": true,
+    "checkoutToFeature": true
+  },
+  "finish": {
+    "checkOutToDevelop": false,
+    "checkMergeConflict": true
+  }
+}
