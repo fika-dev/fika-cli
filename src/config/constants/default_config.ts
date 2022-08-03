@@ -30,10 +30,6 @@ export const defaultConfig: Config = {
       type: AddOnType.GitPlatform,
     },
   ],
-  git: {
-    baseBranch: "develop",
-    issueBranchTemplate: "feature/iss/#<ISSUE_NUMBER>",
-  },
 };
 
 export const defaultLocalConfig: LocalConfig = {
@@ -41,6 +37,7 @@ export const defaultLocalConfig: LocalConfig = {
     develop: "develop",
     main: "master",
     release: "release",
+    issueBranchTemplate: "feature/iss/#<ISSUE_NUMBER>",
   },
   start: {
     fromDevelopOnly: true,

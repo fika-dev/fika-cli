@@ -52,9 +52,5 @@ export const testUserConfig: Config = {
       name: "Github.GitPlatform",
       type: AddOnType.GitPlatform,
     },
-  ],
-  git: {
-    baseBranch: 'develop',
-    issueBranchTemplate: 'feature/iss/#<ISSUE_NUMBER>',
-  }
+  ]
 }

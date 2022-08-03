@@ -10,7 +10,7 @@
     "checkoutToFeature": true
   },
   "finish": {
-    "checkOutToDevelop": false,
+    "checkOutToDevelop": true,
     "checkMergeConflict": true
   }
 }
