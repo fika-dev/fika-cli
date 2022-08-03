@@ -15,6 +15,7 @@ export interface LocalConfig {
     develop: string;
     main: string;
     release: string;
+    issueBranchTemplate: string;
   };
   start: {
     fromDevelopOnly: boolean;
