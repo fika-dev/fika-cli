@@ -7,5 +7,4 @@ export class Config {
   notionWorkspace: NotionWorkspace | NotConnected;
   addOns: AddOnConfig[];
   fikaToken: FikaToken | UnAuthenticated;
-  git: GitConfig;
 }
