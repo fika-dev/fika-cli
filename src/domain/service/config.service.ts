@@ -43,23 +43,27 @@ export class ConfigService implements IConfigService {
   }
   createLocalConfig(initialConfigInput: InitialConfigInput): void {
     const localConfig: LocalConfig = defaultLocalConfig;
-    localConfig.branchNames = initialConfigInput.branchNames;
+    localConfig.branchNames = {
+      ...initialConfigInput.branchNames,
+      issueBranchTemplate: localConfig.branchNames.issueBranchTemplate,
+    };
     this._createConfig(this.localPath, LOCAL_CONFIG_NAME, localConfig);
+    this.localConfig = localConfig;
   }
   filterFromCandidates(filterIn: string[], candidates: string[]) {
     return filterIn.filter(item => candidates.includes(item));
   }
   getIssueBranchPattern(): string {
-    if (!this.config.git) {
-      this.updateGitConfig();
+    if (!this.localConfig) {
+      this.localConfig = this.getLocalConfig();
     }
-    return this.config.git.issueBranchTemplate;
+    return this.localConfig.branchNames.issueBranchTemplate;
   }
   parseIssueNumber(branch: string): number {
-    if (!this.config.git) {
-      this.updateGitConfig();
+    if (!this.localConfig) {
+      this.localConfig = this.getLocalConfig();
     }
-    const fragments = this.config.git.issueBranchTemplate.split("<ISSUE_NUMBER>");
+    const fragments = this.localConfig.branchNames.issueBranchTemplate.split("<ISSUE_NUMBER>");
     if (fragments.length == 1) {
       return parseInt(branch.replace(fragments[0], ""));
     } else {
@@ -70,16 +74,16 @@ export class ConfigService implements IConfigService {
     return version;
   }
   getBaseBranch(): string {
-    if (!this.config.git) {
-      this.updateGitConfig();
+    if (!this.localConfig) {
+      this.localConfig = this.getLocalConfig();
     }
-    return this.config.git.baseBranch;
+    return this.localConfig.branchNames.develop;
   }
   getIssueBranch(issueNumber: number): string {
-    if (!this.config.git) {
-      this.updateGitConfig();
+    if (!this.localConfig) {
+      this.localConfig = this.getLocalConfig();
     }
-    const branchTemplate = this.config.git.issueBranchTemplate;
+    const branchTemplate = this.localConfig.branchNames.issueBranchTemplate;
     const isValidTemplate = GitConfig.validateIssueBranch(branchTemplate);
     if (!isValidTemplate) {
       throw Error("Not Valid Issue Branch Template");
@@ -94,21 +98,6 @@ export class ConfigService implements IConfigService {
     } else {
       return;
     }
-  }
-
-  private updateGitConfig(): void {
-    this.config = {
-      ...this.config,
-      git: {
-        baseBranch: "develop",
-        issueBranchTemplate: "feature/iss/#<ISSUE_NUMBER>",
-      },
-    };
-    const configString = JSON.stringify(this.config, undefined, 4);
-    if (!this.fikaConfigFilePath) {
-      this.createConfig();
-    }
-    fs.writeFileSync(this.fikaConfigFilePath, configString);
   }
 
   updateFikaToken(token: string): void {
