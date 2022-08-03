@@ -48,19 +48,20 @@ export class ConfigService implements IConfigService {
       issueBranchTemplate: localConfig.branchNames.issueBranchTemplate,
     };
     this._createConfig(this.localPath, LOCAL_CONFIG_NAME, localConfig);
+    this.localConfig = localConfig;
   }
   filterFromCandidates(filterIn: string[], candidates: string[]) {
     return filterIn.filter(item => candidates.includes(item));
   }
   getIssueBranchPattern(): string {
     if (!this.localConfig) {
-      this.createLocalConfig({ branchNames: defaultLocalConfig.branchNames });
+      this.localConfig = this.getLocalConfig();
     }
     return this.localConfig.branchNames.issueBranchTemplate;
   }
   parseIssueNumber(branch: string): number {
     if (!this.localConfig) {
-      this.createLocalConfig({ branchNames: defaultLocalConfig.branchNames });
+      this.localConfig = this.getLocalConfig();
     }
     const fragments = this.localConfig.branchNames.issueBranchTemplate.split("<ISSUE_NUMBER>");
     if (fragments.length == 1) {
@@ -74,13 +75,13 @@ export class ConfigService implements IConfigService {
   }
   getBaseBranch(): string {
     if (!this.localConfig) {
-      this.createLocalConfig({ branchNames: defaultLocalConfig.branchNames });
+      this.localConfig = this.getLocalConfig();
     }
     return this.localConfig.branchNames.develop;
   }
   getIssueBranch(issueNumber: number): string {
     if (!this.localConfig) {
-      this.createLocalConfig({ branchNames: defaultLocalConfig.branchNames });
+      this.localConfig = this.getLocalConfig();
     }
     const branchTemplate = this.localConfig.branchNames.issueBranchTemplate;
     const isValidTemplate = GitConfig.validateIssueBranch(branchTemplate);
