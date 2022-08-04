@@ -1,10 +1,10 @@
+import "reflect-metadata";
 import { ErrorHandlingService } from "@/domain/service/error_handling.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IErrorHandlingService } from "@/domain/service/i_error_handling.service";
 import { PromptService } from "@/domain/service/prompt.service";
 import dotenv from "dotenv";
 import { Container } from "inversify";
-import "reflect-metadata";
 import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
 import { AnalyzeService } from "src/domain/service/analyze.service";
 import { ConfigService } from "src/domain/service/config.service";
