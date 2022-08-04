@@ -40,6 +40,7 @@ export const initAction = async () => {
     develop: developBranchName,
     main: mainBranchName,
     release: releaseBranchName,
+    issueBranchTemplate: initialConfig.branchNames.issueBranchTemplate,
   };
   configService.createLocalConfig(initialConfig);
 };
