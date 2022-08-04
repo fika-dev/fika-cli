@@ -24,6 +24,7 @@ import { UpdateInfo } from "../value_object/update-info.vo";
 import { IConfigService } from "./i_config.service";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IssueWithPR } from "../entity/i_git_platform.service";
+import { NotionPageNotFound } from "../value_object/exceptions/notion_page_not_found";
 
 interface errorDataType {
   message: string;
@@ -346,6 +347,9 @@ export class ConnectService implements IConnectService {
         const errorData = axiosError.response.data as errorDataType;
         if (errorData.message === "WRONG_PROPERTY_TITLE_NAME") {
           throw new WrongPropertyTitleName("WRONG_PROPERTY_TITLE_NAME");
+        }
+        if (errorData.message === "NotFoundBlock") {
+          throw new NotionPageNotFound("NotionPageNotFound");
         }
         console.log(
           "🧪",
