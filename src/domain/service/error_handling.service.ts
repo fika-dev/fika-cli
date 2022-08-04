@@ -86,6 +86,11 @@ export class ErrorHandlingService implements IErrorHandlingService {
         message: `\n\nNo base branch is found \nPlease check base branch is well configured (e.g. develop branch) \n\n`,
         code: exception.name,
       });
+    } else if (exception.name === "NotionPageNotFound") {
+      messageService.showError({
+        message: `\nCould not find Notion Page with given URL\n`,
+        code: exception.name,
+      });
     } else {
       messageService.showError({
         message: exception.message,
