@@ -27,7 +27,7 @@ export const checkoutDevelopBranchAction = async () => {
   if (localConfig.branchNames.develop && localConfig.branchNames.develop !== "") {
     await checkoutBaseBranch(localConfig.branchNames.develop);
   } else {
-    messageService.showSuccess(
+    messageService.showWarning(
       "Could not complete the action because your Fika config file does not contain any value for the develop branch."
     );
   }
