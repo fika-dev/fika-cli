@@ -43,7 +43,8 @@ afterAll(() => {
 
 it("1.test checkout-develop-branch if develop was set", async () => {
     const localConfig = defaultLocalConfig;
-    localConfig.branchNames.develop = "develop";
+  localConfig.branchNames.develop = "develop";
+  await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
     await checkoutDevelopBranchAction();
     const currentBranch = await gitPlatformService.getBranchName();
   expect(currentBranch).toBe("develop");
@@ -52,8 +53,7 @@ it("1.test checkout-develop-branch if develop was set", async () => {
 it("2.test checkout-develop-branch if develop branch is an empty string", async () => {
     const localConfig = defaultLocalConfig;
     localConfig.branchNames.develop = "";
-    await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
+  const spy = jest.spyOn(messageService, 'showWarning').mockImplementation(()=>{});
   await checkoutDevelopBranchAction();
   expect(spy).toBeCalledWith("Could not complete the action because your Fika config file does not contain any value for the develop branch.");
   });
@@ -61,8 +61,7 @@ it("2.test checkout-develop-branch if develop branch is an empty string", async 
 it("3.test checkout-develop-branch if develop branch is undefined", async () => {
     const localConfig = defaultLocalConfig;
     localConfig.branchNames.develop = undefined;
-    await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
+  const spy = jest.spyOn(messageService, 'showWarning').mockImplementation(()=>{});
   await checkoutDevelopBranchAction();
   expect(spy).toBeCalledWith("Could not complete the action because your Fika config file does not contain any value for the develop branch.");
 });
