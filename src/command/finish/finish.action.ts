@@ -35,7 +35,7 @@ export const finishAction = async (baseBranch?: string) => {
       "Do you wanna stay in your current feature branch? (y or n)"
     );
     if (proceed === true) {
-      messageService.showSuccess(`Staying in the same branch`);
+      messageService.showSuccess(`Staying in the current branch`);
     } else {
       await checkoutBaseBranch(developBranch);
     }
