@@ -76,6 +76,23 @@ export class GitPlatformService implements IGitPlatformService {
     );
     return branchesText.split("\n").map(branch => branch.trim());
   }
+  async getLatestBranchByCommitDate(): Promise<string> {
+    const localConfig = this.configService.getLocalConfig();
+    const template = localConfig.branchNames.issueBranchTemplate;
+    const branches = await this.getSortedBranchesByCommitDate();
+    const filteredList = branches.filter(branch => this.isItAFeatureBranch(branch, template));
+    return filteredList.length > 0 ? filteredList[0] : undefined;
+  }
+
+  async getSortedBranchesByCommitDate(): Promise<string[]> {
+    const { stdout: branchesText, stderr: getBranchesError } = await this.execP(
+      "git branch --sort=-committerdate --format='%(refname:short)'"
+    );
+    return branchesText
+      .trim()
+      .split("\n")
+      .map(branch => branch.trim());
+  }
   async deleteRemoteBranch(branchName: string): Promise<void> {
     await this.execP(`git push origin --delete "${branchName}"`);
   }
@@ -220,5 +237,11 @@ export class GitPlatformService implements IGitPlatformService {
     } else {
       throw new Error(`can not parse \n${log}`);
     }
+  }
+
+  private isItAFeatureBranch(log: string, issueBranchPattern: string) {
+    const pt = issueBranchPattern.replace("<ISSUE_NUMBER>", "(\\d{1,6})");
+    const re = new RegExp(pt);
+    return re.test(log);
   }
 }
