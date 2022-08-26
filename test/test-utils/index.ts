@@ -22,12 +22,14 @@ export const clearTestFikaPath = (currentPath: string)=>{
   });
 }
 
-export const clearLocalConfig = (currentPath: string)=>{
+export const clearLocalConfig = (currentPath: string) => {
   const fikaPath = path.join(currentPath, LOCAL_CONFIG_NAME);
-  if (fs.existsSync(fikaPath))
-  fs.rmSync(fikaPath, {
-    recursive: true,
-  });
+  if (fs.existsSync(fikaPath)) {
+    fs.rmSync(fikaPath, {
+      recursive: true,
+    });
+    const isExist = fs.existsSync(fikaPath);
+  }
 }
 
 export const createTestConfig = (fikaPath: string)=> {
@@ -127,6 +129,11 @@ export const checkOutToBranch = async (branchName: string)=> {
 }
 
 export const deleteBranch = async (branchName: string)=> {
+  const gitService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
+  await gitService.deleteRemoteBranch(branchName);
+}
+
+export const deleteLocalBranch = async (branchName: string)=> {
   const gitService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
   await gitService.deleteRemoteBranch(branchName);
 }
