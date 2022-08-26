@@ -1,3 +1,4 @@
+import { createPR } from "@/actions/complex/create-PR.action";
 import { finishAction } from "@/command/finish/finish.action";
 import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
@@ -6,6 +7,7 @@ import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
+import { GhPrAlreadyExists } from "@/domain/value_object/exceptions/gh_pr_already_exists";
 import { Uuid } from "@/domain/value_object/uuid.vo";
 import exp from "constants";
 import { TEST_CPR_BRANCH_NAME } from "test/test-constants";
@@ -41,14 +43,14 @@ afterAll(() => {
   
 });
 
-it("1.test git merge conflict", async ()=>{
-  await gitPlatformService.checkoutToBranchWithoutReset("conflicting");
-  await gitPlatformService.pullFrom("conflicting_2");
-  const isConflictExist = await gitPlatformService.checkConflict();
-  expect(isConflictExist).toEqual(true);
-  await gitPlatformService.abortMerge();
-  await gitPlatformService.checkoutToBranchWithoutReset("develop");
-});
+// it("1.test git merge conflict", async ()=>{
+//   await gitPlatformService.checkoutToBranchWithoutReset("conflicting");
+//   await gitPlatformService.pullFrom("conflicting_2");
+//   const isConflictExist = await gitPlatformService.checkConflict();
+//   expect(isConflictExist).toEqual(true);
+//   await gitPlatformService.abortMerge();
+//   await gitPlatformService.checkoutToBranchWithoutReset("develop");
+// });
 
 it("2.test finish without change & without merge check, without checkout", async () => {
   try {
@@ -118,5 +120,18 @@ it("5. checkOutToDevelop is false & confirm to checkout to dev", async () => {
     await deleteBranch(TEST_CPR_BRANCH_NAME);  
   } catch (e) {
     await deleteBranch(TEST_CPR_BRANCH_NAME);  
+  }
+});
+
+it("6. test when PR is already opened", async () => {
+  await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
+  jest.spyOn(gitPlatformService, 'createPR').mockImplementation(() => {
+    throw new GhPrAlreadyExists("GhPrAlreadyExists");
+  });
+  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => {})
+  try {
+    await createPR();  
+  } catch (e) {
+    expect(spy).toBeCalledWith("PR link", undefined,'https://github.com/fika-dev/fika-cli-test-samples/pull/12');  
   }
 });
