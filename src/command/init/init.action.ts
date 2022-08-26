@@ -16,7 +16,7 @@ export const initAction = async () => {
   );
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
-  const branches = await gitPlatformService.getBranches();
+  const branches = gitPlatformService.isGitRepo() ? await gitPlatformService.getBranches() : [];
   const foundDevBrances = configService.filterFromCandidates(branches, developBranchCandidates);
   const foundMainBrances = configService.filterFromCandidates(branches, mainBranchCandidates);
   const foundReleaseBrances = configService.filterFromCandidates(branches, releaseBranchCandidates);
@@ -35,7 +35,9 @@ export const initAction = async () => {
     "release",
     foundReleaseBrances
   );
-  const initialConfig = defaultLocalConfig;
+  await gitPlatformService.gitInit();
+  await gitPlatformService.checkoutToBranchWithoutReset(developBranchName);
+  const initialConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
   initialConfig.branchNames = {
     develop: developBranchName,
     main: mainBranchName,
@@ -43,4 +45,9 @@ export const initAction = async () => {
     issueBranchTemplate: initialConfig.branchNames.issueBranchTemplate,
   };
   configService.createLocalConfig(initialConfig);
+  await gitPlatformService.stageAllChanges();
+  await gitPlatformService.commitWithMessage("Initial commit");
+  await gitPlatformService.checkoutToBranchWithoutReset(mainBranchName);
+  await gitPlatformService.checkoutToBranchWithoutReset(releaseBranchName);
+  await gitPlatformService.checkoutToBranchWithoutReset(developBranchName);
 };

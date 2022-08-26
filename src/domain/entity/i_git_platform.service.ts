@@ -23,6 +23,7 @@ export interface IGitPlatformService {
   checkoutToBranchWithoutReset(branchName: string): Promise<void>;
   stageAllChanges(): Promise<void>;
   commitWithMessage(message: string): Promise<void>;
+  deleteLocalBranch(branchName: string): Promise<void>;
   deleteRemoteBranch(branchName: string): Promise<void>;
   tagCommit(branchName: string, tag: VersionTag): Promise<void>;
   getBranches(): Promise<string[]>;
@@ -34,4 +35,6 @@ export interface IGitPlatformService {
   checkConflict(): Promise<boolean>;
   abortMerge(): Promise<void>;
   getSortedBranchesByCommitDate(): Promise<string[]>;
+  gitInit(): Promise<void>;
+  isGitRepo(): boolean;
 }
