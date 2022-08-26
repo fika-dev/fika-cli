@@ -43,14 +43,14 @@ afterAll(() => {
   
 });
 
-it("1.test git merge conflict", async ()=>{
-  await gitPlatformService.checkoutToBranchWithoutReset("conflicting");
-  await gitPlatformService.pullFrom("conflicting_2");
-  const isConflictExist = await gitPlatformService.checkConflict();
-  expect(isConflictExist).toEqual(true);
-  await gitPlatformService.abortMerge();
-  await gitPlatformService.checkoutToBranchWithoutReset("develop");
-});
+// it("1.test git merge conflict", async ()=>{
+//   await gitPlatformService.checkoutToBranchWithoutReset("conflicting");
+//   await gitPlatformService.pullFrom("conflicting_2");
+//   const isConflictExist = await gitPlatformService.checkConflict();
+//   expect(isConflictExist).toEqual(true);
+//   await gitPlatformService.abortMerge();
+//   await gitPlatformService.checkoutToBranchWithoutReset("develop");
+// });
 
 it("2.test finish without change & without merge check, without checkout", async () => {
   try {
