@@ -37,12 +37,13 @@ export class ConfigService implements IConfigService {
       this.localConfig = JSON.parse(configString) as LocalConfig;
       return this.localConfig;
     } else {
-      this.createLocalConfig({ branchNames: defaultLocalConfig.branchNames });
-      return defaultLocalConfig;
+      const copiedLocalConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
+      this.createLocalConfig({ branchNames: copiedLocalConfig.branchNames });
+      return copiedLocalConfig;
     }
   }
   createLocalConfig(initialConfigInput: InitialConfigInput): void {
-    const localConfig: LocalConfig = defaultLocalConfig;
+    const localConfig: LocalConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
     localConfig.branchNames = {
       ...initialConfigInput.branchNames,
       issueBranchTemplate: localConfig.branchNames.issueBranchTemplate,

@@ -1,4 +1,5 @@
 import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
+import fs from "fs";
 import { exec } from "child_process";
 import { inject, injectable } from "inversify";
 import { GitHub } from "plug_in/git_platform/git_hub";
@@ -23,6 +24,10 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
+  isGitRepo(): boolean {
+    return fs.existsSync(`${this.gitRepoPath}/.git`);
+  }
+
   async abortMerge(): Promise<void> {
     await this.execP("git merge --abort");
   }
@@ -92,6 +97,9 @@ export class GitPlatformService implements IGitPlatformService {
       .trim()
       .split("\n")
       .map(branch => branch.trim());
+  }
+  async deleteLocalBranch(branchName: string): Promise<void> {
+    await this.execP(`git branch -D "${branchName}"`);
   }
   async deleteRemoteBranch(branchName: string): Promise<void> {
     await this.execP(`git push origin --delete "${branchName}"`);
@@ -243,5 +251,8 @@ export class GitPlatformService implements IGitPlatformService {
     const pt = issueBranchPattern.replace("<ISSUE_NUMBER>", "(\\d{1,6})");
     const re = new RegExp(pt);
     return re.test(log);
+  }
+  async gitInit(): Promise<void> {
+    await this.execP(`git init .`);
   }
 }
