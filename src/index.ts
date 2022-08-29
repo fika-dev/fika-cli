@@ -4,7 +4,10 @@ import { createCommand, createIssueShortCommand, createPRShortCommand } from "@/
 import { program } from "commander";
 import dotenv from "dotenv";
 import { version } from "../package.json";
+import { checkoutDevelopCommand } from "./command/checkout-develop";
+import { checkoutFeatureBranchCommand } from "./command/checkout-feature-branch";
 import { finishCommand } from "./command/finish";
+import { infoCommand } from "./command/info";
 import { initCommand } from "./command/init";
 import { releaseCommand } from "./command/release";
 import { setCommand } from "./command/set";
@@ -27,6 +30,9 @@ try {
   program.addCommand(setCommand);
   program.addCommand(releaseCommand);
   program.addCommand(initCommand);
+  program.addCommand(infoCommand);
+  program.addCommand(checkoutFeatureBranchCommand);
+  program.addCommand(checkoutDevelopCommand);
   program.parse(process.argv);
 } catch (e) {
   const errorHandlingService = container.get<IErrorHandlingService>(
