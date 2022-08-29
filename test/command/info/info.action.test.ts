@@ -104,3 +104,10 @@ it("5.test info message for a non-valid", async () => {
     await infoAction();
     expect(spy).toBeCalledWith("We failed to retrive some information on your branch, please again later");
 });
+
+it("6.test info with testing server", async () => {
+    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+    gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
+    await infoAction();
+    expect(spy).toHaveBeenCalledWith("The current branch is feature/iss/#2, for pull request test document", "The Git issue URL is ", "https://github.com/fika-dev/fika-cli-test-samples/issues/2");
+});
