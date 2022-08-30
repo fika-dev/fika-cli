@@ -36,5 +36,6 @@ export interface IGitPlatformService {
   abortMerge(): Promise<void>;
   getSortedBranchesByCommitDate(): Promise<string[]>;
   gitInit(): Promise<void>;
+  setRemoteUrl(): Promise<void>;
   isGitRepo(): boolean;
 }
