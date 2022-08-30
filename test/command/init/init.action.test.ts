@@ -8,7 +8,8 @@ import { clearLocalConfig, clearTestFikaPath, readLocalConfig, sendPromptData } 
 import promptly from "promptly";
 import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { GitPlatformService } from "@/domain/service/git_platform.service";
-
+import { exec } from "child_process";
+import { promisify } from "util";
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 // jest.spyOn(process.stdout, 'write').mockImplementation(()=>true)
 
@@ -42,7 +43,7 @@ test('1. test prompt askremoteUrl', async () => {
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
-  //const branchName = 'develop';
+  await gitPlatformService.removeRemoteUrl();
   let correctMessage: string;
   const spy = jest.spyOn(promptly, 'prompt').mockImplementation(async (data) => {
     if (data.includes("remote")) {
@@ -56,6 +57,8 @@ test('1. test prompt askremoteUrl', async () => {
   await gitPlatformService.setRemoteUrl(remoteUrl);
   expect(spy).toBeCalled();
   expect(correctMessage).toEqual('https://lavieen.rose');
+  await gitPlatformService.removeRemoteUrl();
+  await gitPlatformService.setRemoteUrl('https://github.com/fika-dev/fika-cli-test-samples.git');
 });
 
 test('2. get main, develop and release branch after initialiase', async () => {
