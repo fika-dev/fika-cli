@@ -73,7 +73,9 @@ jobs:
         working-directory: ${{ env.working-directory }}
       - run: yarn format:check
         working-directory: ${{ env.working-directory }}
-      - run: yarn test
+      - run: yarn env-windows
+        working-directory: ${{ env.working-directory }}
+      - run: yarn test-windows
         env:
           CI: true
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_CLI }}
