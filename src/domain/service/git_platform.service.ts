@@ -113,7 +113,11 @@ export class GitPlatformService implements IGitPlatformService {
 
   private async execP(command) {
     const execP = promisify(exec);
-    return await execP(`LC_ALL=C  ${command}`, { cwd: this.gitRepoPath });
+    if (process.platform == "win32") {
+      return await execP(`${command}`, { cwd: this.gitRepoPath });
+    } else {
+      return await execP(`LC_ALL=C  ${command}`, { cwd: this.gitRepoPath });
+    }
   }
 
   async checkoutToBranchWithoutReset(branchName: string): Promise<void> {
