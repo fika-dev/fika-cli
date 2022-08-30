@@ -52,7 +52,8 @@ test('1. test prompt askremoteUrl', async () => {
       return;
     };
   })
-  await gitPlatformService.setRemoteUrl();
+  const remoteUrl = await promptService.askRemoteUrl();
+  await gitPlatformService.setRemoteUrl(remoteUrl);
   expect(spy).toBeCalled();
   expect(correctMessage).toEqual('https://lavieen.rose');
 });

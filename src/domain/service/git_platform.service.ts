@@ -1,6 +1,6 @@
 import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
-import fs from "fs";
 import { exec } from "child_process";
+import fs from "fs";
 import { inject, injectable } from "inversify";
 import { GitHub } from "plug_in/git_platform/git_hub";
 import { promisify } from "util";
@@ -11,18 +11,14 @@ import { IGitPlatformService, IssueWithPR } from "../entity/i_git_platform.servi
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
-import { IPromptService } from "./i-prompt.service";
-import { platform } from "os";
 
 @injectable()
 export class GitPlatformService implements IGitPlatformService {
   private configService: IConfigService;
-  private promptService: IPromptService;
   private gitRepoPath: string;
   private _gitPlatform: GitPlatform;
   constructor(
     @inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService,
-    //@inject(SERVICE_IDENTIFIER.PromptService) promptService: IPromptService,
     @inject(PARAMETER_IDENTIFIER.GitRepoPath) gitRepoPath: string
   ) {
     this.configService = configService;
@@ -267,13 +263,12 @@ export class GitPlatformService implements IGitPlatformService {
   async gitInit(): Promise<void> {
     await this.execP(`git init .`);
   }
-  async setRemoteUrl(): Promise<void> {
+  async setRemoteUrl(remoteUrl: string): Promise<void> {
     const { stdout: remoteResp, stderr: remoteErr } = await this.execP("git remote");
     if (
       remoteErr == "fatal: not a git repository (or any of the parent directories): .git" ||
       remoteResp === ""
     ) {
-      const remoteUrl = await this.promptService.askRemoteUrl();
       await this.execP(`git remote add origin ${remoteUrl}`);
     }
   }

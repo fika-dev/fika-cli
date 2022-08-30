@@ -36,7 +36,8 @@ export const initAction = async () => {
     foundReleaseBrances
   );
   await gitPlatformService.gitInit();
-  await gitPlatformService.setRemoteUrl();
+  const remoteUrl = await promptService.askRemoteUrl();
+  await gitPlatformService.setRemoteUrl(remoteUrl);
   await gitPlatformService.checkoutToBranchWithoutReset(developBranchName);
   const initialConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
   initialConfig.branchNames = {
