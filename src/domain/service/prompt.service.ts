@@ -111,11 +111,17 @@ export class PromptService implements IPromptService {
     );
     return otpToken;
   }
-
+  async askRemoteUrl(): Promise<string> {
+    const remoteUrl = await promptly.prompt(
+      `${this.bold(this.colorize(green, "?"))} ${this.bold(
+        this.colorize(white, "remote origin Url")
+      )} : `
+    );
+    return remoteUrl;
+  }
   private colorize = (color: TerminalColor, text) => {
     return `\x1b[${color.x}m${text}\x1b[${color.y}m`;
   };
-
   private bold = text => {
     return `\x1b[1m${text}\x1b[m`;
   };
