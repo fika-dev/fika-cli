@@ -73,7 +73,9 @@ jobs:
         working-directory: ${{ env.working-directory }}
       - run: yarn format:check
         working-directory: ${{ env.working-directory }}
-      - run: yarn env-windows
+      - run: |
+          chcp 65001 #set code page to utf-8
+          echo ("FIKA_ENV=test") >> $env:GITHUB_ENV
         working-directory: ${{ env.working-directory }}
       - run: yarn test-windows
         env:

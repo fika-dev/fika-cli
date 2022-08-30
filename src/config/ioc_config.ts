@@ -61,6 +61,7 @@ container
   .inSingletonScope();
 
 if (!process.env.FIKA_ENV) {
+  console.log("🧪", " in IocConfig: ", "No Fika Env");
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(fikaApiUrl);
   const homePath = require("os").homedir();
   container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue(`${homePath}/${FIKA_PATH}`);
