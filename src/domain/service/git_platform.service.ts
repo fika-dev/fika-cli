@@ -124,7 +124,7 @@ export class GitPlatformService implements IGitPlatformService {
   async checkoutToBranchWithoutReset(branchName: string): Promise<void> {
     let command: string;
     if (process.platform === "win32") {
-      command = `git checkout "${branchName}"; if (-not $?) { git checkout -b ${branchName} }`;
+      command = `git checkout ${branchName} >nul 2>nul ||  git checkout -b ${branchName}`;
     } else {
       command = `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName}`;
     }
