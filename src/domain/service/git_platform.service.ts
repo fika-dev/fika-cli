@@ -122,7 +122,7 @@ export class GitPlatformService implements IGitPlatformService {
 
   async checkoutToBranchWithoutReset(branchName: string): Promise<void> {
     const { stdout: commitId, stderr: branchNameErr } = await this.execP(
-      `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName};`
+      `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName}`
     );
   }
   async getLatestTag(): Promise<VersionTag> {
