@@ -263,13 +263,11 @@ export class GitPlatformService implements IGitPlatformService {
   async gitInit(): Promise<void> {
     await this.execP(`git init .`);
   }
+  async isThereRemoteUrl(): Promise<boolean> {
+    const { stdout: remoteResp, stderr: remoteErr } = await this.execP("git remote -v");
+    return remoteErr.length > 0 ? true : false;
+  }
   async setRemoteUrl(remoteUrl: string): Promise<void> {
-    const { stdout: remoteResp, stderr: remoteErr } = await this.execP("git remote");
-    if (
-      remoteErr == "fatal: not a git repository (or any of the parent directories): .git" ||
-      remoteResp === ""
-    ) {
-      await this.execP(`git remote add origin ${remoteUrl}`);
-    }
+    await this.execP(`git remote add origin ${remoteUrl}`);
   }
 }
