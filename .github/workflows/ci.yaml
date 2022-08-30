@@ -41,3 +41,40 @@ jobs:
           CI: true
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_CLI }}
         working-directory: ${{ env.working-directory }}
+  test-windows:
+    runs-on: windows-latest
+    env:
+      CI: true
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_CLI }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: fika-dev/fika-cli-test-samples
+          path: "./test/testing-env/fika-cli-test-samples"
+          token: ${{ secrets.GH_TOKEN_FOR_CLI }}
+      - name: setup git config
+        run: |
+          git config --global user.name "croquies"
+          git config --global user.email "${{ secrets.GH_USER_EMAIL }}"
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        with:
+          path: "**/node_modules"
+          key: fika-cli-node-${{hashFiles('**/yarn.lock')}}
+          restore-keys: |
+            fika-cli-node-
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - run: yarn install --frozen-lockfile
+        working-directory: ${{ env.working-directory }}
+      - run: yarn format:check
+        working-directory: ${{ env.working-directory }}
+      - run: yarn test
+        env:
+          CI: true
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_CLI }}
+        working-directory: ${{ env.working-directory }}
