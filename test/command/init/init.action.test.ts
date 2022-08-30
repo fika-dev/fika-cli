@@ -42,7 +42,7 @@ test('1. test prompt askremoteUrl', async () => {
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
-  const branchName = 'develop';
+  //const branchName = 'develop';
   let correctMessage: string;
   const spy = jest.spyOn(promptly, 'prompt').mockImplementation(async (data) => {
     if (data.includes("remote")) {
