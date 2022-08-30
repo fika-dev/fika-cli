@@ -11,6 +11,7 @@ import { IGitPlatformService, IssueWithPR } from "../entity/i_git_platform.servi
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
+import { platform } from "os";
 
 @injectable()
 export class GitPlatformService implements IGitPlatformService {
@@ -121,9 +122,13 @@ export class GitPlatformService implements IGitPlatformService {
   }
 
   async checkoutToBranchWithoutReset(branchName: string): Promise<void> {
-    const { stdout: commitId, stderr: branchNameErr } = await this.execP(
-      `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName}`
-    );
+    let command: string;
+    if (process.platform === "win32") {
+      command = `git checkout "${branchName}"; if (-not $?) { git checkout -b ${branchName} }`;
+    } else {
+      command = `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName}`;
+    }
+    await this.execP(command);
   }
   async getLatestTag(): Promise<VersionTag> {
     try {
