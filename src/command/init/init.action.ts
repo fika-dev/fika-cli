@@ -36,7 +36,7 @@ export const initAction = async () => {
     foundReleaseBrances
   );
   await gitPlatformService.gitInit();
-  if (await gitPlatformService.isThereRemoteUrl()) {
+  if (!(await gitPlatformService.isThereRemoteUrl())) {
     const remoteUrl = await promptService.askRemoteUrl();
     await gitPlatformService.setRemoteUrl(remoteUrl);
   }
