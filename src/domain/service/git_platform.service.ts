@@ -265,7 +265,7 @@ export class GitPlatformService implements IGitPlatformService {
   }
   async isThereRemoteUrl(): Promise<boolean> {
     const { stdout: remoteResp, stderr: remoteErr } = await this.execP("git remote -v");
-    return remoteErr.length > 0 ? true : false;
+    return remoteErr.trim().length > 0;
   }
   async removeRemoteUrl(): Promise<void> {
     await this.execP("git remote remove origin");
