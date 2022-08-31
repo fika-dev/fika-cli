@@ -8,6 +8,6 @@
   "printWidth": 100,
   "singleQuote": false,
   "useTabs": false,
-  "endOfLine": "lf",
+  "endOfLine": "auto",
   "proseWrap": "preserve"
 }
