@@ -74,13 +74,19 @@ export class GitPlatformService implements IGitPlatformService {
     await this.execP(`git stash push -u -m "${id}"`);
   }
   async applyStash(id: string): Promise<void> {
-    await this.execP(`git stash apply stash^{/${id}}`);
+    let command: string;
+    if (process.platform == "win32") {
+      command = `git stash apply stash^^{/${id}}`;
+    } else {
+      command = `git stash apply stash^{/${id}}`;
+    }
+    await this.execP(command);
   }
   async getBranches(): Promise<string[]> {
     const { stdout: branchesText, stderr: getBranchesError } = await this.execP(
       `git branch --format='%(refname:short)'`
     );
-    return branchesText.split("\n").map(branch => branch.trim());
+    return branchesText.split("\n").map(branch => branch.trim().replace("'", ""));
   }
   async getLatestBranchByCommitDate(): Promise<string> {
     const localConfig = this.configService.getLocalConfig();
@@ -189,7 +195,7 @@ export class GitPlatformService implements IGitPlatformService {
     const { stdout: branchName, stderr: branchNameErr } = await this.execP(
       "git rev-parse --abbrev-ref HEAD"
     );
-    return branchName.trim();
+    return branchName.trim().replace("'", "");
   }
 
   async pushBranch(branchName: string): Promise<void> {
