@@ -9,5 +9,6 @@ export interface IPromptService {
   askOtpToken(email: string): Promise<string>;
   askTagInfo(latestTag: VersionTag | undefined): Promise<VersionTag>;
   askBranchName(message: string, defaultName: string, candidates: string[]): Promise<string>;
+  askRemoteUrl(): Promise<string>;
   confirmAction(message: string): Promise<boolean>;
 }

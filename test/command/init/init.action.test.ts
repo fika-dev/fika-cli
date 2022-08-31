@@ -8,7 +8,8 @@ import { clearLocalConfig, clearTestFikaPath, readLocalConfig, sendPromptData } 
 import promptly from "promptly";
 import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { GitPlatformService } from "@/domain/service/git_platform.service";
-
+import { exec } from "child_process";
+import { promisify } from "util";
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 // jest.spyOn(process.stdout, 'write').mockImplementation(()=>true)
 
@@ -36,7 +37,31 @@ afterAll(async () => {
   await gitPlatformService.deleteLocalBranch('test_master');
   await gitPlatformService.deleteLocalBranch('test_release');
 });
-test('0. get main, develop and release branch after initialiase', async () => {
+
+test('1. test prompt askremoteUrl', async () => { 
+  const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
+  const gitPlatformService = container.get<IGitPlatformService>(
+    SERVICE_IDENTIFIER.GitPlatformService
+  );
+  await gitPlatformService.removeRemoteUrl();
+  let correctMessage: string;
+  const spy = jest.spyOn(promptly, 'prompt').mockImplementation(async (data) => {
+    if (data.includes("remote")) {
+      correctMessage = 'https://lavieen.rose';
+      return 'https://lavieen.rose';
+    } else {
+      return;
+    };
+  })
+  const remoteUrl = await promptService.askRemoteUrl();
+  await gitPlatformService.setRemoteUrl(remoteUrl);
+  expect(spy).toBeCalled();
+  expect(correctMessage).toEqual('https://lavieen.rose');
+  await gitPlatformService.removeRemoteUrl();
+  await gitPlatformService.setRemoteUrl('https://github.com/fika-dev/fika-cli-test-samples.git');
+});
+
+test('2. get main, develop and release branch after initialiase', async () => {
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
@@ -62,7 +87,7 @@ test('0. get main, develop and release branch after initialiase', async () => {
   expect(currentBranch).toEqual('test_develop');
 });
 
-test('1. test prompt askBranchName', async () => { 
+test('3. test prompt askBranchName', async () => { 
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   const branchName = 'develop';
   let correctMessage: boolean;
@@ -89,21 +114,21 @@ test('1. test prompt askBranchName', async () => {
 //   expect(process.stdout.write).toHaveBeenCalledWith("name for develop branch: ");
 // });
 
-test('2. get local config before create', async () => { 
+test('4. get local config before create', async () => { 
   clearLocalConfig(process.env.TESTING_REPO_PATH);
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const config = configService.getLocalConfig();
   expect(config.branchNames.develop).toBe('develop');
 });
 
-test('3. create local config file', async () => { 
+test('5. create local config file', async () => { 
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   configService.createLocalConfig({ branchNames: { ...defaultLocalConfig.branchNames } });
   const config = readLocalConfig(process.env.TESTING_REPO_PATH);
   expect(config.branchNames.develop).toBe(defaultLocalConfig.branchNames.develop);
 });
 
-test('4. get local config after creation', async () => { 
+test('6. get local config after creation', async () => { 
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   configService.createLocalConfig({branchNames: {
     develop: 'dev',
