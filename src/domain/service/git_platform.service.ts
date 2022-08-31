@@ -85,7 +85,7 @@ export class GitPlatformService implements IGitPlatformService {
     const { stdout: branchesText, stderr: getBranchesError } = await this.execP(
       `git branch --format='%(refname:short)'`
     );
-    return branchesText.split("\n").map(branch => branch.trim().replace("'", ""));
+    return branchesText.split("\n").map(branch => branch.trim().replace("'", "").replace("'", ""));
   }
   async getLatestBranchByCommitDate(): Promise<string> {
     const localConfig = this.configService.getLocalConfig();
@@ -194,7 +194,7 @@ export class GitPlatformService implements IGitPlatformService {
     const { stdout: branchName, stderr: branchNameErr } = await this.execP(
       "git rev-parse --abbrev-ref HEAD"
     );
-    return branchName.trim().replace("'", "");
+    return branchName.trim().replace("'", "").replace("'", "");
   }
 
   async pushBranch(branchName: string): Promise<void> {
