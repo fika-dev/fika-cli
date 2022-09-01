@@ -5,9 +5,9 @@ import { IMessageService } from "@/domain/service/i_message.service";
 import open from "open";
 
 export const connectAction = async () => {
-  const connectServic = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
+  const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  const uri = connectServic.getNotionAuthenticationUri();
+  const uri = connectService.getNotionAuthenticationUri();
   messageService.showConnecting(uri);
   await open(uri);
 };
