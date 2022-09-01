@@ -1,4 +1,4 @@
-import { Morpher, MorpherConfig } from "src/domain/entity/morpher.entity";
+import { Morpher, MorpherConfig } from "@/domain/entity/add_on/morpher.entity";
 import {
   ArrowFunction,
   ClassDeclaration,

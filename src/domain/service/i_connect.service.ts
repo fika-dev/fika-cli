@@ -12,7 +12,6 @@ export interface UserWithToken {
 }
 
 export interface IConnectService {
-  getNotionAuthenticationUri(): string;
   requestNotionWorkspace(botId: Uuid): Promise<NotionWorkspace>;
   create(devObj: DevObject): Promise<string>;
   update(devObj: DevObject): Promise<string>;
