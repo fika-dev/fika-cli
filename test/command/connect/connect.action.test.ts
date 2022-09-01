@@ -1,10 +1,13 @@
-import { Uuid } from "@/domain/value_object/uuid.vo";
+
+import { connectCommand } from "@/command/connect";
+import * as action from "@/command/connect/connect.action";
 import axios from "axios";
-import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
+import { program } from "commander";
+import { WorkspaceCreator } from "plug_in/workspace/workspace-creator";
+import { PARAMETER_IDENTIFIER } from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
-import { IConnectService } from "src/domain/service/i_connect.service";
-import { TEST_FIKA_BOT_ID } from "test/test-constants";
 import { checkAndCloneRepo } from "test/test-utils";
+
 
 beforeAll(()=>{
   checkAndCloneRepo()
@@ -18,15 +21,18 @@ afterEach(()=>{
   container.restore();
 });
 
-test('1. guide notion authentication', async () => { 
-  const uri = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService).getNotionAuthenticationUri();
+test('1. check notion authentication uri status', async () => { 
+  const domain = container.get<string>(PARAMETER_IDENTIFIER.Domain);
+  const workspace = WorkspaceCreator.fromType('notion');
+  const uri = workspace.getAuthenticationUri(domain);
   const response = await axios.get(uri);
   expect(response.status).toEqual(200);
 });
 
-
-test('2. get notion workspace', async () => { 
-  const botId = new Uuid(TEST_FIKA_BOT_ID);
-  const notionWorkspace = await container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService).requestNotionWorkspace(botId);
-  expect(notionWorkspace).toBeDefined();
+test('2. check jira authentication uri status', async () => { 
+  const domain = container.get<string>(PARAMETER_IDENTIFIER.Domain);
+  const workspace = WorkspaceCreator.fromType('jira');
+  const uri = workspace.getAuthenticationUri(domain);
+  const response = await axios.get(uri);
+  expect(response.status).toEqual(200);
 });
