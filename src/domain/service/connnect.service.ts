@@ -5,7 +5,6 @@ import open from "open";
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/create_issue.dto";
 import { inject, injectable } from "inversify";
-import { fikaNotionClientId, notionAuthorizeUri } from "src/config/constants/uri";
 import { Issue } from "../entity/issue.entity";
 import {
   CreateNotionWorkspaceDto,
@@ -398,12 +397,7 @@ export class ConnectService implements IConnectService {
   remove(devObj: DevObject): Promise<string> {
     throw new Error("Method not implemented.");
   }
-  getNotionAuthenticationUri(): string {
-    const redirectUri = encodeURIComponent(`${this.domain}/notion/callback`);
-    const params = `client_id=${fikaNotionClientId}&redirect_uri=${redirectUri}&response_type=code&owner=user&state=init`;
-    const targetUri = `${notionAuthorizeUri}?${params}`;
-    return targetUri;
-  }
+
   async requestNotionWorkspace(botId: Uuid): Promise<NotionWorkspace> {
     try {
       const response = await this.axiosInstance.get(`/notion/workspace?id=${botId.asString()}`);
