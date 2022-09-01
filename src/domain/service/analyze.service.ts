@@ -1,10 +1,10 @@
 import { injectable } from "inversify";
 import { GitRepoAnalyzer } from "plug_in/analyzer/git_repo_analyzer";
 import { ReactComponentAnalyzer } from "plug_in/analyzer/react_component_analyzer";
-import { Analyzer } from "../entity/analyzer.entity";
+import { Analyzer } from "../entity/add_on/analyzer.entity";
 import { Component } from "../entity/component.entity";
 import { ObjectType } from "../entity/dev_object.entity";
-import { Morpher } from "../entity/morpher.entity";
+import { Morpher } from "../entity/add_on/morpher.entity";
 import { Repo } from "../entity/repo.entity";
 import { Snapshot } from "../entity/snapshot.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";

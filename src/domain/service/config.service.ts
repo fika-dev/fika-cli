@@ -5,7 +5,7 @@ import path from "path";
 import { defaultConfig, defaultLocalConfig } from "src/config/constants/default_config";
 import { CONFIG_FILE_NAME, LOCAL_CONFIG_NAME } from "src/config/constants/path";
 import { version } from "../../../package.json";
-import { AddOnType } from "../entity/add_on.entity";
+import { AddOnType } from "../entity/add_on/add_on.entity";
 import { Config } from "../entity/config.entity";
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";

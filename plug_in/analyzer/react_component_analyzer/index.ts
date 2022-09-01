@@ -1,9 +1,9 @@
-import { AddOnType } from "src/domain/entity/add_on.entity";
-import { Analyzer } from "src/domain/entity/analyzer.entity";
+import { AddOnType } from "@/domain/entity/add_on/add_on.entity";
+import { Analyzer } from "@/domain/entity/add_on/analyzer.entity";
 import { Component, ComponentType } from "src/domain/entity/component.entity";
 import { DevObject } from "src/domain/entity/dev_object.entity";
 import { INode } from "src/domain/entity/i_node";
-import { Morpher } from "src/domain/entity/morpher.entity";
+import { Morpher } from "@/domain/entity/add_on/morpher.entity";
 import { AddOnConfig } from "src/domain/value_object/add_on_config.vo";
 
 export class ReactComponentAnalyzer extends Analyzer {

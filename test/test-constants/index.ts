@@ -1,4 +1,4 @@
-import { AddOnType } from "src/domain/entity/add_on.entity";
+import { AddOnType } from "@/domain/entity/add_on/add_on.entity";
 import { Config } from "src/domain/entity/config.entity";
 import { ObjectType } from "src/domain/entity/dev_object.entity";
 

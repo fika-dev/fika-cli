@@ -1,6 +1,6 @@
-import { Analyzer } from "src/domain/entity/analyzer.entity";
+import { Analyzer } from "@/domain/entity/add_on/analyzer.entity";
 import { DevObject } from "src/domain/entity/dev_object.entity";
-import { Morpher } from "src/domain/entity/morpher.entity";
+import { Morpher } from "@/domain/entity/add_on/morpher.entity";
 import { promisify } from "util";
 import { exec } from "child_process";
 import { Repo } from "src/domain/entity/repo.entity";
