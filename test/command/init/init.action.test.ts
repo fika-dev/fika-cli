@@ -65,6 +65,7 @@ test('2. get main, develop and release branch after initialiase', async () => {
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
+  await gitPlatformService.removeRemoteUrl();
   const gitInitSpy = jest.spyOn(gitPlatformService, 'gitInit');
   jest.spyOn(promptly, 'prompt').mockImplementation(async (data) => {
     if (data.includes("develop")) {
@@ -73,6 +74,8 @@ test('2. get main, develop and release branch after initialiase', async () => {
       return 'test_release'
     } else if (data.includes("master")) {
       return 'test_master'
+    } else if (data.includes("remote origin")) {
+       return 'https://gitHoob.com/stuf'
     } else {
       return;
     }
@@ -105,15 +108,6 @@ test('3. test prompt askBranchName', async () => {
   expect(correctMessage).toEqual(true);
 });
 
-// test('2. test prompt askBranchName empty candidates', async () => { 
-//   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
-//   const branchName = 'develop';
-//   sendPromptData(branchName, 10);
-//   const devBranchName = await promptService.askBranchName("name for develop branch", "develop", []);
-//   expect(devBranchName).toBe(branchName);
-//   expect(process.stdout.write).toHaveBeenCalledWith("name for develop branch: ");
-// });
-
 test('4. get local config before create', async () => { 
   clearLocalConfig(process.env.TESTING_REPO_PATH);
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
@@ -139,4 +133,22 @@ test('6. get local config after creation', async () => {
   expect(config.branchNames.develop).toBe('dev');
 });
 
+test('7. test isThereRemoteUrl return false', async () => { 
+  //const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
+  const gitPlatformService = container.get<IGitPlatformService>(
+    SERVICE_IDENTIFIER.GitPlatformService
+  );
+  await gitPlatformService.removeRemoteUrl();
+  const remoteUrl = await gitPlatformService.isThereRemoteUrl();
+  expect(remoteUrl).toEqual(false);
+  await gitPlatformService.setRemoteUrl('https://github.com/fika-dev/fika-cli-test-samples.git');
+});
+
+test('8. test isThereRemoteUrl return true', async () => { 
+  const gitPlatformService = container.get<IGitPlatformService>(
+    SERVICE_IDENTIFIER.GitPlatformService
+  );
+  const remoteUrl = await gitPlatformService.isThereRemoteUrl();
+  expect(remoteUrl).toEqual(true);
+  });
 
