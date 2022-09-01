@@ -1,3 +1,4 @@
+import { WorkspaceType } from "../entity/add_on/workspace.entity";
 import { DevObject } from "../entity/dev_object.entity";
 import { Issue } from "../entity/issue.entity";
 import { IssueWithPR } from "../entity/i_git_platform.service";
@@ -16,7 +17,7 @@ export interface IConnectService {
   create(devObj: DevObject): Promise<string>;
   update(devObj: DevObject): Promise<string>;
   remove(devObj: DevObject): Promise<string>;
-  getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue>;
+  getIssue(documentUrl: NotionUrl, botId: Uuid, workspaceType: WorkspaceType): Promise<Issue>;
   updateIssue(updatedIssue: Issue, botId: Uuid): Promise<Issue>;
   deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void>;
   useToken(token: string): void;
