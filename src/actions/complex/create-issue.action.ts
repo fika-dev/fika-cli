@@ -12,13 +12,13 @@ export const createIssue = async (documentUrl: string): Promise<Issue> => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  messageService.showWaiting("Getting issue from Notion");
+  messageService.showWaiting("Getting issue from Workspace");
   const issue = await getWorkspaceIssue(documentUrl);
   messageService.endWaiting();
   messageService.showWaiting(`Creating Github issue of [${issue.title}]`);
   const updatedIssue = await createGitPlatformIssue(issue);
   messageService.endWaiting();
-  messageService.showWaiting(`Linking Github issue to Notion`);
+  messageService.showWaiting(`Linking Github issue to Workspace`);
   const botId = configService.getWorkspaceId();
   await connectService.updateIssue(updatedIssue, botId);
   await connectService.createIssueRecord(updatedIssue);

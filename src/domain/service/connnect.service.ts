@@ -1,31 +1,29 @@
-import { DevObject } from "../entity/dev_object.entity";
-import { NotionWorkspace } from "../entity/notion_workspace.entity";
-import { IConnectService, UserWithToken } from "./i_connect.service";
-import open from "open";
-import axios, { AxiosError, AxiosInstance } from "axios";
-import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/create_issue.dto";
-import { inject, injectable } from "inversify";
-import { Issue } from "../entity/issue.entity";
+import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 import {
   CreateWorkspaceDto,
   CreateWorkspaceDtoType,
 } from "@/infrastructure/dto/create_workspace.dto";
-import { Uuid } from "../value_object/uuid.vo";
-import { NotionUrl } from "../value_object/notion_url.vo";
-import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
-import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
+import axios, { AxiosError, AxiosInstance } from "axios";
+import { inject, injectable } from "inversify";
+import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/create_issue.dto";
+import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
+import { DevObject } from "../entity/dev_object.entity";
+import { Issue } from "../entity/issue.entity";
+import { IssueWithPR } from "../entity/i_git_platform.service";
+import { Workspace } from "../entity/workspace.entity";
+import { NotionPageNotFound } from "../value_object/exceptions/notion_page_not_found";
 import {
   ERROR_CODE_STRING,
   NotOnline,
   SYS_CALL_STRING,
 } from "../value_object/exceptions/not_online";
+import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
+import { NotionUrl } from "../value_object/notion_url.vo";
 import { UpdateInfo } from "../value_object/update-info.vo";
-import { IConfigService } from "./i_config.service";
+import { Uuid } from "../value_object/uuid.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
-import { IssueWithPR } from "../entity/i_git_platform.service";
-import { NotionPageNotFound } from "../value_object/exceptions/notion_page_not_found";
-import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
-import { Workspace } from "../entity/workspace.entity";
+import { IConfigService } from "./i_config.service";
+import { IConnectService, UserWithToken } from "./i_connect.service";
 
 interface errorDataType {
   message: string;
@@ -326,21 +324,15 @@ export class ConnectService implements IConnectService {
     }
   }
 
-  async getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue> {
+  async getIssue(
+    documentUrl: string,
+    workpaceId: Uuid,
+    workspaceType: WorkspaceType
+  ): Promise<Issue> {
     try {
-      const response = await this.axiosInstance.post(
-        `/notion/issue`,
-        {
-          botId: botId.asString(),
-          documentUrl: documentUrl.asString(),
-        },
-        {
-          headers: {
-            "content-type": "application/json",
-          },
-        }
+      const response = await this.axiosInstance.get(
+        `/workspace/issue?workspaceId=${workpaceId.asString()}&documentUrl=${documentUrl}&workspaceType=${workspaceType}`
       );
-
       const dto = new CreateIssueDto(response.data as CreateIssueDtoType);
       return dto.toEntity();
     } catch (e) {
