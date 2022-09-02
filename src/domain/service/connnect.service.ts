@@ -7,9 +7,9 @@ import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/creat
 import { inject, injectable } from "inversify";
 import { Issue } from "../entity/issue.entity";
 import {
-  CreateNotionWorkspaceDto,
-  CreateNotionWorkspaceDtoType,
-} from "src/infrastructure/dto/create_notion_workspace.dto";
+  CreateWorkspaceDto,
+  CreateWorkspaceDtoType,
+} from "@/infrastructure/dto/create_workspace.dto";
 import { Uuid } from "../value_object/uuid.vo";
 import { NotionUrl } from "../value_object/notion_url.vo";
 import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
@@ -24,6 +24,8 @@ import { IConfigService } from "./i_config.service";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IssueWithPR } from "../entity/i_git_platform.service";
 import { NotionPageNotFound } from "../value_object/exceptions/notion_page_not_found";
+import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
+import { Workspace } from "../entity/workspace.entity";
 
 interface errorDataType {
   message: string;
@@ -398,13 +400,14 @@ export class ConnectService implements IConnectService {
     throw new Error("Method not implemented.");
   }
 
-  async requestNotionWorkspace(botId: Uuid): Promise<NotionWorkspace> {
+  async requestWorkspace(workspaceType: WorkspaceType, workpaceId: Uuid): Promise<Workspace> {
     try {
-      const response = await this.axiosInstance.get(`/notion/workspace?id=${botId.asString()}`);
-      const dto = new CreateNotionWorkspaceDto(response.data as CreateNotionWorkspaceDtoType);
+      const response = await this.axiosInstance.get(
+        `/workpace/${workspaceType}/${workpaceId.asString()}`
+      );
+      const dto = new CreateWorkspaceDto(response.data as CreateWorkspaceDtoType);
       return dto.toEntity();
     } catch (e) {
-      const axiosError = e as AxiosError;
       if (e.response?.data) {
         console.log("🧪", " in ConnnectService: ", "error code: ", e.response.data);
         throw new Error(`${e.response.data.error}: ${e.response.data.message}`);
