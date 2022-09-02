@@ -48,7 +48,10 @@ test('1.test commitWithMessage when there is something to commit', async () => {
     SERVICE_IDENTIFIER.ErrorHandlingService
     );
     const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-    const spy = jest.spyOn(messageService, 'showWarning').mockImplementation( () => {});
+  
+    const spyS = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+    const spyW = jest.spyOn(messageService, 'showWarning').mockImplementation( () => {});
+    const spyE = jest.spyOn(messageService, 'showError').mockImplementation( () => {});
     //try {
     await gitPlatformService.createDummyChange();
     await gitPlatformService.stageAllChanges();
@@ -56,7 +59,9 @@ test('1.test commitWithMessage when there is something to commit', async () => {
     // } catch (e) {
     //     errorService.handle(e);
     // }
-    expect(spy).not.toBeCalledWith(' ');
+    expect(spyS).not.toBeCalledWith(' ');
+    expect(spyW).not.toBeCalledWith(' ');
+    expect(spyE).not.toBeCalledWith(' ');
 });
 
 test('2.test commitWithMessage when there is nothing to commit', async () => { 
