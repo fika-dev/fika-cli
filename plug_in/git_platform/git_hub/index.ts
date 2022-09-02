@@ -79,7 +79,7 @@ export class GitHub extends GitPlatform {
       );
       const updatedIssue: Issue = {
         ...issue,
-        prUrl: stdout.trim(),
+        gitPrUrl: stdout.trim(),
       };
       return updatedIssue;
     } catch (e) {

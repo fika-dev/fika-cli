@@ -35,11 +35,11 @@ export const infoAction = async () => {
         undefined,
         issue.issueUrl
       );
-      if (issue.prUrl) {
+      if (issue.gitPrUrl) {
         messageService.showSuccess(
           `And finally, you can take a look at the PR with the link below`,
           undefined,
-          issue.prUrl
+          issue.gitPrUrl
         );
       }
     } else {

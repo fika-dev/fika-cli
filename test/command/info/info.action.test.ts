@@ -63,7 +63,7 @@ it("1.test info on a issue branch", async () => {
             issueUrl: 'https://other.thing',
             title: 'test is the best',
             labels: [],
-            prUrl: 'https://ts.4.8'} as Issue} );
+            gitPrUrl: 'https://ts.4.8'} as Issue} );
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
     await infoAction();
     expect(spy).toBeCalledWith("The current branch is feature/issue/133, test is the best", "The Git issue URL is ", "https://some.thing");

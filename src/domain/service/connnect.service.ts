@@ -231,7 +231,7 @@ export class ConnectService implements IConnectService {
         title: response.data.title,
         gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
         labels: [],
-        prUrl: response.data.prUrl,
+        gitPrUrl: response.data.prUrl,
       };
     } catch (e) {
       const axiosError = e as AxiosError;
