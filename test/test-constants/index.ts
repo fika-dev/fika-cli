@@ -17,7 +17,7 @@ export const TEST_CPR_COMMIT_MESSAGE = '[add] meaningless white space';
 
 export const TEST_CHANGE_FILE_PATH = './test/testing-env/fika-cli-test-samples/sample_01/readme.md';
 
-export const testUserConfig: Config = {
+export const TEST_USER_CONFIG: Config = {
   workspace: {
     "id": TEST_NOTION_WORKSPACE_ID,
     "workspaceName": "원모's Notion",
