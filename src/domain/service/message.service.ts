@@ -208,7 +208,7 @@ ${branchName} 브랜치를 Github 에 push ${this.withGreenBoldChalk("완료")}
     );
     process.stdout.write("");
     process.stdout.write(`🟢 github issue url:  ${this.withYellowBoldChalk(issue.gitIssueUrl)}`);
-    process.stdout.write(`🟢 notion url:  ${this.withBlueBoldChalk(issue.notionUrl)}`);
+    process.stdout.write(`🟢 notion url:  ${this.withBlueBoldChalk(issue.issueUrl)}`);
     process.stdout.write("");
     process.stdout.write(`------------------------------------------------`);
     process.stdout.write("");
@@ -227,7 +227,7 @@ ${branchName} 브랜치를 Github 에 push ${this.withGreenBoldChalk("완료")}
     );
     process.stdout.write("");
     process.stdout.write(`🟢 github PR url:  ${this.withYellowBoldChalk(issue.prUrl)}`);
-    process.stdout.write(`🟢 notion url:  ${this.withBlueBoldChalk(issue.notionUrl)}`);
+    process.stdout.write(`🟢 notion url:  ${this.withBlueBoldChalk(issue.issueUrl)}`);
     process.stdout.write("");
     process.stdout.write(`Github 에서 PR 을 병합한 이후에는`);
     process.stdout.write(`아래 커맨드를 실행해 주세요.\n\n`);

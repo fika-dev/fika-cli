@@ -90,7 +90,7 @@ export class ConnectService implements IConnectService {
       );
       if (response.data) {
         return {
-          notionUrl: response.data.notionPageUrl,
+          issueUrl: response.data.notionPageUrl,
           title: response.data.title,
           gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
           labels: [],
@@ -192,7 +192,7 @@ export class ConnectService implements IConnectService {
         "/git/issue",
         {
           gitRepoUrl: gitRepoUrl,
-          notionPageUrl: issue.notionUrl,
+          notionPageUrl: issue.issueUrl,
           title: issue.title,
           issueNumber: fragments[fragments.length - 1],
         },
@@ -227,7 +227,7 @@ export class ConnectService implements IConnectService {
         }
       );
       return {
-        notionUrl: response.data.notionPageUrl,
+        issueUrl: response.data.notionPageUrl,
         title: response.data.title,
         gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
         labels: [],

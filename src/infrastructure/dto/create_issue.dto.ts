@@ -16,7 +16,7 @@ export class CreateIssueDto extends BaseDto<Issue, CreateIssueDtoType> {
   toEntity(): Issue {
     return {
       gitIssueUrl: this.dto.issueUrl,
-      notionUrl: this.dto.notionUrl,
+      issueUrl: this.dto.notionUrl,
       title: this.dto.title,
       body: this.dto.body,
       labels: this.dto.labels,

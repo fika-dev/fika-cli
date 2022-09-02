@@ -33,7 +33,7 @@ export const infoAction = async () => {
       messageService.showSuccess(
         `For more Information, please take a look at the page linked below:`,
         undefined,
-        issue.notionUrl
+        issue.issueUrl
       );
       if (issue.prUrl) {
         messageService.showSuccess(

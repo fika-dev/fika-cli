@@ -1,6 +1,6 @@
 export class Issue {
   gitIssueUrl?: string;
-  notionUrl: string;
+  issueUrl: string;
   title: string;
   body?: string;
   labels: string[];

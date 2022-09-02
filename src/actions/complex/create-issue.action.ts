@@ -24,6 +24,6 @@ export const createIssue = async (notionDocumentUrl: NotionUrl): Promise<Issue> 
   await connectService.createIssueRecord(updatedIssue);
   messageService.endWaiting();
   messageService.showSuccess("Github Issue Created", undefined, updatedIssue.gitIssueUrl);
-  messageService.showSuccess("Notion Issue Updated", undefined, updatedIssue.notionUrl);
+  messageService.showSuccess("Notion Issue Updated", undefined, updatedIssue.issueUrl);
   return updatedIssue;
 };
