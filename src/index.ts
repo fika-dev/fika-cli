@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { connectCommand } from "@/command/connect";
-import { createCommand, createIssueShortCommand, createPRShortCommand } from "@/command/create";
 import { program } from "commander";
 import dotenv from "dotenv";
 import { version } from "../package.json";
@@ -23,9 +22,6 @@ try {
   program.name("fika").description("CLI for advanced your workflow").version(version);
   program.addCommand(startCommand);
   program.addCommand(finishCommand);
-  program.addCommand(createCommand);
-  program.addCommand(createIssueShortCommand);
-  program.addCommand(createPRShortCommand);
   program.addCommand(connectCommand);
   program.addCommand(setCommand);
   program.addCommand(releaseCommand);

@@ -1,4 +1,4 @@
-import { Morpher } from "../entity/morpher.entity";
+import { Morpher } from "../entity/add_on/morpher.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
 

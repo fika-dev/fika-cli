@@ -1,4 +1,8 @@
+import { setAction } from "@/command/set/set.action";
+import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
+import { IMessageService } from "@/domain/service/i_message.service";
 import container from "src/config/ioc_config";
+import { TEST_NOTION_WORKSPACE_ID } from "test/test-constants";
 
 beforeAll(()=>{
   jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
@@ -13,17 +17,10 @@ afterEach(()=>{
   container.restore();
 });
 
-it('',()=>{})
-// test('1. set with correct bot id', async () => { 
-//   container.unbind(SERVICE_IDENTIFIER.ConnectService);
-//   let connectionServiceMock = {
-//     requestNotionWorkspace: async (botId: string): Promise<NotionWorkspace>=>{
-//       return NotionWorkspace.getSample(botId);
-//     }
-//   }
-//   container.bind<any>(SERVICE_IDENTIFIER.ConnectService).toConstantValue(connectionServiceMock);
-//   await setAction(TEST_FIKA_BOT_ID);
-//   container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService).readConfig();
-//   const config = readTestFikaConfig(process.cwd());
-//   expect((config.notionWorkspace as NotionWorkspace).botId).toEqual(TEST_FIKA_BOT_ID);
-// });
+
+test('1. set with correct bot id', async () => {
+  const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
+  const spy = jest.spyOn(messageService, "showSuccess").mockImplementation();
+  await setAction(`notion:${TEST_NOTION_WORKSPACE_ID}`);
+  expect(spy).toBeCalled();
+});

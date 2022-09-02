@@ -5,12 +5,11 @@ import open from "open";
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/create_issue.dto";
 import { inject, injectable } from "inversify";
-import { fikaNotionClientId, notionAuthorizeUri } from "src/config/constants/uri";
 import { Issue } from "../entity/issue.entity";
 import {
-  CreateNotionWorkspaceDto,
-  CreateNotionWorkspaceDtoType,
-} from "src/infrastructure/dto/create_notion_workspace.dto";
+  CreateWorkspaceDto,
+  CreateWorkspaceDtoType,
+} from "@/infrastructure/dto/create_workspace.dto";
 import { Uuid } from "../value_object/uuid.vo";
 import { NotionUrl } from "../value_object/notion_url.vo";
 import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
@@ -25,6 +24,8 @@ import { IConfigService } from "./i_config.service";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IssueWithPR } from "../entity/i_git_platform.service";
 import { NotionPageNotFound } from "../value_object/exceptions/notion_page_not_found";
+import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
+import { Workspace } from "../entity/workspace.entity";
 
 interface errorDataType {
   message: string;
@@ -398,19 +399,15 @@ export class ConnectService implements IConnectService {
   remove(devObj: DevObject): Promise<string> {
     throw new Error("Method not implemented.");
   }
-  getNotionAuthenticationUri(): string {
-    const redirectUri = encodeURIComponent(`${this.domain}/notion/callback`);
-    const params = `client_id=${fikaNotionClientId}&redirect_uri=${redirectUri}&response_type=code&owner=user&state=init`;
-    const targetUri = `${notionAuthorizeUri}?${params}`;
-    return targetUri;
-  }
-  async requestNotionWorkspace(botId: Uuid): Promise<NotionWorkspace> {
+
+  async requestWorkspace(workspaceType: WorkspaceType, workspaceId: Uuid): Promise<Workspace> {
     try {
-      const response = await this.axiosInstance.get(`/notion/workspace?id=${botId.asString()}`);
-      const dto = new CreateNotionWorkspaceDto(response.data as CreateNotionWorkspaceDtoType);
+      const response = await this.axiosInstance.get(
+        `/workspace/${workspaceType}/${workspaceId.asString()}`
+      );
+      const dto = new CreateWorkspaceDto(response.data as CreateWorkspaceDtoType);
       return dto.toEntity();
     } catch (e) {
-      const axiosError = e as AxiosError;
       if (e.response?.data) {
         console.log("🧪", " in ConnnectService: ", "error code: ", e.response.data);
         throw new Error(`${e.response.data.error}: ${e.response.data.message}`);

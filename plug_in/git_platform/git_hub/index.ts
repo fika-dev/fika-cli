@@ -21,8 +21,8 @@ import {
   NO_GIT_REMOTE_STRING,
 } from "@/domain/value_object/exceptions/no_git_remote.vo";
 import { exec } from "child_process";
-import { AddOnType } from "src/domain/entity/add_on.entity";
-import { GitPlatform } from "src/domain/entity/git_platform.entity";
+import { AddOnType } from "@/domain/entity/add_on/add_on.entity";
+import { GitPlatform } from "@/domain/entity/add_on/git_platform.entity";
 import { Issue } from "src/domain/entity/issue.entity";
 import { AddOnConfig } from "src/domain/value_object/add_on_config.vo";
 import { promisify } from "util";
