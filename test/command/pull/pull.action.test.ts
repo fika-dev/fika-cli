@@ -5,7 +5,6 @@ import { clearLocalConfig, clearTestFikaPath, readLocalConfig, sendPromptData } 
 import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
-// jest.spyOn(process.stdout, 'write').mockImplementation(()=>true)
 
 afterEach(()=>{
   jest.clearAllMocks();
@@ -16,8 +15,6 @@ beforeEach(()=>{
   clearLocalConfig(process.env.TESTING_REPO_PATH);
 });
 
-
-
 beforeAll(() => {
   clearTestFikaPath(process.env.TESTING_PATH);
   clearLocalConfig(process.env.TESTING_REPO_PATH);
@@ -27,12 +24,8 @@ afterAll(async () => {
   clearTestFikaPath(process.env.TESTING_PATH);
   clearLocalConfig(process.env.TESTING_REPO_PATH);
   await gitPlatformService.checkoutToBranchWithoutReset('develop');
-  //await gitPlatformService.deleteLocalBranch('test_develop');
-  //await gitPlatformService.deleteLocalBranch('test_master');
-  //await gitPlatformService.deleteLocalBranch('test_release');
 });
 
-//"UPDATED" | "REMOTE_CONFLICT" | "NO_CHANGE" | "NO_REMOTE_BRANCH";
 
 test('1.test pullAction when successfuly merged', async () => { 
      const gitPlatformService = container.get<IGitPlatformService>(
@@ -68,7 +61,7 @@ test('2.test pullAction when there is nothing to update', async () => {
   expect(spy).toBeCalledWith('nothing to update from origin develop');
 });
 
-test('1.test pullAction when successfuly merged', async () => { 
+test('3.test pullAction when successfuly merged', async () => { 
      const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
      );
@@ -85,7 +78,7 @@ test('1.test pullAction when successfuly merged', async () => {
   expect(spy).toBeCalledWith('failed to pull because the develop branch could not be found');
 });
 
-test('2.test pullAction when there is something wrong', async () => { 
+test('4.test pullAction when there is something wrong', async () => { 
      const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
      );
