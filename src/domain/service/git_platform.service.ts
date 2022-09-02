@@ -9,6 +9,7 @@ import { GitPlatform } from "../entity/git_platform.entity";
 import { Issue } from "../entity/issue.entity";
 import { IGitPlatformService, IssueWithPR } from "../entity/i_git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
+import { NothingToCommit } from "../value_object/exceptions/nothing_to_commit";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
 
@@ -111,12 +112,24 @@ export class GitPlatformService implements IGitPlatformService {
     await this.execP(`git push origin --delete "${branchName}"`);
   }
   async commitWithMessage(message: string): Promise<void> {
-    await this.execP(`git commit -m "${message}"`);
+    try {
+      const { stdout: commitText, stderr: commitError } = await this.execP(
+        `git commit -m "${message}"`
+      );
+    } catch (e) {
+      if (e.stdout.includes("nothing to commit")) {
+        throw new NothingToCommit("NothingToCommit");
+      } else {
+        throw e;
+      }
+    }
   }
   async stageAllChanges(): Promise<void> {
     await this.execP(`git add .`);
   }
-
+  async createDummyChange(): Promise<void> {
+    await this.execP('echo "Dummy change" >> README.md');
+  }
   private async execP(command) {
     const execP = promisify(exec);
     if (process.platform == "win32") {
