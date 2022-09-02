@@ -400,10 +400,10 @@ export class ConnectService implements IConnectService {
     throw new Error("Method not implemented.");
   }
 
-  async requestWorkspace(workspaceType: WorkspaceType, workpaceId: Uuid): Promise<Workspace> {
+  async requestWorkspace(workspaceType: WorkspaceType, workspaceId: Uuid): Promise<Workspace> {
     try {
       const response = await this.axiosInstance.get(
-        `/workpace/${workspaceType}/${workpaceId.asString()}`
+        `/workspace/${workspaceType}/${workspaceId.asString()}`
       );
       const dto = new CreateWorkspaceDto(response.data as CreateWorkspaceDtoType);
       return dto.toEntity();

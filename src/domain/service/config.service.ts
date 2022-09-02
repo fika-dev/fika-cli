@@ -119,7 +119,7 @@ export class ConfigService implements IConfigService {
 
   getWorkspaceId(): Uuid {
     if (this.config.workspace !== "NOT_CONNECTED") {
-      const workspaceId = new Uuid(this.config.workspace.workspaceId);
+      const workspaceId = new Uuid(this.config.workspace.id);
       return workspaceId;
     } else {
       throw new NotionNotConnected("NOTION_NOT_CONNECTED");
