@@ -152,7 +152,21 @@ export class ConfigService implements IConfigService {
       this.createConfig();
     }
     const configString = fs.readFileSync(this.fikaConfigFilePath, "utf-8");
-    this.config = JSON.parse(configString) as Config;
+    const configFromFile = JSON.parse(configString);
+    if (configFromFile.hasOwnProperty("notionWorkspace")) {
+      const notionWorkspace = configFromFile.notionWorkspace;
+      if (notionWorkspace.hasOwnProperty("botId")) {
+        const workspace: Workspace = {
+          id: notionWorkspace.botId,
+          workspaceType: "notion",
+          workspaceIcon: notionWorkspace.icon ?? "",
+          workspaceName: notionWorkspace.name ?? "",
+        };
+        delete configFromFile.notionWorkspace;
+        configFromFile.workspace = workspace;
+      }
+    }
+    this.config = configFromFile as Config;
   }
   updateConfig(): void {
     throw new Error("Method not implemented.");
