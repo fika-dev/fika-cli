@@ -18,7 +18,6 @@ import {
   SYS_CALL_STRING,
 } from "../value_object/exceptions/not_online";
 import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
-import { NotionUrl } from "../value_object/notion_url.vo";
 import { UpdateInfo } from "../value_object/update-info.vo";
 import { Uuid } from "../value_object/uuid.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
@@ -75,10 +74,10 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async getIssueRecordByPage(notionPageUrl: NotionUrl, gitRepoUrl: string): Promise<Issue> {
+  async getIssueRecordByPage(documentUrl: string, gitRepoUrl: string): Promise<Issue> {
     try {
       const response = await this.axiosInstance.get(
-        `/git/issue?gitRepoUrl=${gitRepoUrl}&notionPageUrl=${notionPageUrl.asString()}`,
+        `/git/issue?gitRepoUrl=${gitRepoUrl}&notionPageUrl=${documentUrl}`,
         {
           headers: {
             "content-type": "application/json",

@@ -1,6 +1,5 @@
 import { Issue } from "@/domain/entity/issue.entity";
 import { IMessageService } from "@/domain/service/i_message.service";
-import { NotionUrl } from "@/domain/value_object/notion_url.vo";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
 import { IConfigService } from "src/domain/service/i_config.service";

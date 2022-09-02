@@ -3,7 +3,6 @@ import { DevObject } from "../entity/dev_object.entity";
 import { Issue } from "../entity/issue.entity";
 import { IssueWithPR } from "../entity/i_git_platform.service";
 import { Workspace } from "../entity/workspace.entity";
-import { NotionUrl } from "../value_object/notion_url.vo";
 import { UpdateInfo } from "../value_object/update-info.vo";
 import { Uuid } from "../value_object/uuid.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
@@ -28,7 +27,7 @@ export interface IConnectService {
   checkUpdate(currentVersion: string): Promise<UpdateInfo>;
   createIssueRecord(issue: Issue): Promise<void>;
   getIssueRecord(issueNumber: number, gitRepoUrl: string): Promise<Issue>;
-  getIssueRecordByPage(notionPageUrl: NotionUrl, gitRepoUrl: string): Promise<Issue>;
+  getIssueRecordByPage(documentUrl: string, gitRepoUrl: string): Promise<Issue>;
   createRelease(
     gitRepoUrl: string,
     tag: VersionTag,
