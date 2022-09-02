@@ -9,14 +9,16 @@ export const pullAndCheckConflict = async (baseBranch: string): Promise<void> =>
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
-  const isUpdated = await gitPullAction(baseBranch);
+  const gitStatus = await gitPullAction(baseBranch);
   const isConflictExist = await gitPlatformService.checkConflict();
   if (isConflictExist) {
     messageService.showWarning("There is conflict. Try again after resolving conflict");
     return;
-  } else if (isUpdated) {
+  } else if (gitStatus === "UPDATED") {
     messageService.showSuccess("Successfuly Merged");
-  } else {
+  } else if (gitStatus === "NO_CHANGE") {
     messageService.showSuccess("Nothing to update from remote");
+  } else {
+    messageService.showWarning(`Couldn't finish pull: ${gitStatus}`);
   }
 };
