@@ -59,9 +59,9 @@ test('1.test commitWithMessage when there is something to commit', async () => {
     // } catch (e) {
     //     errorService.handle(e);
     // }
-    expect(spyS).not.toBeCalledWith(' ');
-    expect(spyW).not.toBeCalledWith(' ');
-    expect(spyE).not.toBeCalledWith(' ');
+    expect(spyS).toBeCalledTimes(0);
+    expect(spyW).toBeCalledTimes(0);
+    expect(spyE).toBeCalledTimes(0);
 });
 
 test('2.test commitWithMessage when there is nothing to commit', async () => { 
@@ -81,10 +81,3 @@ test('2.test commitWithMessage when there is nothing to commit', async () => {
     }
 });
 
-test('3. test isThereRemoteUrl return true', async () => { 
-  const gitPlatformService = container.get<IGitPlatformService>(
-    SERVICE_IDENTIFIER.GitPlatformService
-  );
-  const remoteUrl = await gitPlatformService.isThereRemoteUrl();
-  expect(remoteUrl).toEqual(true);
-  });
