@@ -164,6 +164,8 @@ export class ConfigService implements IConfigService {
         };
         delete configFromFile.notionWorkspace;
         configFromFile.workspace = workspace;
+        this.config = configFromFile as Config;
+        this.updateWorkspace(workspace);
       }
     }
     this.config = configFromFile as Config;
