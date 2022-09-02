@@ -3,7 +3,7 @@ import { connectCommand } from "@/command/connect";
 import * as action from "@/command/connect/connect.action";
 import axios from "axios";
 import { program } from "commander";
-import { WorkspaceCreator } from "plug_in/workspace/workspace-creator";
+import { WorkspaceCreator } from "plug_in/workspace_platform/workspace-creator";
 import { PARAMETER_IDENTIFIER } from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
 import { checkAndCloneRepo } from "test/test-utils";

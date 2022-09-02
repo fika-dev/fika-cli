@@ -1,10 +1,10 @@
-import { Workspace } from "@/domain/entity/add_on/workspace.entity";
+import { WorkspacePlatform } from "@/domain/entity/add_on/workspace_platform.entity";
 
 const jiraAuthorizeUri: string = "https://auth.atlassian.com/authorize";
 const fikaJraClientId: string = "4CtGOOySCpovViYXMVwRtPuPdlZtg9gA";
 const jiraSocpes: string[] = ["read:jira-work", "write:jira-work"];
 
-export class JiraWorkspace extends Workspace {
+export class JiraWorkspace extends WorkspacePlatform {
   constructor() {
     super();
     this.workspaceType = "jira";

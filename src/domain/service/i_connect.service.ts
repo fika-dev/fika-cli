@@ -1,7 +1,8 @@
+import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
 import { DevObject } from "../entity/dev_object.entity";
 import { Issue } from "../entity/issue.entity";
 import { IssueWithPR } from "../entity/i_git_platform.service";
-import { NotionWorkspace } from "../entity/notion_workspace.entity";
+import { Workspace } from "../entity/workspace.entity";
 import { NotionUrl } from "../value_object/notion_url.vo";
 import { UpdateInfo } from "../value_object/update-info.vo";
 import { Uuid } from "../value_object/uuid.vo";
@@ -12,7 +13,7 @@ export interface UserWithToken {
 }
 
 export interface IConnectService {
-  requestNotionWorkspace(botId: Uuid): Promise<NotionWorkspace>;
+  requestWorkspace(workspaceType: WorkspaceType, workspaceId: Uuid): Promise<Workspace>;
   create(devObj: DevObject): Promise<string>;
   update(devObj: DevObject): Promise<string>;
   remove(devObj: DevObject): Promise<string>;
