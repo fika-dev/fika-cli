@@ -4,7 +4,7 @@ import { Config } from "src/domain/entity/config.entity";
 import { ObjectType } from "src/domain/entity/dev_object.entity";
 
 export const defaultConfig: Config = {
-  notionWorkspace: "NOT_CONNECTED",
+  workspace: "NOT_CONNECTED",
   fikaToken: "UN_AUTHENTICATED",
   addOns: [
     {

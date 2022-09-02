@@ -19,7 +19,7 @@ export const createIssue = async (notionDocumentUrl: NotionUrl): Promise<Issue> 
   const updatedIssue = await createGitPlatformIssue(issue);
   messageService.endWaiting();
   messageService.showWaiting(`Linking Github issue to Notion`);
-  const botId = configService.getNotionBotId();
+  const botId = configService.getWorkspaceId();
   await connectService.updateIssue(updatedIssue, botId);
   await connectService.createIssueRecord(updatedIssue);
   messageService.endWaiting();

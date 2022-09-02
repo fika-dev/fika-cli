@@ -9,7 +9,7 @@ import { NotionUrl } from "@/domain/value_object/notion_url.vo";
 export const getNotionIssue = async (notionDocumentUrl: NotionUrl): Promise<Issue> => {
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  const botId = configService.getNotionBotId();
+  const botId = configService.getWorkspaceId();
   const issue = await connectService.getIssue(notionDocumentUrl, botId);
   return issue;
 };
