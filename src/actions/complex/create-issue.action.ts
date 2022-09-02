@@ -6,14 +6,14 @@ import container from "src/config/ioc_config";
 import { IConfigService } from "src/domain/service/i_config.service";
 import { IConnectService } from "src/domain/service/i_connect.service";
 import { createGitPlatformIssue } from "../git/create-git-platform-issue.action";
-import { getNotionIssue } from "../notion/get-notion-issue.action";
+import { getWorkspaceIssue } from "../workspace/get-workspace-issue.action";
 
-export const createIssue = async (notionDocumentUrl: NotionUrl): Promise<Issue> => {
+export const createIssue = async (documentUrl: string): Promise<Issue> => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   messageService.showWaiting("Getting issue from Notion");
-  const issue = await getNotionIssue(notionDocumentUrl);
+  const issue = await getWorkspaceIssue(documentUrl);
   messageService.endWaiting();
   messageService.showWaiting(`Creating Github issue of [${issue.title}]`);
   const updatedIssue = await createGitPlatformIssue(issue);
