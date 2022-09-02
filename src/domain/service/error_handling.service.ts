@@ -38,9 +38,9 @@ export class ErrorHandlingService implements IErrorHandlingService {
         message: `\n\n타겟팅하고 있는 브랜치 와 현재 push 하고 있는 브랜치 사이에 업데이트할 커밋이 없습니다.\n제출하지 않은 Commit 이 있는지 확인해보세요.\n\n`,
         code: exception.name,
       });
-    } else if (exception.name === "NOTION_NOT_CONNECTED") {
+    } else if (exception.name === "WORKSPACE_NOT_CONNECTED") {
       messageService.showError({
-        message: `notion 이 fika 와 연결되지 않았습니다.\n\n fika connect \n\n 위의 커맨드를 통해 fika 와 notion 을 연결해주세요.`,
+        message: `Workspace is not connected. Please follow below guide.`,
         code: exception.name,
         guideUrl: "https://www.notion.so/haamki/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
       });
