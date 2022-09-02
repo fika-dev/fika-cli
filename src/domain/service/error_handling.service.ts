@@ -94,6 +94,11 @@ export class ErrorHandlingService implements IErrorHandlingService {
         message: `\nCould not find Notion Page with given URL\n`,
         code: exception.name,
       });
+    } else if (exception.name === "NothingToCommit") {
+      messageService.showError({
+        message: `\nThere is nothing to commit\n`,
+        code: exception.name,
+      });
     } else {
       messageService.showError({
         message: exception.message,
