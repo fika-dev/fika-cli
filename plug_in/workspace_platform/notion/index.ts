@@ -1,8 +1,8 @@
-import { Workspace } from "@/domain/entity/add_on/workspace.entity";
+import { WorkspacePlatform } from "@/domain/entity/add_on/workspace_platform.entity";
 const notionAuthorizeUri: string = "https://api.notion.com/v1/oauth/authorize";
 const fikaNotionClientId: string = "3b87a929-9ddd-4578-ad56-01243af38fb1";
 
-export class NotionWorkspace extends Workspace {
+export class NotionWorkspace extends WorkspacePlatform {
   constructor() {
     super();
     this.workspaceType = "notion";

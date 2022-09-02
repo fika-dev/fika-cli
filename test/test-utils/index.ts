@@ -11,7 +11,7 @@ import { NotionUrl } from "@/domain/value_object/notion_url.vo";
 import { exec } from 'child_process';
 import fs from "fs";
 import path from "path";
-import { testUserConfig } from "test/test-constants";
+import { TEST_USER_CONFIG } from "test/test-constants";
 import { promisify } from 'util';
 
 export const clearTestFikaPath = (currentPath: string)=>{
@@ -37,7 +37,7 @@ export const createTestConfig = (fikaPath: string)=> {
     fs.mkdirSync(fikaPath);
   }
   const fikaConfigFilePath = path.join(fikaPath, CONFIG_FILE_NAME);
-  const configString = JSON.stringify(testUserConfig, undefined, 4);
+  const configString = JSON.stringify(TEST_USER_CONFIG, undefined, 4);
   fs.writeFileSync(fikaConfigFilePath, configString);
 }
 

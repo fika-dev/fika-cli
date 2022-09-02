@@ -7,16 +7,16 @@ import { CONFIG_FILE_NAME, LOCAL_CONFIG_NAME } from "src/config/constants/path";
 import { version } from "../../../package.json";
 import { AddOnType } from "../entity/add_on/add_on.entity";
 import { Config } from "../entity/config.entity";
-import { NotionWorkspace } from "../entity/notion_workspace.entity";
+import { Workspace } from "../entity/workspace.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
-import { NotionNotConnected } from "../value_object/exceptions/notion_not_connected";
+import { WorkspaceNotConnected } from "../value_object/exceptions/workspace_not_connected";
 import { GitConfig } from "../value_object/git_config.vo";
 import { Uuid } from "../value_object/uuid.vo";
 import { IConfigService, InitialConfigInput, LocalConfig } from "./i_config.service";
 
 @injectable()
 export class ConfigService implements IConfigService {
-  private config: Config = defaultConfig;
+  private config: Config = JSON.parse(JSON.stringify(defaultConfig));
   private localConfig: LocalConfig;
   private fikaConfigFilePath?: string;
   private fikaPath: string;
@@ -115,19 +115,19 @@ export class ConfigService implements IConfigService {
     fs.writeFileSync(this.fikaConfigFilePath, configString);
   }
 
-  getNotionBotId(): Uuid {
-    if (this.config.notionWorkspace !== "NOT_CONNECTED") {
-      const botId = new Uuid(this.config.notionWorkspace.botId);
-      return botId;
+  getWorkspaceId(): Uuid {
+    if (this.config.workspace !== "NOT_CONNECTED") {
+      const workspaceId = new Uuid(this.config.workspace.id);
+      return workspaceId;
     } else {
-      throw new NotionNotConnected("NOTION_NOT_CONNECTED");
+      throw new WorkspaceNotConnected("WORKSPACE_NOT_CONNECTED");
     }
   }
 
-  updateNotionWorkspace(notionWorkspace: NotionWorkspace): void {
+  updateWorkspace(workspace: Workspace): void {
     this.config = {
       ...this.config,
-      notionWorkspace: notionWorkspace,
+      workspace: workspace,
     };
     const configString = JSON.stringify(this.config, undefined, 4);
     if (!this.fikaConfigFilePath) {
@@ -150,7 +150,23 @@ export class ConfigService implements IConfigService {
       this.createConfig();
     }
     const configString = fs.readFileSync(this.fikaConfigFilePath, "utf-8");
-    this.config = JSON.parse(configString) as Config;
+    const configFromFile = JSON.parse(configString);
+    if (configFromFile.hasOwnProperty("notionWorkspace")) {
+      const notionWorkspace = configFromFile.notionWorkspace;
+      if (notionWorkspace.hasOwnProperty("botId")) {
+        const workspace: Workspace = {
+          id: notionWorkspace.botId,
+          workspaceType: "notion",
+          workspaceIcon: notionWorkspace.icon ?? "",
+          workspaceName: notionWorkspace.name ?? "",
+        };
+        delete configFromFile.notionWorkspace;
+        configFromFile.workspace = workspace;
+        this.config = configFromFile as Config;
+        this.updateWorkspace(workspace);
+      }
+    }
+    this.config = configFromFile as Config;
   }
   updateConfig(): void {
     throw new Error("Method not implemented.");

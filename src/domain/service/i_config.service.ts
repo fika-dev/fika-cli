@@ -1,4 +1,5 @@
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
+import { Workspace } from "../entity/workspace.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { Uuid } from "../value_object/uuid.vo";
 
@@ -28,7 +29,7 @@ export interface LocalConfig {
   };
 }
 export interface IConfigService {
-  getNotionBotId(): Uuid;
+  getWorkspaceId(): Uuid;
   createConfig(): void;
   readConfig(): void;
 
@@ -41,7 +42,7 @@ export interface IConfigService {
   getFikaVersion(): string;
 
   updateConfig(): void;
-  updateNotionWorkspace(notionWorkspace: NotionWorkspace): void;
+  updateWorkspace(workspace: Workspace): void;
   updateFikaToken(token: string): void;
 
   parseIssueNumber(branch: string): number;
