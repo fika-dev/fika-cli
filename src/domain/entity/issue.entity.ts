@@ -1,5 +1,5 @@
 export class Issue {
-  issueUrl?: string;
+  gitIssueUrl?: string;
   notionUrl: string;
   title: string;
   body?: string;

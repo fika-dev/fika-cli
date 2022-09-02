@@ -92,7 +92,7 @@ export class ConnectService implements IConnectService {
         return {
           notionUrl: response.data.notionPageUrl,
           title: response.data.title,
-          issueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
+          gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
           labels: [],
         };
       } else {
@@ -186,7 +186,7 @@ export class ConnectService implements IConnectService {
   }
   async createIssueRecord(issue: Issue): Promise<void> {
     try {
-      const fragments = issue.issueUrl.split("/");
+      const fragments = issue.gitIssueUrl.split("/");
       const gitRepoUrl = fragments.slice(0, fragments.length - 2).join("/");
       const response = await this.axiosInstance.post(
         "/git/issue",
@@ -229,7 +229,7 @@ export class ConnectService implements IConnectService {
       return {
         notionUrl: response.data.notionPageUrl,
         title: response.data.title,
-        issueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
+        gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
         labels: [],
         prUrl: response.data.prUrl,
       };

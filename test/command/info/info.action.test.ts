@@ -59,7 +59,7 @@ it("1.test info on a issue branch", async () => {
     jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => 'feature/issue/133');
     jest.spyOn(connectService, 'getIssueRecord').mockImplementation(async () => {
         return {
-            issueUrl: 'https://some.thing',
+            gitIssueUrl: 'https://some.thing',
             notionUrl: 'https://other.thing',
             title: 'test is the best',
             labels: [],

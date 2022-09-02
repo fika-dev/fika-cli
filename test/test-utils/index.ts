@@ -144,7 +144,7 @@ export const checkAndDeleteIssue = async (documentUrl: string)=> {
   const urlWithoutGit = process.env.TESTING_REPO_GIT_URL.replace('.git', '');
   const issue = await connectService.getIssueRecordByPage(new NotionUrl(documentUrl), urlWithoutGit);
   if (issue){
-    await connectService.deleteIssue(urlWithoutGit, Issue.parseNumberFromUrl(issue.issueUrl));
+    await connectService.deleteIssue(urlWithoutGit, Issue.parseNumberFromUrl(issue.gitIssueUrl));
   }
 }
 

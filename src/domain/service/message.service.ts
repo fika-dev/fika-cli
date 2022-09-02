@@ -201,13 +201,13 @@ ${branchName} 브랜치를 Github 에 push ${this.withGreenBoldChalk("완료")}
 
   showCreateIssueSuccess(issue: Issue): void {
     this._clear();
-    const issueNumber = Issue.parseNumberFromUrl(issue.issueUrl!);
+    const issueNumber = Issue.parseNumberFromUrl(issue.gitIssueUrl!);
     const issueBranch = this.configService.getIssueBranch(issueNumber);
     process.stdout.write(
       `🎉 이슈 생성에 성공하였습니다!  "${this.withCyanBoldChalk(issue.title)}"`
     );
     process.stdout.write("");
-    process.stdout.write(`🟢 github issue url:  ${this.withYellowBoldChalk(issue.issueUrl)}`);
+    process.stdout.write(`🟢 github issue url:  ${this.withYellowBoldChalk(issue.gitIssueUrl)}`);
     process.stdout.write(`🟢 notion url:  ${this.withBlueBoldChalk(issue.notionUrl)}`);
     process.stdout.write("");
     process.stdout.write(`------------------------------------------------`);
