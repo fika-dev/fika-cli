@@ -23,6 +23,7 @@ export interface IGitPlatformService {
   checkoutToBranchWithReset(branchName: string): Promise<void>;
   checkoutToBranchWithoutReset(branchName: string): Promise<void>;
   stageAllChanges(): Promise<void>;
+  createDummyChange(): Promise<void>;
   commitWithMessage(message: string): Promise<void>;
   deleteLocalBranch(branchName: string): Promise<void>;
   deleteRemoteBranch(branchName: string): Promise<void>;
