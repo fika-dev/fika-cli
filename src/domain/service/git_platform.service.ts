@@ -13,6 +13,8 @@ import { NothingToCommit } from "../value_object/exceptions/nothing_to_commit";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
 
+export type GitStatus = "UPDATED" | "REMOTE_CONFLICT" | "NO_CHANGE" | "NO_REMOTE_BRANCH";
+
 @injectable()
 export class GitPlatformService implements IGitPlatformService {
   private configService: IConfigService;
@@ -40,21 +42,21 @@ export class GitPlatformService implements IGitPlatformService {
       return false;
     }
   }
-  async pullFrom(branchName: string): Promise<boolean> {
+  async pullFrom(branchName: string): Promise<GitStatus> {
     try {
       const { stdout: pullOutput, stderr: pullError } = await this.execP(
         `git pull --no-ff origin ${branchName}`
       );
       if (pullOutput.includes("Already up to date")) {
-        return false;
+        return "NO_CHANGE";
       } else {
-        return true;
+        return "UPDATED";
       }
     } catch (e) {
       if (e.stdout.includes("conflict")) {
-        return false;
+        return "REMOTE_CONFLICT";
       } else if (e.stdout.includes("couldn't find remote ref")) {
-        return false;
+        return "NO_REMOTE_BRANCH";
       } else {
         throw e;
       }

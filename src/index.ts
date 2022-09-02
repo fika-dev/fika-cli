@@ -8,6 +8,7 @@ import { checkoutFeatureBranchCommand } from "./command/checkout-feature-branch"
 import { finishCommand } from "./command/finish";
 import { infoCommand } from "./command/info";
 import { initCommand } from "./command/init";
+import { pullCommand } from "./command/pull";
 import { releaseCommand } from "./command/release";
 import { setCommand } from "./command/set";
 import { startCommand } from "./command/start";
@@ -29,6 +30,7 @@ try {
   program.addCommand(infoCommand);
   program.addCommand(checkoutFeatureBranchCommand);
   program.addCommand(checkoutDevelopCommand);
+  program.addCommand(pullCommand);
   program.parse(process.argv);
 } catch (e) {
   const errorHandlingService = container.get<IErrorHandlingService>(

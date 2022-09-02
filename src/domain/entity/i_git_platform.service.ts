@@ -1,3 +1,4 @@
+import { GitStatus } from "../service/git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { Issue } from "./issue.entity";
@@ -29,7 +30,7 @@ export interface IGitPlatformService {
   tagCommit(branchName: string, tag: VersionTag): Promise<void>;
   getBranches(): Promise<string[]>;
   getLatestBranchByCommitDate(): Promise<string>;
-  pullFrom(branchName: string): Promise<boolean>;
+  pullFrom(branchName: string): Promise<GitStatus>;
   checkUnstagedChanges(): Promise<boolean>;
   stash(id: string): Promise<void>;
   applyStash(id: string): Promise<void>;
