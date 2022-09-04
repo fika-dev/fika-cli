@@ -24,8 +24,9 @@ export const createPR = async (): Promise<void> => {
   const updatedIssue = await createGitPlatformPR(branchName, issue);
   messageService.endWaiting();
   messageService.showWaiting("Updating Notion Issue");
-  const botId = configService.getWorkspaceId();
-  await connectService.updateIssue(updatedIssue, botId);
+  const workspaceId = configService.getWorkspaceId();
+  const workspaceType = configService.getWorkspaceType();
+  await connectService.updateIssue(updatedIssue, workspaceId, workspaceType);
   const issueNumber = configService.parseIssueNumber(branchName);
   const prNumber = Issue.parseNumberFromUrl(updatedIssue.gitPrUrl);
   // [TODO] if base branch
