@@ -74,10 +74,10 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async getIssueRecordByPage(documentUrl: string, gitRepoUrl: string): Promise<Issue> {
+  async getIssueRecordByPage(issueUrl: string, gitRepoUrl: string): Promise<Issue> {
     try {
       const response = await this.axiosInstance.get(
-        `/git/issue?gitRepoUrl=${gitRepoUrl}&notionPageUrl=${documentUrl}`,
+        `/git/issue?gitRepoUrl=${gitRepoUrl}&notionPageUrl=${issueUrl}`,
         {
           headers: {
             "content-type": "application/json",
@@ -357,15 +357,19 @@ export class ConnectService implements IConnectService {
       }
     }
   }
-  async updateIssue(updatedIssue: Issue, botId: Uuid): Promise<Issue> {
-    const updatedIssueWithBotId = {
-      ...updatedIssue,
-      botId: botId.asString(),
-    };
+  async updateIssue(
+    updatedIssue: Issue,
+    workspaceId: Uuid,
+    workspaceType: WorkspaceType
+  ): Promise<Issue> {
     try {
-      const response = await this.axiosInstance.post(
-        `/notion/issue/update`,
-        updatedIssueWithBotId,
+      const response = await this.axiosInstance.patch(
+        `/workspace/issue`,
+        {
+          ...updatedIssue,
+          workspaceId: workspaceId.asString(),
+          workspaceType,
+        },
         { headers: { "content-type": "application/json" } }
       );
       return updatedIssue;

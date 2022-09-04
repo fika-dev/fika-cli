@@ -17,7 +17,7 @@ export interface IConnectService {
   update(devObj: DevObject): Promise<string>;
   remove(devObj: DevObject): Promise<string>;
   getIssue(documentUrl: string, workspaceId: Uuid, workspaceType: WorkspaceType): Promise<Issue>;
-  updateIssue(updatedIssue: Issue, botId: Uuid): Promise<Issue>;
+  updateIssue(updatedIssue: Issue, workspaceId: Uuid, workspaceType: WorkspaceType): Promise<Issue>;
   deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void>;
   useToken(token: string): void;
   isAvailableEmail(email: string): Promise<boolean>;
@@ -27,7 +27,7 @@ export interface IConnectService {
   checkUpdate(currentVersion: string): Promise<UpdateInfo>;
   createIssueRecord(issue: Issue): Promise<void>;
   getIssueRecord(issueNumber: number, gitRepoUrl: string): Promise<Issue>;
-  getIssueRecordByPage(documentUrl: string, gitRepoUrl: string): Promise<Issue>;
+  getIssueRecordByPage(issueUrl: string, gitRepoUrl: string): Promise<Issue>;
   createRelease(
     gitRepoUrl: string,
     tag: VersionTag,
