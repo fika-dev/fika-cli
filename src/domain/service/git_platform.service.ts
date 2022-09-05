@@ -154,7 +154,8 @@ export class GitPlatformService implements IGitPlatformService {
     try {
       let command: string;
       if (process.platform === "win32") {
-        command = `git checkout ${branchName} >nul 2>nul ||  git checkout -b ${branchName} --track origin/${branchName}`;
+        const winName = branchName.trim().replace("'", "").replace("'", "");
+        command = `git checkout ${winName} >nul 2>nul ||  git checkout -b ${winName} --track origin/${winName}`;
       } else {
         command = `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName} --track origin/${branchName}`;
       }
