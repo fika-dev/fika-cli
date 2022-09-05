@@ -5,7 +5,11 @@ import { ObjectType } from "src/domain/entity/dev_object.entity";
 // export const TEST_NOTION_WORKSPACE_ID = '6e9f6c0d-9018-43cf-8081-9ddb21368fc2';
 export const TEST_NOTION_WORKSPACE_ID = 'd3224eba-6e67-4730-9b6f-a9ef1dc7e4ac';
 
+export const TEST_JIRA_WORKSPACE_ID = '275b18d8-c1b6-4b30-940a-529e6f3e5235';
+
 export const TEST_START_DOC_ID = 'https://www.notion.so/test-fika-start-doc-4af459df4efb448483fe3e2b703d50fd';
+
+export const TEST_START_DOC_JIRA_URL = 'https://fika-dev.atlassian.net/browse/FB-1';
 
 export const TEST_CI_DOC_ID = 'https://www.notion.so/test-document-8d3ec82f2fc14b64b150f298c48598ae';
 
