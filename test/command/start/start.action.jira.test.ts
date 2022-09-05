@@ -7,7 +7,7 @@ import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import { Uuid } from "@/domain/value_object/uuid.vo";
-import { TEST_CHANGE_FILE_PATH, TEST_CPR_BRANCH_NAME, TEST_START_DOC_ID } from "test/test-constants";
+import { TEST_CHANGE_FILE_PATH, TEST_CPR_BRANCH_NAME, TEST_JIRA_WORKSPACE_ID, TEST_START_DOC_ID, TEST_START_DOC_JIRA_URL } from "test/test-constants";
 import { checkAndCloneRepo, checkAndDeleteIssue, createTestConfig, makeMeaninglessChange, restoreGitRepo, setAuthToken, setUseToken } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
@@ -24,8 +24,12 @@ beforeAll(async () => {
 beforeEach(async()=>{
   jest.restoreAllMocks();
   jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
-  jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
-  jest.spyOn(configService, 'getWorkspaceType').mockImplementation(()=>'notion');
+  jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid(TEST_JIRA_WORKSPACE_ID));
+  jest.spyOn(configService, 'getWorkspaceType').mockImplementation(()=>'jira');
+  jest.spyOn(gitPlatformService, 'createIssue').mockImplementation((issue)=>Promise.resolve({
+    ...issue,
+    gitIssueUrl: 'https://github.com/fika-dev/fika-cli-test-samples/issues/912',
+  }));
   await gitPlatformService.checkoutToBranchWithoutReset('develop');
   await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });
@@ -56,10 +60,10 @@ test('2. check unstaged change', async () => {
 });
 
 test('3. test start action without existing issue', async () => {
-  await checkAndDeleteIssue(TEST_START_DOC_ID);
+  await checkAndDeleteIssue(TEST_START_DOC_JIRA_URL);
   const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('develop');
-  await startAction(TEST_START_DOC_ID);
+  await startAction(TEST_START_DOC_JIRA_URL);
   const branchName = await gitPlatformService.getBranchName();
   expect(branchName).toContain('feat');
   expect(spy).toBeCalled();
@@ -68,25 +72,25 @@ test('3. test start action without existing issue', async () => {
 test('4. test checkout to existing issue', async () => {
   const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('develop');
-  await startAction(TEST_START_DOC_ID);
+  await startAction(TEST_START_DOC_JIRA_URL);
   const branchName = await gitPlatformService.getBranchName();
   expect(branchName).toContain('feat');
   expect(spy).toBeCalled();
 });
 
 test('5. test without checkout ', async () => {
-  await checkAndDeleteIssue(TEST_START_DOC_ID);
+  await checkAndDeleteIssue(TEST_START_DOC_JIRA_URL);
   const checkoutFalse = defaultLocalConfig;
   checkoutFalse.start.checkoutToFeature = false;
   jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => checkoutFalse);
   await gitPlatformService.checkoutToBranchWithReset('develop');
-  await startAction(TEST_START_DOC_ID);
+  await startAction(TEST_START_DOC_JIRA_URL);
   const branchName = await gitPlatformService.getBranchName();
   expect(branchName).toEqual('develop');
 });
 
 test('6. test only allowed branch warning ', async () => {
-  await checkAndDeleteIssue(TEST_START_DOC_ID);
+  await checkAndDeleteIssue(TEST_START_DOC_JIRA_URL);
   jest.spyOn(promptService, 'confirmAction').mockImplementation(async () => true);
   let isWarningMessageCorrect: boolean;
   const spyWarning = jest.spyOn(messageService, 'showWarning').mockImplementation((message)=>{
@@ -98,7 +102,7 @@ test('6. test only allowed branch warning ', async () => {
   });
   const spySuccess = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('something');
-  await startAction(TEST_START_DOC_ID);
+  await startAction(TEST_START_DOC_JIRA_URL);
   const branchName = await gitPlatformService.getBranchName();
   expect(branchName).toEqual('something');
   expect(spyWarning).toBeCalled();
@@ -108,7 +112,7 @@ test('6. test only allowed branch warning ', async () => {
 
 
 test('7. test nok OK to start ', async () => {
-  await checkAndDeleteIssue(TEST_START_DOC_ID);
+  await checkAndDeleteIssue(TEST_START_DOC_JIRA_URL);
   const localConfig = defaultLocalConfig;
   localConfig.start.fromDevelopOnly = false;
   localConfig.start.pullBeforeAlways = false;
@@ -117,7 +121,7 @@ test('7. test nok OK to start ', async () => {
   const spyConfirm = jest.spyOn(promptService, 'confirmAction').mockImplementation(async () => true);
   const spySuccess = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('something');
-  await startAction(TEST_START_DOC_ID);
+  await startAction(TEST_START_DOC_JIRA_URL);
   const branchName = await gitPlatformService.getBranchName();
   expect(spyConfirm).toBeCalled();
   expect(spySuccess).toBeCalled();

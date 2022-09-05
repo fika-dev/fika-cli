@@ -12,7 +12,7 @@ export const checkoutExistingIssue = async (existingIssue: Issue): Promise<void>
     SERVICE_IDENTIFIER.GitPlatformService
   );
   messageService.showWaiting("Undergoing checkout");
-  const branch = configService.getIssueBranch(Issue.parseNumberFromUrl(existingIssue.issueUrl));
+  const branch = configService.getIssueBranch(Issue.parseNumberFromUrl(existingIssue.gitIssueUrl));
   await gitPlatformService.checkoutToBranchWithoutReset(branch);
   messageService.endWaiting();
   messageService.showSuccess(`Checkout to given issue branch: ${branch}`);

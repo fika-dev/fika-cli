@@ -28,18 +28,18 @@ export const infoAction = async () => {
       messageService.showSuccess(
         `The current branch is ${currentBranch}, ${issue.title}`,
         `The Git issue URL is `,
-        issue.issueUrl
+        issue.gitIssueUrl
       );
       messageService.showSuccess(
         `For more Information, please take a look at the page linked below:`,
         undefined,
-        issue.notionUrl
+        issue.issueUrl
       );
-      if (issue.prUrl) {
+      if (issue.gitPrUrl) {
         messageService.showSuccess(
           `And finally, you can take a look at the PR with the link below`,
           undefined,
-          issue.prUrl
+          issue.gitPrUrl
         );
       }
     } else {

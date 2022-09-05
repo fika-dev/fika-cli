@@ -6,6 +6,7 @@ import { defaultConfig, defaultLocalConfig } from "src/config/constants/default_
 import { CONFIG_FILE_NAME, LOCAL_CONFIG_NAME } from "src/config/constants/path";
 import { version } from "../../../package.json";
 import { AddOnType } from "../entity/add_on/add_on.entity";
+import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
 import { Config } from "../entity/config.entity";
 import { Workspace } from "../entity/workspace.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
@@ -29,6 +30,14 @@ export class ConfigService implements IConfigService {
     this.fikaPath = fikaPath;
     this.localPath = localPath;
     this.readConfig();
+  }
+  getWorkspaceType(): WorkspaceType {
+    if (this.config.workspace !== "NOT_CONNECTED") {
+      const workspaceType = this.config.workspace.workspaceType as WorkspaceType;
+      return workspaceType;
+    } else {
+      throw new WorkspaceNotConnected("WORKSPACE_NOT_CONNECTED");
+    }
   }
   getLocalConfig(): LocalConfig {
     const localConfigFilePath = path.join(this.localPath, LOCAL_CONFIG_NAME);

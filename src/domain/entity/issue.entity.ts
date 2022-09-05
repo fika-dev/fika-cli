@@ -1,10 +1,10 @@
 export class Issue {
-  issueUrl?: string;
-  notionUrl: string;
+  gitIssueUrl?: string;
+  issueUrl: string;
   title: string;
   body?: string;
   labels: string[];
-  prUrl?: string;
+  gitPrUrl?: string;
   static parseNumberFromUrl(prUrl: string): number {
     const fragments = prUrl.trim().split("/");
     return parseInt(fragments[fragments.length - 1]);

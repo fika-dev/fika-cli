@@ -59,11 +59,11 @@ it("1.test info on a issue branch", async () => {
     jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => 'feature/issue/133');
     jest.spyOn(connectService, 'getIssueRecord').mockImplementation(async () => {
         return {
-            issueUrl: 'https://some.thing',
-            notionUrl: 'https://other.thing',
+            gitIssueUrl: 'https://some.thing',
+            issueUrl: 'https://other.thing',
             title: 'test is the best',
             labels: [],
-            prUrl: 'https://ts.4.8'} as Issue} );
+            gitPrUrl: 'https://ts.4.8'} as Issue} );
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
     await infoAction();
     expect(spy).toBeCalledWith("The current branch is feature/issue/133, test is the best", "The Git issue URL is ", "https://some.thing");
