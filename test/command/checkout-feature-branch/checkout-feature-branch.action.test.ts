@@ -46,7 +46,7 @@ afterAll(() => {
 });
 
 it("1.test if checkoutFeatureBranch go to the latest feature branch", async () => {
-    const testBranch = "feature/iss/#55";
+    const testBranch = "feature/iss/#344";
     await gitPlatformService.checkoutToBranchWithoutReset(testBranch);
     makeMeaninglessChange('./test/testing-env/fika-cli-test-samples/sample_01/src/just-new-file.ts');
     await stageAndCommit('Just commit a meaningless change');
