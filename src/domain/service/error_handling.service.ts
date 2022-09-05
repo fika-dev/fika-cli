@@ -99,6 +99,11 @@ export class ErrorHandlingService implements IErrorHandlingService {
         message: `\nThere is nothing to commit\n`,
         code: exception.name,
       });
+    } else if (exception.name === "NoRemoteBranch") {
+      messageService.showError({
+        message: `\nNo remote branch was found\n`,
+        code: exception.name,
+      });
     } else {
       messageService.showError({
         message: exception.message,

@@ -22,6 +22,7 @@ export interface IGitPlatformService {
   getLatestCommitId(branchName: string): Promise<string>;
   checkoutToBranchWithReset(branchName: string): Promise<void>;
   checkoutToBranchWithoutReset(branchName: string): Promise<void>;
+  checkoutToFeatureBranch(branchName: string): Promise<void>;
   stageAllChanges(): Promise<void>;
   createDummyChange(): Promise<void>;
   commitWithMessage(message: string): Promise<void>;
