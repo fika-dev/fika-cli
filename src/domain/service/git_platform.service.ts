@@ -10,6 +10,7 @@ import { Issue } from "../entity/issue.entity";
 import { IGitPlatformService, IssueWithPR } from "../entity/i_git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { NothingToCommit } from "../value_object/exceptions/nothing_to_commit";
+import { NoRemoteBranch } from "../value_object/exceptions/no_remote_branch";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
 
@@ -97,7 +98,6 @@ export class GitPlatformService implements IGitPlatformService {
     const filteredList = branches.filter(branch => this.isItAFeatureBranch(branch, template));
     return filteredList.length > 0 ? filteredList[0] : undefined;
   }
-
   async getSortedBranchesByCommitDate(): Promise<string[]> {
     const { stdout: branchesText, stderr: getBranchesError } = await this.execP(
       "git branch --sort=-committerdate --format='%(refname:short)'"
@@ -140,7 +140,6 @@ export class GitPlatformService implements IGitPlatformService {
       return await execP(`LC_ALL=C  ${command}`, { cwd: this.gitRepoPath });
     }
   }
-
   async checkoutToBranchWithoutReset(branchName: string): Promise<void> {
     let command: string;
     if (process.platform === "win32") {
@@ -149,6 +148,27 @@ export class GitPlatformService implements IGitPlatformService {
       command = `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName}`;
     }
     await this.execP(command);
+  }
+  async checkoutToFeatureBranch(branchName: string): Promise<void> {
+    await this.execP("git fetch");
+    try {
+      let command: string;
+      if (process.platform === "win32") {
+        const winName = branchName.trim().replace("'", "").replace("'", "");
+        command = `git checkout ${winName} >nul 2>nul ||  git checkout -b ${winName} --track origin/${winName}`;
+      } else {
+        command = `git checkout ${branchName} 2>/dev/null || git checkout -b ${branchName} --track origin/${branchName}`;
+      }
+      await this.execP(command);
+    } catch (e) {
+      if (
+        e.stdout.includes(`is not a commit and a branch ${branchName} cannot be created from it`)
+      ) {
+        throw new NoRemoteBranch("NoRemoteBranch");
+      } else {
+        throw e;
+      }
+    }
   }
   async getLatestTag(): Promise<VersionTag> {
     try {
