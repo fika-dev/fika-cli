@@ -5,11 +5,7 @@ import { checkoutFeatureBranchAction } from "./checkout-feature-branch.action";
 export const checkoutFeatureBranchCommand = new Command()
   .command("f")
   .description("checking out to the most recent local feature branch")
-  .argument("<issue-number>", "", undefined)
+  .argument("<issue-number>", "issue number to checkout", undefined)
   .action(async argument => {
-    if (argument) {
-      commandWrapper(checkoutFeatureBranchAction, argument);
-    } else {
-      commandWrapper(checkoutFeatureBranchAction);
-    }
+    commandWrapper(checkoutFeatureBranchAction, argument);
   });
