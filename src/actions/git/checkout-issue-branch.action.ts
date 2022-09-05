@@ -14,7 +14,7 @@ export const checkoutIssueBranch = async (
     SERVICE_IDENTIFIER.GitPlatformService
   );
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  const issueNumber = Issue.parseNumberFromUrl(issue.issueUrl!);
+  const issueNumber = Issue.parseNumberFromUrl(issue.gitIssueUrl!);
   const issueBranch = configService.getIssueBranch(issueNumber);
   await gitPlatformService.checkoutToBranchWithoutReset(issueBranch);
   if (stashId) {

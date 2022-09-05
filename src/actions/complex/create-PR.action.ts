@@ -24,13 +24,14 @@ export const createPR = async (): Promise<void> => {
   const updatedIssue = await createGitPlatformPR(branchName, issue);
   messageService.endWaiting();
   messageService.showWaiting("Updating Notion Issue");
-  const botId = configService.getWorkspaceId();
-  await connectService.updateIssue(updatedIssue, botId);
+  const workspaceId = configService.getWorkspaceId();
+  const workspaceType = configService.getWorkspaceType();
+  await connectService.updateIssue(updatedIssue, workspaceId, workspaceType);
   const issueNumber = configService.parseIssueNumber(branchName);
-  const prNumber = Issue.parseNumberFromUrl(updatedIssue.prUrl);
+  const prNumber = Issue.parseNumberFromUrl(updatedIssue.gitPrUrl);
   // [TODO] if base branch
-  await connectService.createPullRequest(gitRepoUrl, issue.notionUrl, issueNumber, prNumber);
+  await connectService.createPullRequest(gitRepoUrl, issue.issueUrl, issueNumber, prNumber);
   messageService.endWaiting();
-  messageService.showSuccess("Pull Request Created", undefined, updatedIssue.prUrl);
-  messageService.showSuccess("Notion Issue Updated", undefined, updatedIssue.notionUrl);
+  messageService.showSuccess("Pull Request Created", undefined, updatedIssue.gitPrUrl);
+  messageService.showSuccess("Notion Issue Updated", undefined, updatedIssue.issueUrl);
 };

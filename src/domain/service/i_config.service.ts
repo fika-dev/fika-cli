@@ -1,3 +1,4 @@
+import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
 import { NotionWorkspace } from "../entity/notion_workspace.entity";
 import { Workspace } from "../entity/workspace.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
@@ -30,6 +31,7 @@ export interface LocalConfig {
 }
 export interface IConfigService {
   getWorkspaceId(): Uuid;
+  getWorkspaceType(): WorkspaceType;
   createConfig(): void;
   readConfig(): void;
 

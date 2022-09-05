@@ -7,11 +7,10 @@ import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { SyncedSnapshot } from "@/domain/entity/synced_snapshot.entity";
 import { IConfigService, LocalConfig } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";
-import { NotionUrl } from "@/domain/value_object/notion_url.vo";
 import { exec } from 'child_process';
 import fs from "fs";
 import path from "path";
-import { testUserConfig } from "test/test-constants";
+import { TEST_USER_CONFIG } from "test/test-constants";
 import { promisify } from 'util';
 
 export const clearTestFikaPath = (currentPath: string)=>{
@@ -37,7 +36,7 @@ export const createTestConfig = (fikaPath: string)=> {
     fs.mkdirSync(fikaPath);
   }
   const fikaConfigFilePath = path.join(fikaPath, CONFIG_FILE_NAME);
-  const configString = JSON.stringify(testUserConfig, undefined, 4);
+  const configString = JSON.stringify(TEST_USER_CONFIG, undefined, 4);
   fs.writeFileSync(fikaConfigFilePath, configString);
 }
 
@@ -142,9 +141,9 @@ export const deleteLocalBranch = async (branchName: string)=> {
 export const checkAndDeleteIssue = async (documentUrl: string)=> {
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const urlWithoutGit = process.env.TESTING_REPO_GIT_URL.replace('.git', '');
-  const issue = await connectService.getIssueRecordByPage(new NotionUrl(documentUrl), urlWithoutGit);
+  const issue = await connectService.getIssueRecordByPage(documentUrl, urlWithoutGit);
   if (issue){
-    await connectService.deleteIssue(urlWithoutGit, Issue.parseNumberFromUrl(issue.issueUrl));
+    await connectService.deleteIssue(urlWithoutGit, Issue.parseNumberFromUrl(issue.gitIssueUrl));
   }
 }
 

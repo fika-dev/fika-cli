@@ -1,31 +1,28 @@
-import { DevObject } from "../entity/dev_object.entity";
-import { NotionWorkspace } from "../entity/notion_workspace.entity";
-import { IConnectService, UserWithToken } from "./i_connect.service";
-import open from "open";
-import axios, { AxiosError, AxiosInstance } from "axios";
-import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/create_issue.dto";
-import { inject, injectable } from "inversify";
-import { Issue } from "../entity/issue.entity";
+import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 import {
   CreateWorkspaceDto,
   CreateWorkspaceDtoType,
 } from "@/infrastructure/dto/create_workspace.dto";
-import { Uuid } from "../value_object/uuid.vo";
-import { NotionUrl } from "../value_object/notion_url.vo";
-import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
-import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
+import axios, { AxiosError, AxiosInstance } from "axios";
+import { inject, injectable } from "inversify";
+import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/create_issue.dto";
+import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
+import { DevObject } from "../entity/dev_object.entity";
+import { Issue } from "../entity/issue.entity";
+import { IssueWithPR } from "../entity/i_git_platform.service";
+import { Workspace } from "../entity/workspace.entity";
+import { NotionPageNotFound } from "../value_object/exceptions/notion_page_not_found";
 import {
   ERROR_CODE_STRING,
   NotOnline,
   SYS_CALL_STRING,
 } from "../value_object/exceptions/not_online";
+import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
 import { UpdateInfo } from "../value_object/update-info.vo";
-import { IConfigService } from "./i_config.service";
+import { Uuid } from "../value_object/uuid.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
-import { IssueWithPR } from "../entity/i_git_platform.service";
-import { NotionPageNotFound } from "../value_object/exceptions/notion_page_not_found";
-import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
-import { Workspace } from "../entity/workspace.entity";
+import { IConfigService } from "./i_config.service";
+import { IConnectService, UserWithToken } from "./i_connect.service";
 
 interface errorDataType {
   message: string;
@@ -77,10 +74,10 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async getIssueRecordByPage(notionPageUrl: NotionUrl, gitRepoUrl: string): Promise<Issue> {
+  async getIssueRecordByPage(issueUrl: string, gitRepoUrl: string): Promise<Issue> {
     try {
       const response = await this.axiosInstance.get(
-        `/git/issue?gitRepoUrl=${gitRepoUrl}&notionPageUrl=${notionPageUrl.asString()}`,
+        `/git/issue?gitRepoUrl=${gitRepoUrl}&notionPageUrl=${issueUrl}`,
         {
           headers: {
             "content-type": "application/json",
@@ -90,9 +87,9 @@ export class ConnectService implements IConnectService {
       );
       if (response.data) {
         return {
-          notionUrl: response.data.notionPageUrl,
+          issueUrl: response.data.notionPageUrl,
           title: response.data.title,
-          issueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
+          gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
           labels: [],
         };
       } else {
@@ -186,13 +183,13 @@ export class ConnectService implements IConnectService {
   }
   async createIssueRecord(issue: Issue): Promise<void> {
     try {
-      const fragments = issue.issueUrl.split("/");
+      const fragments = issue.gitIssueUrl.split("/");
       const gitRepoUrl = fragments.slice(0, fragments.length - 2).join("/");
       const response = await this.axiosInstance.post(
         "/git/issue",
         {
           gitRepoUrl: gitRepoUrl,
-          notionPageUrl: issue.notionUrl,
+          notionPageUrl: issue.issueUrl,
           title: issue.title,
           issueNumber: fragments[fragments.length - 1],
         },
@@ -227,11 +224,11 @@ export class ConnectService implements IConnectService {
         }
       );
       return {
-        notionUrl: response.data.notionPageUrl,
+        issueUrl: response.data.notionPageUrl,
         title: response.data.title,
-        issueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
+        gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
         labels: [],
-        prUrl: response.data.prUrl,
+        gitPrUrl: response.data.prUrl,
       };
     } catch (e) {
       const axiosError = e as AxiosError;
@@ -326,21 +323,15 @@ export class ConnectService implements IConnectService {
     }
   }
 
-  async getIssue(documentUrl: NotionUrl, botId: Uuid): Promise<Issue> {
+  async getIssue(
+    documentUrl: string,
+    workpaceId: Uuid,
+    workspaceType: WorkspaceType
+  ): Promise<Issue> {
     try {
-      const response = await this.axiosInstance.post(
-        `/notion/issue`,
-        {
-          botId: botId.asString(),
-          documentUrl: documentUrl.asString(),
-        },
-        {
-          headers: {
-            "content-type": "application/json",
-          },
-        }
+      const response = await this.axiosInstance.get(
+        `/workspace/issue?workspaceId=${workpaceId.asString()}&documentUrl=${documentUrl}&workspaceType=${workspaceType}`
       );
-
       const dto = new CreateIssueDto(response.data as CreateIssueDtoType);
       return dto.toEntity();
     } catch (e) {
@@ -366,15 +357,19 @@ export class ConnectService implements IConnectService {
       }
     }
   }
-  async updateIssue(updatedIssue: Issue, botId: Uuid): Promise<Issue> {
-    const updatedIssueWithBotId = {
-      ...updatedIssue,
-      botId: botId.asString(),
-    };
+  async updateIssue(
+    updatedIssue: Issue,
+    workspaceId: Uuid,
+    workspaceType: WorkspaceType
+  ): Promise<Issue> {
     try {
-      const response = await this.axiosInstance.post(
-        `/notion/issue/update`,
-        updatedIssueWithBotId,
+      const response = await this.axiosInstance.patch(
+        `/workspace/issue`,
+        {
+          ...updatedIssue,
+          workspaceId: workspaceId.asString(),
+          workspaceType,
+        },
         { headers: { "content-type": "application/json" } }
       );
       return updatedIssue;

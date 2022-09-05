@@ -9,8 +9,11 @@ import { GitPlatform } from "../entity/add_on/git_platform.entity";
 import { Issue } from "../entity/issue.entity";
 import { IGitPlatformService, IssueWithPR } from "../entity/i_git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
+import { NothingToCommit } from "../value_object/exceptions/nothing_to_commit";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
+
+export type GitStatus = "UPDATED" | "REMOTE_CONFLICT" | "NO_CHANGE" | "NO_REMOTE_BRANCH";
 
 @injectable()
 export class GitPlatformService implements IGitPlatformService {
@@ -39,21 +42,21 @@ export class GitPlatformService implements IGitPlatformService {
       return false;
     }
   }
-  async pullFrom(branchName: string): Promise<boolean> {
+  async pullFrom(branchName: string): Promise<GitStatus> {
     try {
       const { stdout: pullOutput, stderr: pullError } = await this.execP(
         `git pull --no-ff origin ${branchName}`
       );
       if (pullOutput.includes("Already up to date")) {
-        return false;
+        return "NO_CHANGE";
       } else {
-        return true;
+        return "UPDATED";
       }
     } catch (e) {
       if (e.stdout.includes("conflict")) {
-        return false;
+        return "REMOTE_CONFLICT";
       } else if (e.stdout.includes("couldn't find remote ref")) {
-        return false;
+        return "NO_REMOTE_BRANCH";
       } else {
         throw e;
       }
@@ -111,12 +114,24 @@ export class GitPlatformService implements IGitPlatformService {
     await this.execP(`git push origin --delete "${branchName}"`);
   }
   async commitWithMessage(message: string): Promise<void> {
-    await this.execP(`git commit -m "${message}"`);
+    try {
+      const { stdout: commitText, stderr: commitError } = await this.execP(
+        `git commit -m "${message}"`
+      );
+    } catch (e) {
+      if (e.stdout.includes("nothing to commit")) {
+        throw new NothingToCommit("NothingToCommit");
+      } else {
+        throw e;
+      }
+    }
   }
   async stageAllChanges(): Promise<void> {
     await this.execP(`git add .`);
   }
-
+  async createDummyChange(): Promise<void> {
+    await this.execP('echo "Dummy change" >> README.md');
+  }
   private async execP(command) {
     const execP = promisify(exec);
     if (process.platform == "win32") {

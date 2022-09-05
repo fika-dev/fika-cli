@@ -51,7 +51,7 @@ export class GitHub extends GitPlatform {
       );
       const updatedIssue: Issue = {
         ...issue,
-        issueUrl: stdout.trim(),
+        gitIssueUrl: stdout.trim(),
       };
       return updatedIssue;
     } catch (e) {
@@ -75,11 +75,11 @@ export class GitHub extends GitPlatform {
     const issueNumber = this.configService.parseIssueNumber(branchName);
     try {
       const { stdout, stderr } = await this.execP(
-        `gh pr create --base ${baseBranchName}  --title "${issue.title}" --body "Notion 다큐먼트: ${issue.notionUrl}\n 해결이슈: #${issueNumber}" --label "${labelOptions}" `
+        `gh pr create --base ${baseBranchName}  --title "${issue.title}" --body "Notion 다큐먼트: ${issue.issueUrl}\n 해결이슈: #${issueNumber}" --label "${labelOptions}" `
       );
       const updatedIssue: Issue = {
         ...issue,
-        prUrl: stdout.trim(),
+        gitPrUrl: stdout.trim(),
       };
       return updatedIssue;
     } catch (e) {
