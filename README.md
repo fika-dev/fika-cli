@@ -29,13 +29,14 @@ With Fika, no more manual creation of issue and pull request and manual linking 
 
 You can generates sharable git-workflow configuration file named `.fikarc` inside the repository by answering some questions.
 
-<movie>
+https://user-images.githubusercontent.com/4794433/188790557-a9f5af23-db78-4672-b537-d47c99d4696d.mov
+
 
 ### `fika start <issue-url>`
 
 You can start handling of the issue given as url from issue tracking tool (IST), inside automatically created feature branch for this issue.
 
-<movie>
+https://user-images.githubusercontent.com/4794433/188790487-54a463c4-4a5e-4889-9900-43cc9ef71651.mov
 
 This command executes a below sequence.
 
@@ -49,7 +50,7 @@ This command executes a below sequence.
 
 You can finish handling of the current issue, and share result with team.
 
-<movie>
+https://user-images.githubusercontent.com/4794433/188790582-da392cd7-6049-4045-b15a-37ab40520aae.mov
 
 This command executes a below sequence.
 
