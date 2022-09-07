@@ -1,6 +1,7 @@
 <img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/63a7d4c7-5ece-4b26-abd2-ac5fa4087a37/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220907%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220907T045022Z&X-Amz-Expires=86400&X-Amz-Signature=fda14ff6cbaf6eea4fe0bf151e5c8ca91eab7100aa89b1024730f72d14702385&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject" alt="Image" width="400" style="display: block; margin: 0 auto" />
 
 # Fika: A high-level git extension that helps team-shared development workflow.
+
 ---
 
 ## Overview
@@ -18,6 +19,7 @@ The goal of this extension is to make it simple to configure and share team-base
 Also Fika provides integration with issue tracking tools (e.g. Notion, Jira) and with github.
 
 With Fika, no more manual creation of issue and pull request and manual linking with issue tracking tools.
+
 ---
 
 ## Get Started
@@ -25,7 +27,6 @@ With Fika, no more manual creation of issue and pull request and manual linking 
 ### `fika init`
 
 You can generates sharable git-workflow configuration file named `.fikarc` inside the repository by answering some questions.
-
 
 ### `fika start <issue-url>`
 
