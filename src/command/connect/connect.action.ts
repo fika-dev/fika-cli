@@ -1,9 +1,15 @@
-import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
-import container from "src/config/ioc_config";
-import { IConfigService } from "src/domain/service/i_config.service";
-import { IConnectService } from "src/domain/service/i_connect.service";
+import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
+import container from "@/config/ioc_config";
+import { WorkspaceType } from "@/domain/entity/add_on/workspace_platform.entity";
+import { IMessageService } from "@/domain/service/i_message.service";
+import open from "open";
+import { WorkspaceCreator } from "plug_in/workspace_platform/workspace-creator";
 
-export const connectAction = ()=>{
-  const connectServic = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
-  connectServic.guideNotionAuthentication();
-}
+export const connectAction = async (type: WorkspaceType) => {
+  const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
+  const domain = container.get<string>(PARAMETER_IDENTIFIER.Domain);
+  const workspace = WorkspaceCreator.fromType(type);
+  const uri = workspace.getAuthenticationUri(domain);
+  messageService.showConnecting(uri);
+  await open(uri);
+};

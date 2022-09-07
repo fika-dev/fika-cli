@@ -1,15 +1,14 @@
-
 export type NotConnected = "NOT_CONNECTED";
 export interface NotionUser {
-  object: "user",
-  id: string,
-  type: string,
-  name: string,
-  avatar_url: string,
+  object: "user";
+  id: string;
+  type: string;
+  name: string;
+  avatar_url: string;
 }
 
 export interface WorkspaceLevel {
-  workspace: true,
+  workspace: true;
 }
 export class NotionWorkspace {
   id: string;
@@ -17,4 +16,15 @@ export class NotionWorkspace {
   name: string;
   icon: string;
   owner: WorkspaceLevel | NotionUser;
+  static getSample = (botId: string): NotionWorkspace => {
+    return {
+      id: "sampleId",
+      botId,
+      icon: "🤟",
+      name: "sampleWorkSpace",
+      owner: {
+        workspace: true,
+      },
+    };
+  };
 }

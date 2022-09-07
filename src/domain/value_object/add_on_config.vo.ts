@@ -1,6 +1,5 @@
-import { AddOnType } from "../entity/add_on.entity";
+import { AddOnType } from "../entity/add_on/add_on.entity";
 import { ObjectType } from "../entity/dev_object.entity";
-
 
 export interface Property {
   key: string;
@@ -12,5 +11,5 @@ export interface AddOnConfig {
   type: AddOnType;
   objectType?: ObjectType;
   databaseName?: string;
-  additionalProperties?: Property[]; 
+  additionalProperties?: Property[];
 }

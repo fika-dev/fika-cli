@@ -1,6 +1,6 @@
 import { DevObject, ObjectType } from "./dev_object.entity";
 
-export class Repo extends DevObject{
+export class Repo extends DevObject {
   objectType: ObjectType = ObjectType.Repo;
   repoUrl?: string;
   latestVersion?: string;
@@ -10,12 +10,19 @@ export class Repo extends DevObject{
   activeDays?: number;
   fileCount?: number;
 
-  static getEmptyRepo(): Repo{
-    return {
-      title: '',
-      botId: '',
-      objectType: ObjectType.Repo,
-    }
+  needUpdate(devObj: Repo): boolean {
+    return (
+      devObj.repoUrl === this.repoUrl &&
+      devObj.latestVersion === this.latestVersion &&
+      devObj.createdDate === this.createdDate &&
+      devObj.commitCount === this.commitCount &&
+      devObj.activeDays === this.activeDays &&
+      devObj.fileCount === this.fileCount &&
+      JSON.stringify(devObj.authors.sort()) === JSON.stringify(this.authors.sort())
+    );
+  }
+
+  static getEmptyRepo(): Repo {
+    return new Repo();
   }
 }
-
