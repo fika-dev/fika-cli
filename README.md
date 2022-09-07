@@ -1,5 +1,5 @@
 
-![Untitled](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/25ade389-9383-4054-b7f0-d768ceec7314/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220907%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220907T042643Z&X-Amz-Expires=86400&X-Amz-Signature=b0228d160cdfd5f8689d52ee565bd2437ef4f1a50c474c627050a94087da5bd8&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject)
+![Image](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/63a7d4c7-5ece-4b26-abd2-ac5fa4087a37/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220907%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220907T045022Z&X-Amz-Expires=86400&X-Amz-Signature=fda14ff6cbaf6eea4fe0bf151e5c8ca91eab7100aa89b1024730f72d14702385&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject){ width="600" style="display: block; margin: 0 auto" }
 
 # Fika: A high-level git extension that helps team-shared development workflow.
 ---
