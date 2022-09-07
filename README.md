@@ -2,10 +2,9 @@
 ![Untitled](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/25ade389-9383-4054-b7f0-d768ceec7314/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220907%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220907T042643Z&X-Amz-Expires=86400&X-Amz-Signature=b0228d160cdfd5f8689d52ee565bd2437ef4f1a50c474c627050a94087da5bd8&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject)
 
 # Fika: A high-level git extension that helps team-shared development workflow.
+---
 
 ## Overview
-
----
 
 Git is at the heart of the development workflow.
 
@@ -20,10 +19,9 @@ The goal of this extension is to make it simple to configure and share team-base
 Also Fika provides integration with issue tracking tools (e.g. Notion, Jira) and with github.
 
 With Fika, no more manual creation of issue and pull request and manual linking with issue tracking tools.
+---
 
 ## Get Started
-
----
 
 ### `fika init`
 
@@ -65,9 +63,9 @@ This command executes a below sequence.
 - `fika f <issue_number>` : Checkout to the feature branch handling that issue number.
 - `fika info` : Display information about an issue being handled in this feature branch : its branch name, title, GitHub url link and PR url link if was created.
 
-## Installation
-
 ---
+
+## Installation
 
 ### 1) Preinstallation
 
