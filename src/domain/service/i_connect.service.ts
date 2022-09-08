@@ -40,4 +40,5 @@ export interface IConnectService {
     issueNumber: number,
     prNumber: number
   ): Promise<string>;
+  getHash(): Promise<string>;
 }
