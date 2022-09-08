@@ -9,7 +9,7 @@ export class NotionWorkspace extends WorkspacePlatform {
   }
 
   getAuthenticationUri(domain: string, hash: string): string {
-    const redirectUri = encodeURIComponent(`${domain}/notion/callback`);
+    const redirectUri = encodeURIComponent(`${domain}/workspce/notion/callback`);
     const params = `client_id=${fikaNotionClientId}&redirect_uri=${redirectUri}&response_type=code&owner=user&state=${hash}`;
     const targetUri = `${notionAuthorizeUri}?${params}`;
     return targetUri;
