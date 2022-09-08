@@ -21,7 +21,7 @@ export class JiraWorkspace extends WorkspacePlatform {
     const redirectUri = `${domain}/workspace/${this.workspaceType}/callback`;
     const scopeParams = jiraSocpes.join("+");
 
-    const params = `audience=api.atlassian.com&client_id=${fikaJiraClientId}&scope=${scopeParams}&redirect_uri=${redirectUri}&state=${hash}&response_type=code&prompt=consent`;
+    const params = `audience=api.atlassian.com&client_id=${clientId}&scope=${scopeParams}&redirect_uri=${redirectUri}&state=${hash}&response_type=code&prompt=consent`;
     const targetUri = `${jiraAuthorizeUri}?${params}`;
     return targetUri;
   }
