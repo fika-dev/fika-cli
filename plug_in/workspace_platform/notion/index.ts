@@ -8,9 +8,9 @@ export class NotionWorkspace extends WorkspacePlatform {
     this.workspaceType = "notion";
   }
 
-  getAuthenticationUri(domain: string): string {
+  getAuthenticationUri(domain: string, hash: string): string {
     const redirectUri = encodeURIComponent(`${domain}/notion/callback`);
-    const params = `client_id=${fikaNotionClientId}&redirect_uri=${redirectUri}&response_type=code&owner=user&state=init`;
+    const params = `client_id=${fikaNotionClientId}&redirect_uri=${redirectUri}&response_type=code&owner=user&state=${hash}`;
     const targetUri = `${notionAuthorizeUri}?${params}`;
     return targetUri;
   }

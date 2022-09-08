@@ -55,6 +55,19 @@ export class ConnectService implements IConnectService {
       }
     );
   }
+  async getHash(): Promise<string> {
+    const response = await this.axiosInstance.get("/user/hash", {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error("couldnt get hash");
+    }
+  }
   async deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void> {
     try {
       const response = await this.axiosInstance.delete("/git/issue", {

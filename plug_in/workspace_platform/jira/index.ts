@@ -11,7 +11,7 @@ export class JiraWorkspace extends WorkspacePlatform {
     this.workspaceType = "jira";
   }
 
-  getAuthenticationUri(domain: string): string {
+  getAuthenticationUri(domain: string, hash: string): string {
     let clientId: string;
     if (domain === process.env.TEST_API_ADDRESS) {
       clientId = testFikaJiraClientId;
@@ -21,7 +21,7 @@ export class JiraWorkspace extends WorkspacePlatform {
     const redirectUri = `${domain}/workspace/${this.workspaceType}/callback`;
     const scopeParams = jiraSocpes.join("+");
 
-    const params = `audience=api.atlassian.com&client_id=${fikaJiraClientId}&scope=${scopeParams}&redirect_uri=${redirectUri}&state=\${YOUR_USER_BOUND_VALUE}&response_type=code&prompt=consent`;
+    const params = `audience=api.atlassian.com&client_id=${fikaJiraClientId}&scope=${scopeParams}&redirect_uri=${redirectUri}&state=${hash}&response_type=code&prompt=consent`;
     const targetUri = `${jiraAuthorizeUri}?${params}`;
     return targetUri;
   }
