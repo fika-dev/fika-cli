@@ -6,5 +6,5 @@ export type NotionWorkspaceType = "notion";
 
 export abstract class WorkspacePlatform {
   workspaceType: WorkspaceType;
-  abstract getAuthenticationUri(domain: string): string;
+  abstract getAuthenticationUri(domain: string, hash: string): string;
 }

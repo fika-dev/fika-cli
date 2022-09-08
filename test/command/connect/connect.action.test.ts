@@ -6,6 +6,7 @@ import { program } from "commander";
 import { WorkspaceCreator } from "plug_in/workspace_platform/workspace-creator";
 import { PARAMETER_IDENTIFIER } from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
+import { TEST_USER_HASH } from "test/test-constants";
 import { checkAndCloneRepo } from "test/test-utils";
 
 
@@ -24,7 +25,7 @@ afterEach(()=>{
 test('1. check notion authentication uri status', async () => { 
   const domain = container.get<string>(PARAMETER_IDENTIFIER.Domain);
   const workspace = WorkspaceCreator.fromType('notion');
-  const uri = workspace.getAuthenticationUri(domain);
+  const uri = workspace.getAuthenticationUri(domain, TEST_USER_HASH);
   const response = await axios.get(uri);
   expect(response.status).toEqual(200);
 });
@@ -32,7 +33,7 @@ test('1. check notion authentication uri status', async () => {
 test('2. check jira authentication uri status', async () => { 
   const domain = container.get<string>(PARAMETER_IDENTIFIER.Domain);
   const workspace = WorkspaceCreator.fromType('jira');
-  const uri = workspace.getAuthenticationUri(domain);
+  const uri = workspace.getAuthenticationUri(domain, TEST_USER_HASH);
   const response = await axios.get(uri);
   expect(response.status).toEqual(200);
 });
