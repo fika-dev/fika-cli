@@ -6,6 +6,7 @@ import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
+import BaseException from "@/domain/value_object/exceptions/base_exception";
 import { Uuid } from "@/domain/value_object/uuid.vo";
 import { TEST_CHANGE_FILE_PATH, TEST_CPR_BRANCH_NAME, TEST_START_DOC_ID } from "test/test-constants";
 import { checkAndCloneRepo, checkAndDeleteIssue, createTestConfig, makeMeaninglessChange, restoreGitRepo, setAuthToken, setUseToken } from "test/test-utils";
@@ -40,7 +41,6 @@ test('1. test pull from develop', async () => {
 });
 
 test('2. check unstaged change', async () => {
-  
   await gitPlatformService.checkoutToBranchWithReset(TEST_CPR_BRANCH_NAME);
   const isChanged = await gitPlatformService.checkUnstagedChanges();
   expect(isChanged).toBe(false);
@@ -53,6 +53,18 @@ test('2. check unstaged change', async () => {
   await gitPlatformService.applyStash('tmp');
   const isChanged4 = await gitPlatformService.checkUnstagedChanges();
   expect(isChanged4).toBe(true);
+});
+
+test('2.1. catch user stopped exception', async () => {
+  await gitPlatformService.checkoutToBranchWithReset(TEST_CPR_BRANCH_NAME);
+  makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
+  const spy = jest.spyOn(promptService, "confirmAction").mockImplementationOnce(()=>Promise.resolve(false));
+  try{
+    await startAction(TEST_START_DOC_ID)
+  }catch(e){
+    const exception = e as BaseException;
+    expect(exception.message).toEqual("UserStopped:UnstagedChange");
+  }
 });
 
 test('3. test start action without existing issue', async () => {

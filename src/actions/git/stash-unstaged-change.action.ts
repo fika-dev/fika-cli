@@ -2,6 +2,7 @@ import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
 import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
+import { UserStopped } from "@/domain/value_object/exceptions/user_stopped";
 
 export const stashUnstagedChange = async (currentBranch: string): Promise<string> => {
   const gitPlatformService = container.get<IGitPlatformService>(
@@ -17,6 +18,8 @@ export const stashUnstagedChange = async (currentBranch: string): Promise<string
       const stashId = `${currentBranch}:${new Date().toISOString()}`;
       gitPlatformService.stash(stashId);
       return stashId;
+    } else {
+      throw new UserStopped("UserStopped:UnstagedChange");
     }
   }
   return;
