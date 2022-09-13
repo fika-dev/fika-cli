@@ -56,7 +56,10 @@ export class GitPlatformService implements IGitPlatformService {
         return "UPDATED";
       }
     } catch (e) {
-      if (e.stdout.includes("conflict")) {
+      if (e.stdout.includes("Merge conflict")) {
+        await this.abortMerge();
+        throw new GitError("GitError:MergeConflict");
+      } else if (e.stdout.includes("conflict")) {
         throw new GitError("GitError:RemoteConflict");
       } else if (e.stdout.includes("couldn't find remote ref")) {
         throw new GitError("GitError:NoRemoteBranch");
