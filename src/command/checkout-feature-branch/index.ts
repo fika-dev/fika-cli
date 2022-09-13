@@ -7,7 +7,7 @@ export const checkoutFeatureBranchCommand = new Command()
   .description(
     "checking out to given <issue-number> feature branch, without the argument <issue-number> checkout to the most recent local feature branch"
   )
-  .argument("<issue-number>", "issue number to checkout", undefined)
+  .argument("<issue-number>", "issue number to checkout", undefined, undefined)
   .action(async argument => {
     commandWrapper(checkoutFeatureBranchAction, argument);
   });
