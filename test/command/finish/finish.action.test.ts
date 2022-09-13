@@ -49,6 +49,8 @@ it("1.test git merge conflict", async ()=>{
   jest.spyOn(promptService, 'confirmAction').mockImplementation((message: string) => Promise.resolve(true));
   await gitPlatformService.checkoutToBranchWithoutReset("conflicting");
   await gitPlatformService.stageAllChanges();
+  await gitPlatformService.pullFrom("conflicting");
+  
   let message: string = 'not yet'
   try{
     await pullAndCheckConflict("conflicting_2");
