@@ -10,7 +10,7 @@ export const stashUnstagedChange = async (currentBranch: string): Promise<string
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   const isChangeExist = await gitPlatformService.checkUnstagedChanges();
   if (isChangeExist) {
-    const moveChanges = promptService.confirmAction(
+    const moveChanges = await promptService.confirmAction(
       "There is unstaged changes.\nDo you wanna move these changes to the new started branch?: "
     );
     if (moveChanges) {
