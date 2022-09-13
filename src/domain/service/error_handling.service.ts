@@ -106,6 +106,8 @@ export class ErrorHandlingService implements IErrorHandlingService {
       });
     } else if (exception.name === "UserStopped:UnstagedChange") {
       messageService.showWarning("Stopped becasue of unstaged changes");
+    } else if (exception.name === "GitError:MergeConflict") {
+      messageService.showWarning("There is merge conflict. Try again after resolving conflict");
     } else {
       messageService.showError({
         message: exception.message,

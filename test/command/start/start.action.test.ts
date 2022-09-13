@@ -56,15 +56,21 @@ test('2. check unstaged change', async () => {
 });
 
 test('2.1. catch user stopped exception', async () => {
-  await gitPlatformService.checkoutToBranchWithReset(TEST_CPR_BRANCH_NAME);
+  await checkAndDeleteIssue(TEST_START_DOC_ID);
   makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
-  const spy = jest.spyOn(promptService, "confirmAction").mockImplementationOnce(()=>Promise.resolve(false));
+  const spy = jest.spyOn(promptService, "confirmAction").mockImplementationOnce((m)=>{
+    console.log('🧪', ' in StartActionTest: ', 'm: ',m);
+    return Promise.resolve(false)
+  });
+  let message: string
   try{
     await startAction(TEST_START_DOC_ID)
   }catch(e){
     const exception = e as BaseException;
-    expect(exception.message).toEqual("UserStopped:UnstagedChange");
+    message = exception.name;
   }
+  await gitPlatformService.stash('tmp');
+  expect(message).toEqual("UserStopped:UnstagedChange");
 });
 
 test('3. test start action without existing issue', async () => {
