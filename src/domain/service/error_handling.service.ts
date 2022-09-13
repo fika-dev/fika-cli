@@ -108,6 +108,12 @@ export class ErrorHandlingService implements IErrorHandlingService {
       messageService.showWarning("Stopped becasue of unstaged changes");
     } else if (exception.name === "GitError:MergeConflict") {
       messageService.showWarning("There is merge conflict. Try again after resolving conflict");
+    } else if (exception.name === "GitError:RemoteConflict") {
+      messageService.showWarning(
+        "There is conflict between remote and local. Cannot pull from remote"
+      );
+    } else if (exception.name === "GitError:RemoteConflict") {
+      messageService.showWarning("There is no such branch in remote repo");
     } else {
       messageService.showError({
         message: exception.message,
