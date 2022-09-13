@@ -9,6 +9,7 @@ import { GitPlatform } from "../entity/add_on/git_platform.entity";
 import { Issue } from "../entity/issue.entity";
 import { IGitPlatformService, IssueWithPR } from "../entity/i_git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
+import { GitError } from "../value_object/exceptions/git_error";
 import { NothingToCommit } from "../value_object/exceptions/nothing_to_commit";
 import { NoRemoteBranch } from "../value_object/exceptions/no_remote_branch";
 import { VersionTag } from "../value_object/version_tag.vo";
@@ -56,9 +57,9 @@ export class GitPlatformService implements IGitPlatformService {
       }
     } catch (e) {
       if (e.stdout.includes("conflict")) {
-        return "REMOTE_CONFLICT";
+        throw new GitError("GitError:RemoteConflict");
       } else if (e.stdout.includes("couldn't find remote ref")) {
-        return "NO_REMOTE_BRANCH";
+        throw new GitError("GitError:NoRemoteBranch");
       } else {
         throw e;
       }
