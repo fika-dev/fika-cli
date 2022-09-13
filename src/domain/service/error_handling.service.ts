@@ -104,6 +104,8 @@ export class ErrorHandlingService implements IErrorHandlingService {
         message: `\nNo remote branch was found\n`,
         code: exception.name,
       });
+    } else if (exception.name === "UserStopped:UnstagedChange") {
+      messageService.showWarning("Stopped becasue of unstaged changes");
     } else {
       messageService.showError({
         message: exception.message,
