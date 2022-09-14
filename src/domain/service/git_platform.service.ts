@@ -29,6 +29,14 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
+  async checkHeadExist(): Promise<boolean> {
+    const { stdout: statusOutput, stderr: diffError } = await this.execP("git status");
+    if (statusOutput.includes("No commits yet")) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   isGitRepo(): boolean {
     return fs.existsSync(`${this.gitRepoPath}/.git`);
   }

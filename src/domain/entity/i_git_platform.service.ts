@@ -43,4 +43,5 @@ export interface IGitPlatformService {
   removeRemoteUrl(): Promise<void>;
   setRemoteUrl(remoteUrl: string): Promise<void>;
   isGitRepo(): boolean;
+  checkHeadExist(): Promise<boolean>;
 }
