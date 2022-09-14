@@ -45,4 +45,5 @@ export interface IGitPlatformService {
   isGitRepo(): boolean;
   checkHeadExist(): Promise<boolean>;
   getUpstreamBranch(branchName: string): Promise<string>;
+  pushBranchWithUpstream(branchName: string): Promise<void>;
 }

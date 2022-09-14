@@ -263,6 +263,12 @@ export class GitPlatformService implements IGitPlatformService {
     const { stdout: pushOut, stderr: pushErr } = await this.execP(`git push origin ${branchName}`);
   }
 
+  async pushBranchWithUpstream(branchName: string): Promise<void> {
+    const { stdout: pushOut, stderr: pushErr } = await this.execP(
+      `git push -u origin ${branchName}`
+    );
+  }
+
   async createIssue(issue: Issue): Promise<Issue> {
     if (this._gitPlatform) {
       return await this._gitPlatform.createIssue(issue);
