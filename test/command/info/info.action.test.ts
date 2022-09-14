@@ -1,19 +1,14 @@
-import { createPR } from "@/actions/complex/create-PR.action";
 import { infoAction } from "@/command/info/info.action";
-import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
 import { Issue } from "@/domain/entity/issue.entity";
 import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { ConnectService } from "@/domain/service/connnect.service";
-import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
-import { GhPrAlreadyExists } from "@/domain/value_object/exceptions/gh_pr_already_exists";
 import { Uuid } from "@/domain/value_object/uuid.vo";
-import exp from "constants";
 import { TEST_CPR_BRANCH_NAME } from "test/test-constants";
-import { checkAndCloneRepo, createTestConfig, deleteBranch, restoreGitRepo, setUseToken } from "test/test-utils";
+import { checkAndCloneRepo, createTestConfig, restoreGitRepo, setUseToken } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
@@ -21,6 +16,7 @@ const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigSer
 const connectService = container.get<ConnectService>(SERVICE_IDENTIFIER.ConnectService);
 
 beforeAll(async () => {
+  jest.restoreAllMocks();
   await checkAndCloneRepo();
   createTestConfig(process.env.TESTING_PATH + "/.fika");
   setUseToken(process.env.TESTING_USER_TOKEN);
@@ -72,32 +68,32 @@ it("1.test info on a issue branch", async () => {
 });
 
 it("2.test info message for the develop branch", async () => {
-    jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => 'https://github.com/tuxshido/repo');
-    jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => 'develop');
+    jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => Promise.resolve('https://github.com/tuxshido/repo'));
+    jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => Promise.resolve('develop'));
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
     await infoAction();
     expect(spy).toBeCalledWith('You are on the develop branch, you can start a new branch with "fika start <issue url>"', undefined);
 });
 
 it("3.test info message for the release branch", async () => {
-    jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => 'https://github.com/tuxshido/repo');
-    jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => 'release');
+    jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => Promise.resolve('https://github.com/tuxshido/repo'));
+    jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => Promise.resolve('release'));
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
     await infoAction();
     expect(spy).toBeCalledWith('You are on the release branch, you can start a new branch with "fika start <issue url>"', undefined);
 });
 
 it("4.test info message for the main branch", async () => {
-    jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => 'https://github.com/tuxshido/repo');
-    jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => 'master');
+    jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => Promise.resolve('https://github.com/tuxshido/repo'));
+    jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => Promise.resolve('master'));
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
     await infoAction();
     expect(spy).toBeCalledWith('You are on the main branch, you can start a new branch with "fika start <issue url>"', undefined);
 });
 
 it("5.test info message for a non-valid", async () => {
-    jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => 'https://github.com/tuxshido/repo');
-    jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => 'nan');
+    jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => Promise.resolve('https://github.com/tuxshido/repo'));
+    jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => Promise.resolve('nan'));
     jest.spyOn(connectService, 'getIssueRecord').mockImplementation(async () => {
         return null as Issue} );
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });

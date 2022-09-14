@@ -4,7 +4,9 @@ import container from "@/config/ioc_config";
 import { clearLocalConfig, clearTestFikaPath, readLocalConfig, sendPromptData } from "test/test-utils";
 import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
+import { IPromptService } from "@/domain/service/i-prompt.service";
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
+const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
 
 afterEach(()=>{
   jest.clearAllMocks();
@@ -16,6 +18,7 @@ beforeEach(()=>{
 });
 
 beforeAll(() => {
+  jest.spyOn(promptService, 'confirmAction').mockImplementation((message: string) => Promise.resolve(true));
   clearTestFikaPath(process.env.TESTING_PATH);
   clearLocalConfig(process.env.TESTING_REPO_PATH);
 });

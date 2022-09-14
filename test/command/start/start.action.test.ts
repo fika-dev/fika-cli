@@ -27,6 +27,13 @@ beforeEach(async()=>{
   jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   jest.spyOn(configService, 'getWorkspaceType').mockImplementation(()=>'notion');
+  jest.spyOn(gitPlatformService, 'createIssue').mockImplementation((issue)=>{
+    const updated = {
+      ...issue,
+      gitIssueUrl: 'https://github.com/fika-dev/fika-cli-test-samples/issues/1507'
+    }
+    return Promise.resolve(updated);
+  });
   await gitPlatformService.checkoutToBranchWithoutReset('develop');
   await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });
@@ -35,10 +42,10 @@ afterEach(() => {
   messageService.endWaiting();
 });
 
-test('1. test pull from develop', async () => {
-  await gitPlatformService.checkoutToBranchWithoutReset('develop');
-  await gitPlatformService.pullFrom('develop');
-});
+// test('1. test pull from develop', async () => {
+//   await gitPlatformService.checkoutToBranchWithoutReset('develop');
+//   await gitPlatformService.pullFrom('develop');
+// });
 
 test('2. check unstaged change', async () => {
   await gitPlatformService.checkoutToBranchWithReset(TEST_CPR_BRANCH_NAME);
@@ -57,9 +64,12 @@ test('2. check unstaged change', async () => {
 
 test('2.1. catch user stopped exception', async () => {
   await checkAndDeleteIssue(TEST_START_DOC_ID);
+  await gitPlatformService.checkoutToBranchWithReset("develop");
+  const localConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
+  localConfig.start.pullBeforeAlways = false;
+  jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
   makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
   const spy = jest.spyOn(promptService, "confirmAction").mockImplementationOnce((m)=>{
-    console.log('🧪', ' in StartActionTest: ', 'm: ',m);
     return Promise.resolve(false)
   });
   let message: string
@@ -73,7 +83,7 @@ test('2.1. catch user stopped exception', async () => {
   expect(message).toEqual("UserStopped:UnstagedChange");
 });
 
-test('3. test start action without existing issue', async () => {
+test('3. notion test start action without existing issue', async () => {
   await checkAndDeleteIssue(TEST_START_DOC_ID);
   const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('develop');

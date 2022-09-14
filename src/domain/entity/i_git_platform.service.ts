@@ -43,4 +43,9 @@ export interface IGitPlatformService {
   removeRemoteUrl(): Promise<void>;
   setRemoteUrl(remoteUrl: string): Promise<void>;
   isGitRepo(): boolean;
+  checkHeadExist(): Promise<boolean>;
+  getUpstreamBranch(branchName: string): Promise<string>;
+  pushBranchWithUpstream(branchName: string): Promise<void>;
+  checkRemoteBranchExist(branchName: string): Promise<boolean>;
+  undoCommitAndModification(): Promise<void>;
 }
