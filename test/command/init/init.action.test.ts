@@ -89,6 +89,8 @@ test('2. get main, develop and release branch after initialiase', async () => {
   expect(branchArr).toContain('test_master');
   const currentBranch = await gitPlatformService.getBranchName();
   expect(currentBranch).toEqual('test_develop');
+  commitSpy.mockRestore();
+  pushSpy.mockRestore();
 });
 
 test('3. test prompt askBranchName', async () => { 

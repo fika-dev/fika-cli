@@ -35,10 +35,10 @@ afterEach(() => {
   messageService.endWaiting();
 });
 
-test('1. test pull from develop', async () => {
-  await gitPlatformService.checkoutToBranchWithoutReset('develop');
-  await gitPlatformService.pullFrom('develop');
-});
+// test('1. test pull from develop', async () => {
+//   await gitPlatformService.checkoutToBranchWithoutReset('develop');
+//   await gitPlatformService.pullFrom('develop');
+// });
 
 test('2. check unstaged change', async () => {
   await gitPlatformService.checkoutToBranchWithReset(TEST_CPR_BRANCH_NAME);
