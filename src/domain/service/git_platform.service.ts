@@ -29,6 +29,20 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
+  async getUpstreamBranch(branchName: string): Promise<string> {
+    try {
+      const { stdout: statusOutput, stderr } = await this.execP(
+        `git rev-parse --abbrev-ref ${branchName}@{upstream}`
+      );
+      return statusOutput.trim();
+    } catch (e) {
+      if (e.stdout.includes("fatal: no such branch")) {
+        return undefined;
+      } else {
+        throw new GitError("GitError", e);
+      }
+    }
+  }
   async checkHeadExist(): Promise<boolean> {
     const { stdout: statusOutput, stderr: diffError } = await this.execP("git status");
     if (statusOutput.includes("No commits yet")) {
