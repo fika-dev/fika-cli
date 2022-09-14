@@ -47,4 +47,5 @@ export interface IGitPlatformService {
   getUpstreamBranch(branchName: string): Promise<string>;
   pushBranchWithUpstream(branchName: string): Promise<void>;
   checkRemoteBranchExist(branchName: string): Promise<boolean>;
+  undoCommitAndModification(): Promise<void>;
 }

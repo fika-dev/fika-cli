@@ -375,4 +375,8 @@ export class GitPlatformService implements IGitPlatformService {
   async setRemoteUrl(remoteUrl: string): Promise<void> {
     await this.execP(`git remote add origin ${remoteUrl}`);
   }
+
+  async undoCommitAndModification(): Promise<void> {
+    await this.execP(`git reset HEAD~ && git checkout -- .`);
+  }
 }
