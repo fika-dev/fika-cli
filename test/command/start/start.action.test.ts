@@ -64,6 +64,7 @@ test('2. check unstaged change', async () => {
 
 test('2.1. catch user stopped exception', async () => {
   await checkAndDeleteIssue(TEST_START_DOC_ID);
+  await gitPlatformService.checkoutToBranchWithReset("develop");
   makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
   const spy = jest.spyOn(promptService, "confirmAction").mockImplementationOnce((m)=>{
     return Promise.resolve(false)
