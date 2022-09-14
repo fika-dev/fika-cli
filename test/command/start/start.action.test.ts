@@ -27,6 +27,13 @@ beforeEach(async()=>{
   jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   jest.spyOn(configService, 'getWorkspaceType').mockImplementation(()=>'notion');
+  jest.spyOn(gitPlatformService, 'createIssue').mockImplementation((issue)=>{
+    const updated = {
+      ...issue,
+      gitIssueUrl: 'https://github.com/fika-dev/fika-cli-test-samples/issues/1507'
+    }
+    return Promise.resolve(updated);
+  });
   await gitPlatformService.checkoutToBranchWithoutReset('develop');
   await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });
@@ -72,7 +79,7 @@ test('2.1. catch user stopped exception', async () => {
   expect(message).toEqual("UserStopped:UnstagedChange");
 });
 
-test('3. test start action without existing issue', async () => {
+test('3. notion test start action without existing issue', async () => {
   await checkAndDeleteIssue(TEST_START_DOC_ID);
   const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('develop');
