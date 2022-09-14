@@ -29,6 +29,19 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
+
+  async checkRemoteBranchExist(branchName: string): Promise<boolean> {
+    try {
+      await this.execP(`git show-branch remotes/origin/${branchName}`);
+      return true;
+    } catch (e) {
+      if (e.stdout.includes("fatal: bad sha1 reference")) {
+        return false;
+      } else {
+        throw new GitError("GitError", e);
+      }
+    }
+  }
   async getUpstreamBranch(branchName: string): Promise<string> {
     try {
       const { stdout: statusOutput, stderr } = await this.execP(
