@@ -94,6 +94,7 @@ export class GitPlatformService implements IGitPlatformService {
       }
     } catch (e) {
       const message = e.stdout + e.stderr;
+      console.log("🧪", " in GitPlatformService: ", "message: ", message);
       if (message.includes("Merge conflict")) {
         await this.abortMerge();
         throw new GitError("GitError:MergeConflict");
