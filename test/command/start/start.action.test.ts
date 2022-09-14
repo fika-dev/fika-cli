@@ -59,7 +59,6 @@ test('2.1. catch user stopped exception', async () => {
   await checkAndDeleteIssue(TEST_START_DOC_ID);
   makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
   const spy = jest.spyOn(promptService, "confirmAction").mockImplementationOnce((m)=>{
-    console.log('🧪', ' in StartActionTest: ', 'm: ',m);
     return Promise.resolve(false)
   });
   let message: string
