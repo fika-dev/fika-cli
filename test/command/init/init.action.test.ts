@@ -2,14 +2,11 @@ import { initAction } from "@/command/init/init.action";
 import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
+import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
-import { clearLocalConfig, clearTestFikaPath, readLocalConfig, sendPromptData } from "test/test-utils";
 import promptly from "promptly";
-import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
-import { GitPlatformService } from "@/domain/service/git_platform.service";
-import { exec } from "child_process";
-import { promisify } from "util";
+import { clearLocalConfig, clearTestFikaPath, readLocalConfig } from "test/test-utils";
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 // jest.spyOn(process.stdout, 'write').mockImplementation(()=>true)
 
@@ -67,6 +64,8 @@ test('2. get main, develop and release branch after initialiase', async () => {
   );
   await gitPlatformService.removeRemoteUrl();
   const gitInitSpy = jest.spyOn(gitPlatformService, 'gitInit');
+  const commitSpy =  jest.spyOn(gitPlatformService, 'commitWithMessage').mockImplementation();
+  const pushSpy =  jest.spyOn(gitPlatformService, 'pushBranchWithUpstream').mockImplementation();
   jest.spyOn(promptly, 'prompt').mockImplementation(async (data) => {
     if (data.includes("develop")) {
       return 'test_develop'
@@ -75,14 +74,16 @@ test('2. get main, develop and release branch after initialiase', async () => {
     } else if (data.includes("master")) {
       return 'test_master'
     } else if (data.includes("remote origin")) {
-       return 'https://gitHoob.com/stuf'
+       return 'https://github.com/fika-dev/fika-cli-test-samples.git'
     } else {
       return;
     }
   });
   await initAction();
   const branchArr = await gitPlatformService.getBranches();
-  expect(gitInitSpy).toBeCalled();
+  expect(gitInitSpy).not.toBeCalled();
+  expect(commitSpy).toBeCalled();
+  expect(pushSpy).toBeCalled();
   expect(branchArr).toContain('test_develop');
   expect(branchArr).toContain('test_release');
   expect(branchArr).toContain('test_master');
