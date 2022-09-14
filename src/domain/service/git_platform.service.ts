@@ -35,7 +35,8 @@ export class GitPlatformService implements IGitPlatformService {
       await this.execP(`git show-branch remotes/origin/${branchName}`);
       return true;
     } catch (e) {
-      if (e.stdout.includes("fatal: bad sha1 reference")) {
+      const message = e.stdout + e.stderr;
+      if (message.includes("fatal: bad sha1 reference")) {
         return false;
       } else {
         throw new GitError("GitError", e);
@@ -49,7 +50,8 @@ export class GitPlatformService implements IGitPlatformService {
       );
       return statusOutput.trim();
     } catch (e) {
-      if (e.stdout.includes("fatal: no such branch")) {
+      const message = e.stdout + e.stderr;
+      if (message.includes("fatal: no such branch")) {
         return undefined;
       } else {
         throw new GitError("GitError", e);
@@ -91,7 +93,8 @@ export class GitPlatformService implements IGitPlatformService {
         return "UPDATED";
       }
     } catch (e) {
-      if (e.stdout.includes("Merge conflict")) {
+      const message = e.stdout + e.stderr;
+      if (message.includes("Merge conflict")) {
         await this.abortMerge();
         throw new GitError("GitError:MergeConflict");
       } else if (e.stdout.includes("conflict")) {
@@ -159,7 +162,8 @@ export class GitPlatformService implements IGitPlatformService {
         `git commit -m "${message}"`
       );
     } catch (e) {
-      if (e.stdout.includes("nothing to commit")) {
+      const message = e.stdout + e.stderr;
+      if (message.includes("nothing to commit")) {
         throw new NothingToCommit("NothingToCommit");
       } else {
         throw e;
@@ -201,8 +205,9 @@ export class GitPlatformService implements IGitPlatformService {
       }
       await this.execP(command);
     } catch (e) {
+      const message = e.stdout + e.stderr;
       if (
-        e.stdout.includes(`is not a commit and a branch ${branchName} cannot be created from it`)
+        message.includes(`is not a commit and a branch ${branchName} cannot be created from it`)
       ) {
         throw new NoRemoteBranch("NoRemoteBranch");
       } else {
