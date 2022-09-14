@@ -1,19 +1,14 @@
 import { checkoutFeatureBranchAction } from "@/command/checkout-feature-branch/checkout-feature-branch.action";
-import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
 import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
+import { IErrorHandlingService } from "@/domain/service/i_error_handling.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import { Uuid } from "@/domain/value_object/uuid.vo";
-import { exec } from "child_process";
-import { program } from "commander";
-import exp from "constants";
-import { TEST_CPR_BRANCH_NAME } from "test/test-constants";
-import { IErrorHandlingService } from "@/domain/service/i_error_handling.service";
-import { checkoutFeatureBranchCommand } from "../../../src/command/checkout-feature-branch";
-import { makeMeaninglessChange, stageAndCommit, checkAndCloneRepo, createTestConfig, deleteBranch, restoreGitRepo, setUseToken } from "test/test-utils";
+import { TEST_CHANGE_FILE_PATH, TEST_CPR_BRANCH_NAME } from "test/test-constants";
+import { checkAndCloneRepo, createTestConfig, makeMeaninglessChange, restoreGitRepo, setUseToken, stageAndCommit } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
@@ -46,14 +41,15 @@ afterAll(() => {
 });
 
 it("1.test if checkoutFeatureBranch go to the latest feature branch", async () => {
-    const testBranch = "feature/iss/#344";
-    await gitPlatformService.checkoutToBranchWithoutReset(testBranch);
-    makeMeaninglessChange('./test/testing-env/fika-cli-test-samples/sample_01/src/just-new-file.ts');
+    await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
+    makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
     await stageAndCommit('Just commit a meaningless change');
-  await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
-  await checkoutFeatureBranchAction();
+    await gitPlatformService.checkoutToBranchWithoutReset('develop');
+    await checkoutFeatureBranchAction();
     const currentBranch = await gitPlatformService.getBranchName();
-    expect(currentBranch).toBe(testBranch);
+    expect(currentBranch).toBe(TEST_CPR_BRANCH_NAME);
+    await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
+    await gitPlatformService.undoCommitAndModification();
 });
 
 it("2.test when no feature branch if getLatestBranchByCommitDate return undefined", async () => {

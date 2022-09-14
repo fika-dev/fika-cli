@@ -32,6 +32,13 @@ beforeEach(async()=>{
   jest.spyOn(console, "log").mockImplementation(()=>true);
   jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
+  jest.spyOn(gitPlatformService, 'createPR').mockImplementation((issue)=>{
+    const updated = {
+      ...issue,
+      gitPrUrl: 'https://github.com/fika-dev/fika-cli-test-samples/pull/1502'
+    }
+    return Promise.resolve(updated);
+  });
   await gitPlatformService.checkoutToBranchWithoutReset('develop');
   await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });
@@ -48,9 +55,6 @@ afterAll(() => {
 it("1.test git merge conflict", async ()=>{
   jest.spyOn(promptService, 'confirmAction').mockImplementation((message: string) => Promise.resolve(true));
   await gitPlatformService.checkoutToBranchWithoutReset("conflicting");
-  await gitPlatformService.stageAllChanges();
-  await gitPlatformService.pullFrom("conflicting");
-  
   let message: string = 'not yet'
   try{
     await pullAndCheckConflict("conflicting_2");
