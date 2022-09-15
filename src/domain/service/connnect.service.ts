@@ -103,6 +103,7 @@ export class ConnectService implements IConnectService {
           issueUrl: response.data.notionPageUrl,
           title: response.data.title,
           gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
+          branchName: response.data.branchName,
           labels: [],
         };
       } else {
@@ -240,6 +241,7 @@ export class ConnectService implements IConnectService {
         gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
         labels: [],
         gitPrUrl: response.data.prUrl,
+        branchName: response.data.branchName,
       };
     } catch (e) {
       const axiosError = e as AxiosError;
