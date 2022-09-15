@@ -2,7 +2,7 @@ import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
 import { Issue } from "@/domain/entity/issue.entity";
 import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
-import { IConfigService, LocalConfig } from "@/domain/service/i_config.service";
+import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 
 export const checkoutIssueBranch = async (
@@ -13,12 +13,18 @@ export const checkoutIssueBranch = async (
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
+  const localConfig = configService.getLocalConfig();
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  const issueNumber = Issue.parseNumberFromUrl(issue.gitIssueUrl!);
-  const issueBranch = configService.getIssueBranch(issueNumber);
-  await gitPlatformService.checkoutToBranchWithoutReset(issueBranch);
-  if (stashId) {
-    gitPlatformService.applyStash(stashId);
+  if (localConfig.start.checkoutToFeature) {
+    await gitPlatformService.checkoutToBranchWithoutReset(issue.branchName!);
+    if (stashId) {
+      gitPlatformService.applyStash(stashId);
+    }
+    messageService.showSuccess(`Checkout to branch: ${issue.branchName!}`);
+  } else {
+    messageService.showSuccess(
+      "Please checkout using below command",
+      `git checkout -b ${issue.branchName!}`
+    );
   }
-  messageService.showSuccess(`Checkout to branch: ${issueBranch}`);
 };
