@@ -16,14 +16,20 @@ export const createIssue = async (documentUrl: string): Promise<Issue> => {
   messageService.endWaiting();
   messageService.showWaiting(`Creating Github issue of [${issue.title}]`);
   const updatedIssue = await createGitPlatformIssue(issue);
+  const issueNumber = Issue.parseNumberFromUrl(updatedIssue.gitIssueUrl!);
+  const branchName = configService.getIssueBranch(issueNumber);
+  const issueWithBranch: Issue = {
+    ...updatedIssue,
+    branchName,
+  };
   messageService.endWaiting();
   messageService.showWaiting(`Linking Github issue to Workspace`);
   const workspaceId = configService.getWorkspaceId();
   const workspaceType = configService.getWorkspaceType();
-  await connectService.updateIssue(updatedIssue, workspaceId, workspaceType);
-  await connectService.createIssueRecord(updatedIssue);
+  await connectService.updateWorkspaceIssue(issueWithBranch, workspaceId, workspaceType);
+  await connectService.createIssueRecord(issueWithBranch);
   messageService.endWaiting();
   messageService.showSuccess("Github Issue Created", undefined, updatedIssue.gitIssueUrl);
   messageService.showSuccess("Notion Issue Updated", undefined, updatedIssue.issueUrl);
-  return updatedIssue;
+  return issueWithBranch;
 };
