@@ -26,7 +26,7 @@ export const createIssue = async (documentUrl: string): Promise<Issue> => {
   messageService.showWaiting(`Linking Github issue to Workspace`);
   const workspaceId = configService.getWorkspaceId();
   const workspaceType = configService.getWorkspaceType();
-  await connectService.updateIssue(issueWithBranch, workspaceId, workspaceType);
+  await connectService.updateWorkspaceIssue(issueWithBranch, workspaceId, workspaceType);
   await connectService.createIssueRecord(issueWithBranch);
   messageService.endWaiting();
   messageService.showSuccess("Github Issue Created", undefined, updatedIssue.gitIssueUrl);

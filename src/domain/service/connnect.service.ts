@@ -368,7 +368,7 @@ export class ConnectService implements IConnectService {
       }
     }
   }
-  async updateIssue(
+  async updateWorkspaceIssue(
     updatedIssue: Issue,
     workspaceId: Uuid,
     workspaceType: WorkspaceType
