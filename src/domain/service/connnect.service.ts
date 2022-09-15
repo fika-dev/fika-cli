@@ -103,6 +103,7 @@ export class ConnectService implements IConnectService {
           issueUrl: response.data.notionPageUrl,
           title: response.data.title,
           gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
+          branchName: response.data.branchName,
           labels: [],
         };
       } else {
@@ -198,21 +199,19 @@ export class ConnectService implements IConnectService {
     try {
       const fragments = issue.gitIssueUrl.split("/");
       const gitRepoUrl = fragments.slice(0, fragments.length - 2).join("/");
-      const response = await this.axiosInstance.post(
-        "/git/issue",
-        {
-          gitRepoUrl: gitRepoUrl,
-          notionPageUrl: issue.issueUrl,
-          title: issue.title,
-          issueNumber: fragments[fragments.length - 1],
+      const createIssueRecordDto: CreateIssueRecord = {
+        gitRepoUrl: gitRepoUrl,
+        notionPageUrl: issue.issueUrl,
+        title: issue.title,
+        issueNumber: fragments[fragments.length - 1],
+        branchName: issue.branchName,
+      };
+      const response = await this.axiosInstance.post("/git/issue", createIssueRecordDto, {
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${this.token}`,
         },
-        {
-          headers: {
-            "content-type": "application/json",
-            Authorization: `Bearer ${this.token}`,
-          },
-        }
-      );
+      });
     } catch (e) {
       const axiosError = e as AxiosError;
       console.log(
@@ -242,6 +241,7 @@ export class ConnectService implements IConnectService {
         gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
         labels: [],
         gitPrUrl: response.data.prUrl,
+        branchName: response.data.branchName,
       };
     } catch (e) {
       const axiosError = e as AxiosError;
@@ -370,7 +370,7 @@ export class ConnectService implements IConnectService {
       }
     }
   }
-  async updateIssue(
+  async updateWorkspaceIssue(
     updatedIssue: Issue,
     workspaceId: Uuid,
     workspaceType: WorkspaceType
