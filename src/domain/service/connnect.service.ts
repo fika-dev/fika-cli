@@ -56,7 +56,7 @@ export class ConnectService implements IConnectService {
     );
   }
   async getHash(): Promise<string> {
-    const response = await this.axiosInstance.get("/user/hash", {
+    const response = await this.axiosInstance.get("/auth/hash", {
       headers: {
         "content-type": "application/json",
         Authorization: `Bearer ${this.token}`,
