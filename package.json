@@ -27,6 +27,7 @@
     "commander": "^9.2.0",
     "dotenv": "^16.0.1",
     "fp-ts": "^2.12.3",
+    "immer": "^9.0.15",
     "inversify": "^6.0.1",
     "open": "^8.4.0",
     "promptly": "^3.2.0",
