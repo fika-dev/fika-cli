@@ -9,17 +9,24 @@ import {
 import { exec } from "child_process";
 import { inject } from "inversify";
 import { promisify } from "util";
-import { IGitCommanderService } from "../interface/i-git-commander.service";
+import { ICmdService } from "../interface/commander.service";
 import * as E from "fp-ts/Either";
-class GitCommanderServie implements IGitCommanderService {
+class GitCommanderServie implements ICmdService {
   private _gitRepoPath: string;
   constructor(@inject(PARAMETER_IDENTIFIER.GitRepoPath) gitRepoPath: string) {
     this._gitRepoPath = gitRepoPath;
   }
 
-  public excute: GitCommandExecuter = async gitCommand => {
+  public excuteGitCommand: GitCommandExecuter = async gitCommand => {
     try {
-      const result = await this.execP(gitCommand);
+      let command: string;
+      if (process.platform == "win32") {
+        const windowsCommand = gitCommand.windowsCommand ?? gitCommand.command;
+        command = `git ${windowsCommand}`;
+      } else {
+        command = `LC_ALL=C git ${gitCommand.command}`;
+      }
+      const result = await this.exec(command);
       return E.right({
         output: result.stdout + result.stderr,
       }) as GitCommandResult;
@@ -29,13 +36,8 @@ class GitCommanderServie implements IGitCommanderService {
     }
   };
 
-  private async execP(command: GitCommand) {
+  private async exec(command: string) {
     const execP = promisify(exec);
-    if (process.platform == "win32") {
-      const windowsCommand = command.windowsCommand ?? command.command;
-      return await execP(`git ${windowsCommand}`, { cwd: this._gitRepoPath });
-    } else {
-      return await execP(`LC_ALL=C git ${command.windowsCommand}`, { cwd: this._gitRepoPath });
-    }
+    return await execP(command, { cwd: this._gitRepoPath });
   }
 }
