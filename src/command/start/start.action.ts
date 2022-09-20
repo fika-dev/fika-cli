@@ -7,7 +7,7 @@ import { validateStartBranch } from "@/actions/git/validate-start-branch.action"
 import { getExistingIssue } from "@/actions/workspace/get-existing-issue.action";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
-import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IConfigService } from "src/domain/service/i_config.service";
 
 export const startAction = async (documentUrl: string) => {

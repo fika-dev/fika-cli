@@ -1,4 +1,4 @@
-import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";

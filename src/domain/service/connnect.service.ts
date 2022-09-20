@@ -9,7 +9,7 @@ import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/creat
 import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
 import { DevObject } from "../entity/dev_object.entity";
 import { Issue } from "../entity/issue.entity";
-import { IssueWithPR } from "../entity/i_git_platform.service";
+import { IssueWithPR } from "./i_git_platform.service";
 import { Workspace } from "../entity/workspace.entity";
 import { NotionPageNotFound } from "../value_object/exceptions/notion_page_not_found";
 import {

@@ -4,7 +4,7 @@ import { GitConfig } from "../value_object/git_config.vo";
 import { NotConnected, NotionWorkspace } from "./notion_workspace.entity";
 import { Workspace } from "./workspace.entity";
 
-export class Config {
+export interface Config {
   workspace: Workspace | NotConnected;
   addOns: AddOnConfig[];
   fikaToken: FikaToken | UnAuthenticated;

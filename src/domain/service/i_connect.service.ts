@@ -1,7 +1,7 @@
 import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
 import { DevObject } from "../entity/dev_object.entity";
 import { Issue } from "../entity/issue.entity";
-import { IssueWithPR } from "../entity/i_git_platform.service";
+import { IssueWithPR } from "./i_git_platform.service";
 import { Workspace } from "../entity/workspace.entity";
 import { UpdateInfo } from "../value_object/update-info.vo";
 import { Uuid } from "../value_object/uuid.vo";
