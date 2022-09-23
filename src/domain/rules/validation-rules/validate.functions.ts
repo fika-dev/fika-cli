@@ -48,7 +48,7 @@ export const validateBranchName: Validate<string> = (unvalidatedBranchName: stri
   if (matched) {
     return E.right(unvalidatedBranchName);
   } else {
-    return E.left({ type: "BranchName", value: unvalidatedBranchName } as ValidationError);
+    return E.left({ type: "NotBranchName", value: unvalidatedBranchName } as ValidationError);
   }
 };
 
@@ -58,7 +58,7 @@ export const validateHttpsGithubAddress: Validate<string> = (unvalidatedAddress:
   if (matched) {
     return E.right(unvalidatedAddress);
   } else {
-    return E.left({ type: "HttpsGithubAddress", value: unvalidatedAddress } as ValidationError);
+    return E.left({ type: "NotHttpsGithubAddress", value: unvalidatedAddress } as ValidationError);
   }
 };
 
@@ -68,6 +68,6 @@ export const validateSshGithubAddress: Validate<string> = (unvalidatedAddress: s
   if (matched) {
     return E.right(unvalidatedAddress);
   } else {
-    return E.left({ type: "SshGithubAddress", value: unvalidatedAddress } as ValidationError);
+    return E.left({ type: "NotSshGithubAddress", value: unvalidatedAddress } as ValidationError);
   }
 };
