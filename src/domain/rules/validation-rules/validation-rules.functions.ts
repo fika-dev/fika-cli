@@ -7,35 +7,29 @@ import * as O from "fp-ts/lib/Option";
 import { DefinedRule, IsContextRule } from "../rule.types";
 import { ValidationResolverBuilder } from "./validation-rule.types";
 
-export const isContextRule: IsContextRule =
+const isContextRule: IsContextRule =
   (key: ContextKey, expectedValue: ContextValue) => async (excuteGitCommand: ExecuteGitCommand) =>
     (await checkContext(excuteGitCommand)(key)()) === expectedValue;
 
-export const isNotContextRule: IsContextRule =
+const isNotContextRule: IsContextRule =
   (key: ContextKey, expectedValue: ContextValue) => async (excuteGitCommand: ExecuteGitCommand) =>
     (await checkContext(excuteGitCommand)(key)()) !== expectedValue;
 
-export const headExists: DefinedRule = isContextRule({ domain: "git", field: "head" }, true);
-export const unstagedChangesNotExist: DefinedRule = isContextRule(
+const headExists: DefinedRule = isContextRule({ domain: "git", field: "head" }, true);
+const unstagedChangesNotExist: DefinedRule = isContextRule(
   { domain: "git", field: "unstagedChanges" },
   false
 );
-export const conflictNotExist: DefinedRule = isContextRule(
-  { domain: "git", field: "conflict" },
-  false
-);
-export const untrackedFilesNotExist: DefinedRule = isContextRule(
+const conflictNotExist: DefinedRule = isContextRule({ domain: "git", field: "conflict" }, false);
+const untrackedFilesNotExist: DefinedRule = isContextRule(
   { domain: "git", field: "untrackedFiles" },
   false
 );
-export const stagedChangesNotExist: DefinedRule = isContextRule(
+const stagedChangesNotExist: DefinedRule = isContextRule(
   { domain: "git", field: "stagedChanges" },
   false
 );
-export const isRemoteNotEmpty: DefinedRule = isNotContextRule(
-  { domain: "git", field: "remote" },
-  "Empty"
-);
+const isRemoteNotEmpty: DefinedRule = isNotContextRule({ domain: "git", field: "remote" }, "Empty");
 
 export const isGitCleanStatus: DefinedRule = async (excuteGitCommand: ExecuteGitCommand) => {
   const rules = [
@@ -46,8 +40,9 @@ export const isGitCleanStatus: DefinedRule = async (excuteGitCommand: ExecuteGit
     stagedChangesNotExist,
     isRemoteNotEmpty,
   ];
+
   const ruleResults = await Promise.all(rules.map(rule => rule(excuteGitCommand)));
-  return ruleResults.every(result => true);
+  return ruleResults.every(result => result === true);
 };
 
 export const resolveValidationError: ValidationResolverBuilder<any> =
