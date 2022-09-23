@@ -35,28 +35,28 @@ export const checkStagedChangesParser: GitOutputParser = patternMatchedOrNot(sta
 export const checkMergeConflict: GitOutputParser = patternMatchedOrNot(mergeConflictStatusPattern);
 
 export const checkRemoteOrigin: GitOutputParser = result => {
+  const preprocessed = pipe(result, trim);
   return pipe(
-    result,
-    trim,
+    preprocessed,
     flow(
       validateIncludeString(noRemote),
       E.chain(_ => E.right("Empty"))
     ),
-    E.alt(() => validateHttpsGithubAddress(result)),
-    E.alt(() => validateSshGithubAddress(result)),
+    E.alt(() => validateHttpsGithubAddress(preprocessed)),
+    E.alt(() => validateSshGithubAddress(preprocessed)),
     E.getOrElse(e => e as DomainError)
   );
 };
 
 export const checkCurrentBranch: GitOutputParser = result => {
+  const preprocessed = pipe(result, trim);
   return pipe(
-    result,
-    trim,
+    preprocessed,
     flow(
       validateIncludeString(noHeadDefined),
       E.chain(_ => E.right("Empty"))
     ),
-    E.alt(() => validateBranchName(result)),
+    E.alt(() => validateBranchName(preprocessed)),
     E.getOrElse(e => e as DomainError)
   );
 };
