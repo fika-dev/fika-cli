@@ -11,7 +11,7 @@ import { GitOutputParser, GitOutputPattern } from "../../context/git-context/git
 import { GitCommandError } from "../command.types";
 import {
   headPattern,
-  mergeConflictPattern,
+  mergeConflictStatusPattern,
   noHeadDefined,
   noRemote,
   stagedChangesPattern,
@@ -32,7 +32,7 @@ export const checkUnstagedChangeParser: GitOutputParser =
 export const checkUntrackedFilesParser: GitOutputParser =
   patternMatchedOrNot(untrackedFilesPattern);
 export const checkStagedChangesParser: GitOutputParser = patternMatchedOrNot(stagedChangesPattern);
-export const checkMergeConflict: GitOutputParser = patternMatchedOrNot(mergeConflictPattern);
+export const checkMergeConflict: GitOutputParser = patternMatchedOrNot(mergeConflictStatusPattern);
 
 export const checkRemoteOrigin: GitOutputParser = result => {
   return pipe(
