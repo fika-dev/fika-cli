@@ -12,7 +12,7 @@ import { IMessageService } from "src/domain/service/i_message.service";
 
 import { GetContext } from "@/domain/context/context.types";
 import { Unit } from "@/domain/general/general.types";
-import { CheckoutToIssue, GitCommandExecuter } from "@/domain/git-command/command.types";
+import { CheckoutToIssue, ExecuteGitCommand } from "@/domain/git-command/command.types";
 import { GetIssueRecordByNumber, ValidateIssueNumber } from "@/domain/issue/issue.types";
 import { ReportError, ReportSuccess } from "@/domain/report/report.types";
 import { ValidateContext } from "@/domain/rules/validation-rules/validation-rule.types";
@@ -79,7 +79,7 @@ const _functionalCheckoutFeatureBranch = async (issueNumber?: number) => {
 declare const getContext: GetContext;
 declare function setContext(context: Context): Unit;
 declare const validateCheckOutBuilder: ValidateContext;
-declare const exec: GitCommandExecuter;
+declare const exec: ExecuteGitCommand;
 declare const validateIssueNumber: ValidateIssueNumber;
 declare const findIssueRecordByNumber: GetIssueRecordByNumber;
 declare const reportError: ReportError;
