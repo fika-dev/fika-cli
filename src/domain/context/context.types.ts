@@ -30,6 +30,8 @@ export type HowToCheck = {
   };
 };
 
+export type CheckContext = (key: ContextKey) => ContextValue;
+
 export interface CommandAndParser {
   command: GitCommand;
   parser: GitOutputParser;
