@@ -6,7 +6,6 @@ import * as T from "fp-ts/Task";
 import { pipe } from "fp-ts/lib/function";
 import produce from "immer";
 import { ValidateContext, ValidationError } from "../rules/validation-rules/validation-rule.types";
-import { gitResultParser } from "./parser/parser.functions";
 import { DomainError, Unit } from "../general/general.types";
 import { Domain } from "domain";
 import { Context } from "../context/context.types";
@@ -30,7 +29,7 @@ export const checkoutToIssueBuilder: CheckoutToIssueBuilder = exec => issue => {
     TE.mapLeft(e => e as DomainError),
     TE.chain(exec),
     TE.mapLeft(e => e as DomainError),
-    TE.chainEitherK(gitResultParser([])),
+    // TE.chainEitherK(gitResultParser([])),
     TE.map(pattern => {
       return {
         branchName: issue.branchName,
