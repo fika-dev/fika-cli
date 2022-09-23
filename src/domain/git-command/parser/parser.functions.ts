@@ -26,7 +26,7 @@ const trim = (result: string) => result.trim();
 const splitToList = (seperator: string) => (result: string) => result.split(seperator);
 const listMap = f => (inputList: any[]) => inputList.map(f);
 
-export const checkHeadParser: GitOutputParser = patternMatchedOrNot(headPattern);
+export const checkHeadParser: GitOutputParser = result => !patternMatchedOrNot(headPattern)(result);
 export const checkUnstagedChangeParser: GitOutputParser =
   patternMatchedOrNot(unstagedChangePattern);
 export const checkUntrackedFilesParser: GitOutputParser =
@@ -71,10 +71,4 @@ export const parseErrorResult = (patterns: GitOutputPattern[]) => (toBeMatched: 
   const found = patterns.filter(p => toBeMatched.includes(p.pattern));
   const result = found.length > 0 ? E.right(found) : E.left(toBeMatched);
   return result as E.Either<GitCommandError, GitOutputPattern[]>;
-};
-
-const parsePattern = (patterns: GitOutputPattern[]) => (toBeMatched: string) => {
-  const found = patterns.find(p => toBeMatched.includes(p.pattern));
-  const result = found ? E.right(found) : E.left(toBeMatched);
-  return result as E.Either<GitCommandError, GitOutputPattern>;
 };
