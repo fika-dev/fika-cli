@@ -1,9 +1,9 @@
 import { GitCommand } from "./command.types";
 
-const checkoutCmd: GitCommand = {
+export const checkoutCmd: GitCommand = {
   command: "checkout",
 };
 
-const createAndCheckoutCmd: GitCommand = {
+export const createAndCheckoutCmd: GitCommand = {
   command: "checkout -b",
 };

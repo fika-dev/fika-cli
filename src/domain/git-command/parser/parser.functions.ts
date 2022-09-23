@@ -1,33 +1,34 @@
 import * as E from "fp-ts/Either";
-import { pipe } from "fp-ts/function";
+import * as T from "fp-ts/Task";
+import * as TE from "fp-ts/TaskEither";
+import { flow, pipe } from "fp-ts/function";
 import produce from "immer";
 import {
-  GitContextParser,
   GitContextUpdaterBuilder,
+  GitErrorPattern,
+  GitOutputParser,
   GitOutputPattern,
 } from "../../context/git-context/git-context.types";
 import { GitCommandError } from "../command.types";
 
-const gitStatusParser: GitContextParser = (result, patterns) => {
-  return pipe(
-    result,
-    E.foldW(
-      r => {
-        return E.right(patterns.filter(p => r.output.includes(p.pattern))) as E.Right<
-          GitOutputPattern[]
-        >;
-      },
-      e => {
-        const found = patterns.filter(p => e.includes(p.pattern));
-        const result = found.length > 0 ? E.right(found) : E.left(e);
-        return result as E.Either<GitCommandError, GitOutputPattern[]>;
-      }
-    ),
-    E.map(patterns => patterns.map(p => buildUpdater(p)))
-  );
+export const gitResultParser: GitOutputParser = patterns => result =>
+  pipe(result, r => parsePattern(patterns)(r.output));
+
+export const parseNormalResult = (patterns: GitOutputPattern[]) => (toBeMatched: string) =>
+  patterns.filter(p => toBeMatched.includes(p.pattern));
+export const parseErrorResult = (patterns: GitOutputPattern[]) => (toBeMatched: string) => {
+  const found = patterns.filter(p => toBeMatched.includes(p.pattern));
+  const result = found.length > 0 ? E.right(found) : E.left(toBeMatched);
+  return result as E.Either<GitCommandError, GitOutputPattern[]>;
 };
 
 const buildUpdater: GitContextUpdaterBuilder = pattern => context =>
   produce(context, context => {
     context[pattern.key.domain][pattern.key.field] = pattern.value;
   });
+
+const parsePattern = (patterns: GitOutputPattern[]) => (toBeMatched: string) => {
+  const found = patterns.find(p => toBeMatched.includes(p.pattern));
+  const result = found ? E.right(found) : E.left(toBeMatched);
+  return result as E.Either<GitCommandError, GitOutputPattern>;
+};
