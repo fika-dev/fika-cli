@@ -23,7 +23,7 @@ afterEach(()=>{
 const mockExecuteGitCommand: ExecuteGitCommand = (gitCommand) => {
   if (gitCommand.command === 'status'){
     return T.of(TEST_GIT_STATUS_STRING);
-  }else if (gitCommand.command === 'git rev-parse --abbrev-ref HEAD'){
+  }else if (gitCommand.command === 'rev-parse --abbrev-ref HEAD'){
     return T.of('Somthing strange is here');
   }else{
     return T.of(TEST_BRANCH_LIST);
