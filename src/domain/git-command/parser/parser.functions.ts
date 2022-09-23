@@ -25,6 +25,7 @@ const patternMatchedOrNot = (pattern: string) => (result: string) => {
 const trim = (result: string) => result.trim();
 const splitToList = (seperator: string) => (result: string) => result.split(seperator);
 const listMap = f => (inputList: any[]) => inputList.map(f);
+const listFilter = f => (inputList: any[]) => inputList.filter(f);
 
 export const checkHeadParser: GitOutputParser = result => !patternMatchedOrNot(headPattern)(result);
 export const checkUnstagedChangeParser: GitOutputParser =
@@ -62,13 +63,11 @@ export const checkCurrentBranch: GitOutputParser = result => {
 };
 
 export const parseBranches: GitOutputParser = result => {
-  return pipe(result, trim, splitToList("\n"), listMap(trim));
-};
-
-export const parseNormalResult = (patterns: GitOutputPattern[]) => (toBeMatched: string) =>
-  patterns.filter(p => toBeMatched.includes(p.pattern));
-export const parseErrorResult = (patterns: GitOutputPattern[]) => (toBeMatched: string) => {
-  const found = patterns.filter(p => toBeMatched.includes(p.pattern));
-  const result = found.length > 0 ? E.right(found) : E.left(toBeMatched);
-  return result as E.Either<GitCommandError, GitOutputPattern[]>;
+  return pipe(
+    result,
+    trim,
+    splitToList("\n"),
+    listMap(trim),
+    listFilter((branch: string) => branch.length > 0)
+  );
 };
