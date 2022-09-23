@@ -19,9 +19,31 @@ export const TEST_CPR_DOC_ID =  'https://www.notion.so/for-pull-request-test-doc
 
 export const TEST_CPR_BRANCH_NAME = 'feature/iss/#2';
 
+export const TEST_HTTPS_GITHUB_REPO = 'https://github.com/fika-dev/fika-cli.git';
+
+export const TEST_SSH_GITHUB_REPO = 'git@github.com:fika-dev/test-repo.git';
+
+export const TEST_UNVALID_BRANCH_NAME = 'feature is not';
+
 export const TEST_CPR_COMMIT_MESSAGE = '[add] meaningless white space';
 
 export const TEST_CHANGE_FILE_PATH = './test/testing-env/fika-cli-test-samples/sample_01/readme.md';
+
+export const TEST_GIT_STATUS_STRING = `
+On branch feature/iss/#418
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   src/domain/git-command/parser/parser.functions.ts
+        modified:   src/domain/rules/validation-rules/validate.functions.ts
+        modified:   src/domain/rules/validation-rules/validation-rules.functions.ts
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        test/domain/
+
+no changes added to commit (use "git add" and/or "git commit -a")
+`
 
 export const TEST_USER_CONFIG: Config = {
   workspace: {
