@@ -7,7 +7,7 @@ import { promisify } from "util";
 import { AddOnType } from "../entity/add_on/add_on.entity";
 import { GitPlatform } from "../entity/add_on/git_platform.entity";
 import { Issue } from "../entity/issue.entity";
-import { IGitPlatformService, IssueWithPR } from "../entity/i_git_platform.service";
+import { IGitPlatformService, IssueWithPR } from "./i_git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { GitError } from "../value_object/exceptions/git_error";
 import { NothingToCommit } from "../value_object/exceptions/nothing_to_commit";
