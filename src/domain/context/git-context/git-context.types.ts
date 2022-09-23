@@ -1,10 +1,16 @@
-import { GitCommand, GitCommandResult } from "@/domain/git-command/command.types";
+import {
+  GitCommand,
+  GitCommandError,
+  GitCommandOutput,
+  GitCommandResult,
+} from "@/domain/git-command/command.types";
 import { ContextKey, ContextValue, Exist } from "../context.types";
 import * as E from "fp-ts/Either";
+import * as TE from "fp-ts/Either";
 
 type RemoteRepo = string;
 type Empty = "Empty";
-type Branch = string;
+export type Branch = string;
 type ConflictStatus = boolean;
 
 export interface GitContext {
@@ -20,13 +26,12 @@ export interface GitContext {
 }
 
 export type GitContextUpdater = (gitContext: GitContext) => GitContext;
-export type GitContextParser = (
-  result: GitCommandResult,
+export type GitOutputParser = (
   patterns: GitOutputPattern[]
-) => E.Either<GitErrorPattern, GitContextUpdater[]>;
+) => (output: GitCommandOutput) => E.Either<GitCommandError, GitOutputPattern>;
 export type GitContextExaminer = (
   command: GitCommand,
-  parser: GitContextParser
+  parser: GitOutputPattern
 ) => GitContextUpdater;
 
 export interface GitOutputPattern {
