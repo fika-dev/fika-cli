@@ -1,7 +1,7 @@
-import { GitStatus } from "../service/git_platform.service";
+import { GitStatus } from "./git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
-import { Issue } from "./issue.entity";
+import { Issue } from "../entity/issue.entity";
 
 // it should be replaced by importing
 export interface IssueWithPR {

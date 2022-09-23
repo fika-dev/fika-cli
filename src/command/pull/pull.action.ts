@@ -2,7 +2,7 @@ import { gitPullAction } from "@/actions/git/pull.action";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
-import { IGitPlatformService } from "src/domain/entity/i_git_platform.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 
 export const pullAction = async () => {
