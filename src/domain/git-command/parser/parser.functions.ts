@@ -1,14 +1,14 @@
-import * as E from "fp-ts/Either";
-import * as T from "fp-ts/Task";
-import * as TE from "fp-ts/TaskEither";
-import { flow, pipe } from "fp-ts/function";
-import produce from "immer";
+import { DomainError } from "@/domain/general/general.types";
 import {
-  GitContextUpdaterBuilder,
-  GitErrorPattern,
-  GitOutputParser,
-  GitOutputPattern,
-} from "../../context/git-context/git-context.types";
+  validateBranchName,
+  validateHttpsGithubAddress,
+  validateIncludeString,
+  validateSshGithubAddress,
+} from "@/domain/rules/validation-rules/validate.functions";
+import * as E from "fp-ts/Either";
+import { flow, pipe } from "fp-ts/function";
+import { GitOutputParser, GitOutputPattern } from "../../context/git-context/git-context.types";
+import { GitCommandError } from "../command.types";
 import {
   headPattern,
   mergeConflictPattern,
@@ -18,14 +18,6 @@ import {
   unstagedChangePattern,
   untrackedFilesPattern,
 } from "./parser.values";
-import { GitCommandError } from "../command.types";
-import { DomainError } from "@/domain/general/general.types";
-import {
-  validateBranchName,
-  validateHttpsGithubAddress,
-  validateIncludeString,
-  validateSshGithubAddress,
-} from "@/domain/rules/validation-rules/validate.functions";
 
 const patternMatchedOrNot = (pattern: string) => (result: string) => {
   return result.includes(pattern) ? true : false;

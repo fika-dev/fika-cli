@@ -3,7 +3,14 @@ import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/Option";
 import { ValidationError, Validate } from "./validation-rule.types";
-import { validateNumber } from "./validation-rules.functions";
+
+export const validateNumber: Validate<number> = (value: number) => {
+  if (isNaN(value)) {
+    return E.left({ type: "NotNumberError", value });
+  } else {
+    return E.right(value);
+  }
+};
 
 export const validateIssueNumber: Validate<number> = (
   issueNumber: number
@@ -12,7 +19,7 @@ export const validateIssueNumber: Validate<number> = (
     issueNumber,
     O.fromNullable,
     O.foldW(
-      () => E.left({ type: "NotNumberError", value: null } as ValidationError),
+      () => E.left({ type: "NotIssueNumberError", value: undefined } as ValidationError),
       number => validateNumber(number)
     )
   );
@@ -36,7 +43,7 @@ export const validateIncludeString = (pattern: string) => (unvalidatedString: st
 };
 
 export const validateBranchName: Validate<string> = (unvalidatedBranchName: string) => {
-  const branchNamePattern: RegExp = /^[A-Za-z\.\/\#\_\@-]+$/g;
+  const branchNamePattern: RegExp = /^[A-Za-z0-9\.\/\#\_\@-]+$/g;
   const matched = branchNamePattern.exec(unvalidatedBranchName);
   if (matched) {
     return E.right(unvalidatedBranchName);
@@ -64,5 +71,3 @@ export const validateSshGithubAddress: Validate<string> = (unvalidatedAddress: s
     return E.left({ type: "SshGithubAddress", value: unvalidatedAddress } as ValidationError);
   }
 };
-
-export const validateCheckOut: Validate<Context> = context => E.right(context);

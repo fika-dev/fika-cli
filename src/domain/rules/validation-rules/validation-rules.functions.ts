@@ -1,18 +1,7 @@
 import * as E from "fp-ts/lib/Either";
-import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/function";
-import {
-  NotNumberError,
-  ValidationError,
-  ValidationResolverBuilder,
-} from "./validation-rule.types";
-export const validateNumber = (value: number): E.Either<NotNumberError, number> => {
-  if (isNaN(value)) {
-    return E.left({ type: "NotNumberError", value });
-  } else {
-    return E.right(value);
-  }
-};
+import * as O from "fp-ts/lib/Option";
+import { ValidationResolverBuilder } from "./validation-rule.types";
 
 export const resolveValidationError: ValidationResolverBuilder<any> =
   errorHandler => errorOrValue =>
