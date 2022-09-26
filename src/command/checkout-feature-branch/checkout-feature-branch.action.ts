@@ -12,13 +12,13 @@ import { IMessageService } from "src/domain/service/i_message.service";
 
 import { GetContext } from "@/domain/context/context.types";
 import { Unit } from "@/domain/general/general.types";
-import { CheckoutToIssue, GitCommandExecuter } from "@/domain/git-command/command.types";
+import { CheckoutToIssue, ExecuteGitCommand } from "@/domain/git-command/command.types";
 import { GetIssueRecordByNumber, ValidateIssueNumber } from "@/domain/issue/issue.types";
 import { ReportError, ReportSuccess } from "@/domain/report/report.types";
 import { ValidateContext } from "@/domain/rules/validation-rules/validation-rule.types";
 import { RuleCombinator } from "src/domain/rules/rule.types";
 import { Context } from "vm";
-import { checkoutToIssueBuilder } from "@/domain/git-command/command.functions";
+// import { checkoutToIssueBuilder } from "@/domain/git-command/command.functions";
 
 const _checkoutFeatureBranchLegacy = async (issueNumber?: number) => {
   const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
@@ -53,33 +53,33 @@ const _checkoutFeatureBranchLegacy = async (issueNumber?: number) => {
 };
 export const checkoutFeatureBranchAction = _checkoutFeatureBranchLegacy;
 
-const _functionalCheckoutFeatureBranch = async (issueNumber?: number) => {
-  const validateCheckOut = validateCheckOutBuilder(getContext)(setContext);
-  const checkoutToIssue = checkoutToIssueBuilder(exec);
-  return flow(
-    O.fromNullable,
-    O.fold(
-      () => T.of("Unit"),
-      flow(
-        validateIssueNumber,
-        E.chainFirst(() => validateCheckOut(isCheckOutOkRule)),
-        TE.fromEither,
-        TE.chain(findIssueRecordByNumber),
-        TE.chain(checkoutToIssue),
-        TE.fold(
-          e => T.of(reportError(e)),
-          s => T.of(reportSuccess(s))
-        )
-      )
-    ),
-    O.getOrElse
-  )(issueNumber);
-};
+// const _functionalCheckoutFeatureBranch = async (issueNumber?: number) => {
+//   const validateCheckOut = validateCheckOutBuilder(getContext)(setContext);
+//   const checkoutToIssue = checkoutToIssueBuilder(exec);
+//   return flow(
+//     O.fromNullable,
+//     O.fold(
+//       () => T.of("Unit"),
+//       flow(
+//         validateIssueNumber,
+//         E.chainFirst(() => validateCheckOut(isCheckOutOkRule)),
+//         TE.fromEither,
+//         TE.chain(findIssueRecordByNumber),
+//         TE.chain(checkoutToIssue),
+//         TE.fold(
+//           e => T.of(reportError(e)),
+//           s => T.of(reportSuccess(s))
+//         )
+//       )
+//     ),
+//     O.getOrElse
+//   )(issueNumber);
+// };
 
 declare const getContext: GetContext;
 declare function setContext(context: Context): Unit;
 declare const validateCheckOutBuilder: ValidateContext;
-declare const exec: GitCommandExecuter;
+declare const exec: ExecuteGitCommand;
 declare const validateIssueNumber: ValidateIssueNumber;
 declare const findIssueRecordByNumber: GetIssueRecordByNumber;
 declare const reportError: ReportError;
