@@ -1,3 +1,5 @@
+import { initFixedBranch } from "@/actions/git/init-fixed-branch.action";
+import { initGitRepo } from "@/actions/git/init-git-repo.action";
 import {
   defaultLocalConfig,
   developBranchCandidates,
@@ -6,7 +8,7 @@ import {
 } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
-import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 
@@ -35,12 +37,8 @@ export const initAction = async () => {
     "release",
     foundReleaseBrances
   );
-  await gitPlatformService.gitInit();
-  if (!(await gitPlatformService.isThereRemoteUrl())) {
-    const remoteUrl = await promptService.askRemoteUrl();
-    await gitPlatformService.setRemoteUrl(remoteUrl);
-  }
-  await gitPlatformService.checkoutToBranchWithoutReset(developBranchName);
+  await initGitRepo();
+  await gitPlatformService.checkoutToBranchWithoutReset(mainBranchName);
   const initialConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
   initialConfig.branchNames = {
     develop: developBranchName,
@@ -50,8 +48,8 @@ export const initAction = async () => {
   };
   configService.createLocalConfig(initialConfig);
   await gitPlatformService.stageAllChanges();
-  await gitPlatformService.commitWithMessage("Initial commit");
-  await gitPlatformService.checkoutToBranchWithoutReset(mainBranchName);
-  await gitPlatformService.checkoutToBranchWithoutReset(releaseBranchName);
-  await gitPlatformService.checkoutToBranchWithoutReset(developBranchName);
+  await gitPlatformService.commitWithMessage("Add .fikarc for fika configuration");
+  await initFixedBranch(mainBranchName);
+  await initFixedBranch(releaseBranchName);
+  await initFixedBranch(developBranchName);
 };

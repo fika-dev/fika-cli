@@ -9,7 +9,7 @@ import { CreateIssueDto, CreateIssueDtoType } from "src/infrastructure/dto/creat
 import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
 import { DevObject } from "../entity/dev_object.entity";
 import { Issue } from "../entity/issue.entity";
-import { IssueWithPR } from "../entity/i_git_platform.service";
+import { IssueWithPR } from "./i_git_platform.service";
 import { Workspace } from "../entity/workspace.entity";
 import { NotionPageNotFound } from "../value_object/exceptions/notion_page_not_found";
 import {
@@ -55,6 +55,19 @@ export class ConnectService implements IConnectService {
       }
     );
   }
+  async getHash(): Promise<string> {
+    const response = await this.axiosInstance.get("/auth/hash", {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error("couldnt get hash");
+    }
+  }
   async deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void> {
     try {
       const response = await this.axiosInstance.delete("/git/issue", {
@@ -90,6 +103,7 @@ export class ConnectService implements IConnectService {
           issueUrl: response.data.notionPageUrl,
           title: response.data.title,
           gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
+          branchName: response.data.branchName,
           labels: [],
         };
       } else {
@@ -185,21 +199,19 @@ export class ConnectService implements IConnectService {
     try {
       const fragments = issue.gitIssueUrl.split("/");
       const gitRepoUrl = fragments.slice(0, fragments.length - 2).join("/");
-      const response = await this.axiosInstance.post(
-        "/git/issue",
-        {
-          gitRepoUrl: gitRepoUrl,
-          notionPageUrl: issue.issueUrl,
-          title: issue.title,
-          issueNumber: fragments[fragments.length - 1],
+      const createIssueRecordDto: CreateIssueRecord = {
+        gitRepoUrl: gitRepoUrl,
+        notionPageUrl: issue.issueUrl,
+        title: issue.title,
+        issueNumber: fragments[fragments.length - 1],
+        branchName: issue.branchName,
+      };
+      const response = await this.axiosInstance.post("/git/issue", createIssueRecordDto, {
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${this.token}`,
         },
-        {
-          headers: {
-            "content-type": "application/json",
-            Authorization: `Bearer ${this.token}`,
-          },
-        }
-      );
+      });
     } catch (e) {
       const axiosError = e as AxiosError;
       console.log(
@@ -229,6 +241,7 @@ export class ConnectService implements IConnectService {
         gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
         labels: [],
         gitPrUrl: response.data.prUrl,
+        branchName: response.data.branchName,
       };
     } catch (e) {
       const axiosError = e as AxiosError;
@@ -357,7 +370,7 @@ export class ConnectService implements IConnectService {
       }
     }
   }
-  async updateIssue(
+  async updateWorkspaceIssue(
     updatedIssue: Issue,
     workspaceId: Uuid,
     workspaceType: WorkspaceType

@@ -1,127 +1,104 @@
-# fika-cli documentation
+<img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/63a7d4c7-5ece-4b26-abd2-ac5fa4087a37/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220907%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220907T045022Z&X-Amz-Expires=86400&X-Amz-Signature=fda14ff6cbaf6eea4fe0bf151e5c8ca91eab7100aa89b1024730f72d14702385&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject" alt="Image" width="400" style="display: block; margin: 0 auto" />
 
-The ☕ Fika CLI allows developers to keep their Notion documents in sync with their codebase without effort.
-
-# Quick Start
+# Fika: A high-level git extension that helps team-shared development workflow.
 
 ---
 
-```bash
-# 📦 Install fika cli
-yarn global add fika-cli
+## Overview
 
-# 🚀 Initialize fika in your repository
-cd YOUR_REPO_PATH
-fika init --connect
+Git is at the heart of the development workflow.
 
-# ☕ Push your repo & registered components to your Notion workspace
-fika push --analyze
-```
+Git is great tool and in modern development we can not survive without it.
 
-# Table Of Contents
+But it can be scary and hard for even experienced developers.
+
+> **Maxine is still the only person who knows every keyboard shortcut from vi to the latest, greatest editors. But she is never ashamed to tell anyone that she still needs to look up nearly every command line option for Git—because Git can be scary and hard! What other tool uses SHA-1 hashes as part of its UI?** _from Unicorn Project, Gene Kim_
+
+The goal of this extension is to make it simple to configure and share team-based git workflow strategy and to make teammates easy to follow the configured strategy.
+
+Also Fika provides integration with issue tracking tools (e.g. Notion, Jira) and with github.
+
+With Fika, no more manual creation of issue and pull request and manual linking with issue tracking tools.
 
 ---
 
-# Overview
+## Get Started
+
+### `fika init`
+
+You can generates sharable git-workflow configuration file named `.fikarc` inside the repository by answering some questions.
+
+### `fika start <issue-url>`
+
+You can start handling of the issue given as url from issue tracking tool (IST), inside automatically created feature branch for this issue.
+
+https://user-images.githubusercontent.com/4794433/188790487-54a463c4-4a5e-4889-9900-43cc9ef71651.mov
+
+This command executes a below sequence.
+
+1. It collects information of the issue (title) from IST (such as Notion or Jira).
+2. It creates github repository issue (e.g. #236) with same title, and leave link for url of original issue from IST.
+3. It appends github repository issue link to IST issue document.
+4. It creates a local feature branch following name convention configured by `.fikarc` file.
+5. Checkout to the created local feature branch to start handling the issue.
+
+### `fika finish`
+
+You can finish handling of the current issue, and share result with team.
+
+https://user-images.githubusercontent.com/4794433/188790582-da392cd7-6049-4045-b15a-37ab40520aae.mov
+
+This command executes a below sequence.
+
+1. It will pull base branch and check merge conflict.
+2. It will push this local feature branch to remote repository.
+3. It will create github pull request (with same name with issue).
+4. It will link github pull request to original issue from IST.
+5. Checkout to base branch depending on the configuration.
+
+### other commands
+
+- `fika d` : Checkout to the develop branch (or the name of the develop branch specified by the user in `.firarc`)
+- `fika f` : Checkout to the most recent feature branch, base on the naming scheme gave by the user.
+- `fika f <issue_number>` : Checkout to the feature branch handling that issue number.
+- `fika info` : Display information about an issue being handled in this feature branch : its branch name, title, GitHub url link and PR url link if was created.
 
 ---
 
 ## Installation
 
-```bash
-# 📦 Install fika using yarn
-yarn global add fika-cli
-# or with npm
-npm -g install fika-cli
-```
+### 1) Preinstallation
 
-## Notion Template
+To use **fika**, `gh` a client tool of **github**, needs to be installed in advance.
 
-[](https://www.notion.so/templates/roadmap)
+Installing `gh` is easy!
 
-Above link will lead you to **Fika** Notion template. Please duplicate this template to your Notion workspace. **Fika** tries to find relavant pages and databases in this duplicated template page.
+You can install
 
-## **Initializing**
+by running `brew install gh` for macos,
 
-```bash
-fika init --connect
-```
+by `choco install gh` or `winget install --id GitHub.cli` for windows.
 
-`fika init` with `—connect` option opens a browser with authorization URL, a prompt which discloses the capabilities of the integration with **Fika** and choose whether to grant the integration access or not.
+You can check in more details from below link.
 
-After granting access, a page picker will be shown to select pages and databases to share with **Fika** integration. Please select the duplicated **Fika Template** page.
+[https://github.com/cli/cli#installation](https://github.com/cli/cli#installation)
 
-`fika init` initializes the Fika CLI in the current directory (RECOMMENDATION current directory == root directory of target git repo).
+<aside>
+💡 And installation, do not forget to log in to github through `gh auth login`
 
-Running `fika init` generates a `.fika/config.json` so that you can configure various settings required for using **Fika** .
+</aside>
 
-By default, fika configuration
-
-```json
-{
-  // botId will be updated after connecting with Notion workspace
-  "botId": "not_connected",
-  "components": [
-    {
-      "React.Component": {
-        "databaseName": "React Component DB",
-        "additionalProperties": [
-          {
-            "description": "rich_text"
-          }
-        ]
-      }
-    }
-  ]
-}
-```
-
-Running `fika init` also anlayze a relevant git information such as, commit count, repo birth date and most edited files. These analyzed repository info will be uploaded to your Notion workspace when you run `fika push`.
-
-## Registering Components
-
-Fika currently supports only `typescript react components` and `typescript next pages` as components.
-
-To register components please insert commented decoration `//@Fika()` like below.
-
-```tsx
-//@Fika('React.Component')
-const Welcome: React.FC<WelcomeProps> = props => <h1>Hello, {props.name}</h1>;
-```
-
-`fika analyze` or `fika push —analyze` comands analyze code files in the initialized directory and extract registered components. The automatically extracted components will be stored in `.fika/components.g.ts` file.
-
-The registered components will be uploaded to your Notion workspace as a page in the component database.
-
-## Uploading data into Notion
+### 2) Installation of fika
 
 ```bash
-fika push --analyze
+npm install -g fika-cli
 ```
 
-`fika push` uploads extracted data to your Notion workspace (into the **Fika** template page which you granted access to **Fika** integrator ). The `—analyze` option let you upadate git repository data and analyze registered components before uploading.
+### 3) Connect to issue tracking tool
 
-Currently, fika extract data about git repository and registered components.
-
-### Git Repository Data
-
-| title            | fika-cli will extract title of this repository from linked remote url |
-| ---------------- | --------------------------------------------------------------------- |
-| latest version   | the latest git tag                                                    |
-| url              | git linked remote url (usually, github origin url)                    |
-| created date     | when the linked repository is created                                 |
-| authors          | contributors of the linked repository                                 |
-| commit count     | the count of commits                                                  |
-| active days      | the count of days when commit is submmitted                           |
-| file count       | the count of files of linked repository                               |
-| synced commit id | the last commit id of the repository                                  |
-| last synced date | when git repository data is synced                                    |
-
-### React Component Data
-
-| title       | the name of react component (e.g. Home, Heading, EditButton)                 |
-| ----------- | ---------------------------------------------------------------------------- |
-| file path   | relative path of the file including registered react component               |
-| type        | declared type of the react component (if exist) (e.g. React.VFC<HomeProps> ) |
-| props       | properties passed down to the react component                                |
-| description | additional description                                                       |
+```bash
+# for notion
+fika connect notion
+# for jira
+fika connect jira
+```

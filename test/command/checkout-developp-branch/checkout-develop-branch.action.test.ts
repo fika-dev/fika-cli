@@ -2,14 +2,13 @@ import { checkoutDevelopBranchAction } from "@/command/checkout-develop/checkout
 import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
-import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import { Uuid } from "@/domain/value_object/uuid.vo";
-import exp from "constants";
 import { TEST_CPR_BRANCH_NAME } from "test/test-constants";
-import { checkAndCloneRepo, createTestConfig, deleteBranch, restoreGitRepo, setUseToken } from "test/test-utils";
+import { checkAndCloneRepo, createTestConfig, restoreGitRepo, setUseToken } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
@@ -26,6 +25,7 @@ beforeEach(async()=>{
   jest.restoreAllMocks();
   jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
   jest.spyOn(console, "log").mockImplementation(()=>true);
+  jest.spyOn(promptService, "confirmAction").mockImplementation(()=>Promise.resolve(true));
   jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   await gitPlatformService.checkoutToBranchWithoutReset('develop');
@@ -42,6 +42,7 @@ afterAll(() => {
 });
 
 it("1.test checkout-develop-branch if develop was set", async () => {
+  
     const localConfig = defaultLocalConfig;
   localConfig.branchNames.develop = "develop";
   await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);

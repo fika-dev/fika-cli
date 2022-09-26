@@ -1,5 +1,5 @@
 import { Issue } from "@/domain/entity/issue.entity";
-import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
@@ -26,7 +26,7 @@ export const createPR = async (): Promise<void> => {
   messageService.showWaiting("Updating Notion Issue");
   const workspaceId = configService.getWorkspaceId();
   const workspaceType = configService.getWorkspaceType();
-  await connectService.updateIssue(updatedIssue, workspaceId, workspaceType);
+  await connectService.updateWorkspaceIssue(updatedIssue, workspaceId, workspaceType);
   const issueNumber = configService.parseIssueNumber(branchName);
   const prNumber = Issue.parseNumberFromUrl(updatedIssue.gitPrUrl);
   // [TODO] if base branch

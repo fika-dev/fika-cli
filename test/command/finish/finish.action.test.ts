@@ -1,12 +1,14 @@
 import { createPR } from "@/actions/complex/create-PR.action";
+import { pullAndCheckConflict } from "@/actions/git/pull-and-check-conflict.action";
 import { finishAction } from "@/command/finish/finish.action";
 import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
-import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
+import BaseException from "@/domain/value_object/exceptions/base_exception";
 import { GhPrAlreadyExists } from "@/domain/value_object/exceptions/gh_pr_already_exists";
 import { Uuid } from "@/domain/value_object/uuid.vo";
 import exp from "constants";
@@ -30,6 +32,13 @@ beforeEach(async()=>{
   jest.spyOn(console, "log").mockImplementation(()=>true);
   jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
+  jest.spyOn(gitPlatformService, 'createPR').mockImplementation((issue)=>{
+    const updated = {
+      ...issue,
+      gitPrUrl: 'https://github.com/fika-dev/fika-cli-test-samples/pull/1502'
+    }
+    return Promise.resolve(updated);
+  });
   await gitPlatformService.checkoutToBranchWithoutReset('develop');
   await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });
@@ -43,14 +52,20 @@ afterAll(() => {
   
 });
 
-// it("1.test git merge conflict", async ()=>{
-//   await gitPlatformService.checkoutToBranchWithoutReset("conflicting");
-//   await gitPlatformService.pullFrom("conflicting_2");
-//   const isConflictExist = await gitPlatformService.checkConflict();
-//   expect(isConflictExist).toEqual(true);
-//   await gitPlatformService.abortMerge();
-//   await gitPlatformService.checkoutToBranchWithoutReset("develop");
-// });
+it("1.test git merge conflict", async ()=>{
+  jest.spyOn(promptService, 'confirmAction').mockImplementation((message: string) => Promise.resolve(true));
+  await gitPlatformService.checkoutToBranchWithoutReset("conflicting");
+  let message: string = 'not yet'
+  try{
+    await pullAndCheckConflict("conflicting_2");
+    message = "done";
+  }
+  catch(e){
+    const exception = e as BaseException;
+    message = exception.name;
+  }
+  expect(message).toContain('GitError:MergeConflict');
+});
 
 it("2.test finish without change & without merge check, without checkout", async () => {
   try {
@@ -68,7 +83,6 @@ it("2.test finish without change & without merge check, without checkout", async
   } catch (e) {
     await deleteBranch(TEST_CPR_BRANCH_NAME);  
   }
-  
 });
 
 it("3.test finish without change & without merge check, with checkout", async () => {

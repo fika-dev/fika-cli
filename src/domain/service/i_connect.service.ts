@@ -1,7 +1,7 @@
 import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
 import { DevObject } from "../entity/dev_object.entity";
 import { Issue } from "../entity/issue.entity";
-import { IssueWithPR } from "../entity/i_git_platform.service";
+import { IssueWithPR } from "./i_git_platform.service";
 import { Workspace } from "../entity/workspace.entity";
 import { UpdateInfo } from "../value_object/update-info.vo";
 import { Uuid } from "../value_object/uuid.vo";
@@ -17,7 +17,11 @@ export interface IConnectService {
   update(devObj: DevObject): Promise<string>;
   remove(devObj: DevObject): Promise<string>;
   getIssue(documentUrl: string, workspaceId: Uuid, workspaceType: WorkspaceType): Promise<Issue>;
-  updateIssue(updatedIssue: Issue, workspaceId: Uuid, workspaceType: WorkspaceType): Promise<Issue>;
+  updateWorkspaceIssue(
+    updatedIssue: Issue,
+    workspaceId: Uuid,
+    workspaceType: WorkspaceType
+  ): Promise<Issue>;
   deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void>;
   useToken(token: string): void;
   isAvailableEmail(email: string): Promise<boolean>;
@@ -40,4 +44,5 @@ export interface IConnectService {
     issueNumber: number,
     prNumber: number
   ): Promise<string>;
+  getHash(): Promise<string>;
 }

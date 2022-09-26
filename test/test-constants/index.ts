@@ -7,6 +7,8 @@ export const TEST_NOTION_WORKSPACE_ID = 'd3224eba-6e67-4730-9b6f-a9ef1dc7e4ac';
 
 export const TEST_JIRA_WORKSPACE_ID = '275b18d8-c1b6-4b30-940a-529e6f3e5235';
 
+export const TEST_USER_HASH = '5387961cb9c99be489af15acc544bf74c5df625305726ff4c1b3dfb104fd482558326a76';
+
 export const TEST_START_DOC_ID = 'https://www.notion.so/test-fika-start-doc-4af459df4efb448483fe3e2b703d50fd';
 
 export const TEST_START_DOC_JIRA_URL = 'https://fika-dev.atlassian.net/browse/FB-1';
@@ -17,9 +19,95 @@ export const TEST_CPR_DOC_ID =  'https://www.notion.so/for-pull-request-test-doc
 
 export const TEST_CPR_BRANCH_NAME = 'feature/iss/#2';
 
+export const TEST_HTTPS_GITHUB_REPO = 'https://github.com/fika-dev/fika-cli.git';
+
+export const TEST_SSH_GITHUB_REPO = 'git@github.com:fika-dev/test-repo.git';
+
+export const TEST_UNVALID_BRANCH_NAME = 'feature is not';
+
 export const TEST_CPR_COMMIT_MESSAGE = '[add] meaningless white space';
 
 export const TEST_CHANGE_FILE_PATH = './test/testing-env/fika-cli-test-samples/sample_01/readme.md';
+
+export const TEST_BRANCH_LIST = `
+develop
+feature/iss/#138
+feature/iss-#138
+feature/iss-#140
+feature/iss-105
+feature/iss-107
+feature/iss-109
+feature/iss-111
+feature/iss-113
+feature/iss-115
+feature/iss-117`
+
+export const TEST_HEAD_NOT_DEFINED = `
+HEAD
+fatal: ambiguous argument 'HEAD': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'`
+
+export const TEST_GIT_STATUS_STRING = `
+On branch feature/iss/#418
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   src/domain/git-command/parser/parser.functions.ts
+        modified:   src/domain/rules/validation-rules/validate.functions.ts
+        modified:   src/domain/rules/validation-rules/validation-rules.functions.ts
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        test/domain/
+
+no changes added to commit (use "git add" and/or "git commit -a")
+`
+
+export const TEST_GIT_STATUS_WITH_STAGED = `
+On branch feature/iss/#418
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   src/domain/git-command/parser/parser.functions.ts
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   src/domain/git-command/parser/parser.values.ts
+        modified:   test/domain/rules/validation-rules/validate.function.test.ts
+        modified:   test/test-constants/index.ts
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        test/domain/git-command/
+`
+
+export const TEST_GIT_MERGE_CONFLICT_STATUS = `
+On branch conflicting
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+        both modified:   sample_01/readme.md
+
+no changes added to commit (use "git add" and/or "git commit -a")`
+
+export const TEST_GIT_NO_REMOTE = `
+error: No such remote 'origin'`
+
+export const TEST_GIT_CLEAN_STATUS = `
+On branch feature/iss/#418
+nothing to commit, working tree clean`
+
+export const TEST_NO_COMMIT_STATUS = `
+On branch main
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+`
 
 export const TEST_USER_CONFIG: Config = {
   workspace: {

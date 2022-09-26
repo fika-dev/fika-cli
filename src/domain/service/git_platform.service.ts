@@ -7,8 +7,9 @@ import { promisify } from "util";
 import { AddOnType } from "../entity/add_on/add_on.entity";
 import { GitPlatform } from "../entity/add_on/git_platform.entity";
 import { Issue } from "../entity/issue.entity";
-import { IGitPlatformService, IssueWithPR } from "../entity/i_git_platform.service";
+import { IGitPlatformService, IssueWithPR } from "./i_git_platform.service";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
+import { GitError } from "../value_object/exceptions/git_error";
 import { NothingToCommit } from "../value_object/exceptions/nothing_to_commit";
 import { NoRemoteBranch } from "../value_object/exceptions/no_remote_branch";
 import { VersionTag } from "../value_object/version_tag.vo";
@@ -28,6 +29,43 @@ export class GitPlatformService implements IGitPlatformService {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }
+
+  async checkRemoteBranchExist(branchName: string): Promise<boolean> {
+    try {
+      await this.execP(`git show-branch remotes/origin/${branchName}`);
+      return true;
+    } catch (e) {
+      const message = e.stdout + e.stderr;
+      if (message.includes("fatal: bad sha1 reference")) {
+        return false;
+      } else {
+        throw new GitError("GitError", e);
+      }
+    }
+  }
+  async getUpstreamBranch(branchName: string): Promise<string> {
+    try {
+      const { stdout: statusOutput, stderr } = await this.execP(
+        `git rev-parse --abbrev-ref ${branchName}@{upstream}`
+      );
+      return statusOutput.trim();
+    } catch (e) {
+      const message = e.stdout + e.stderr;
+      if (message.includes("fatal: no such branch")) {
+        return undefined;
+      } else {
+        throw new GitError("GitError", e);
+      }
+    }
+  }
+  async checkHeadExist(): Promise<boolean> {
+    const { stdout: statusOutput, stderr: diffError } = await this.execP("git status");
+    if (statusOutput.includes("No commits yet")) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   isGitRepo(): boolean {
     return fs.existsSync(`${this.gitRepoPath}/.git`);
   }
@@ -38,6 +76,7 @@ export class GitPlatformService implements IGitPlatformService {
   async checkConflict(): Promise<boolean> {
     const { stdout: statusOutput, stderr: diffError } = await this.execP("git status");
     if (statusOutput.includes("git merge --abort")) {
+      await this.abortMerge();
       return true;
     } else {
       return false;
@@ -54,10 +93,15 @@ export class GitPlatformService implements IGitPlatformService {
         return "UPDATED";
       }
     } catch (e) {
-      if (e.stdout.includes("conflict")) {
-        return "REMOTE_CONFLICT";
+      const message = e.stdout + e.stderr;
+      console.log("🧪", " in GitPlatformService: ", "message: ", message);
+      if (message.includes("Merge conflict")) {
+        await this.abortMerge();
+        throw new GitError("GitError:MergeConflict");
+      } else if (e.stdout.includes("conflict")) {
+        throw new GitError("GitError:RemoteConflict");
       } else if (e.stdout.includes("couldn't find remote ref")) {
-        return "NO_REMOTE_BRANCH";
+        throw new GitError("GitError:NoRemoteBranch");
       } else {
         throw e;
       }
@@ -119,7 +163,8 @@ export class GitPlatformService implements IGitPlatformService {
         `git commit -m "${message}"`
       );
     } catch (e) {
-      if (e.stdout.includes("nothing to commit")) {
+      const message = e.stdout + e.stderr;
+      if (message.includes("nothing to commit")) {
         throw new NothingToCommit("NothingToCommit");
       } else {
         throw e;
@@ -161,8 +206,9 @@ export class GitPlatformService implements IGitPlatformService {
       }
       await this.execP(command);
     } catch (e) {
+      const message = e.stdout + e.stderr;
       if (
-        e.stdout.includes(`is not a commit and a branch ${branchName} cannot be created from it`)
+        message.includes(`is not a commit and a branch ${branchName} cannot be created from it`)
       ) {
         throw new NoRemoteBranch("NoRemoteBranch");
       } else {
@@ -234,6 +280,12 @@ export class GitPlatformService implements IGitPlatformService {
 
   async pushBranch(branchName: string): Promise<void> {
     const { stdout: pushOut, stderr: pushErr } = await this.execP(`git push origin ${branchName}`);
+  }
+
+  async pushBranchWithUpstream(branchName: string): Promise<void> {
+    const { stdout: pushOut, stderr: pushErr } = await this.execP(
+      `git push -u origin ${branchName}`
+    );
   }
 
   async createIssue(issue: Issue): Promise<Issue> {
@@ -323,5 +375,9 @@ export class GitPlatformService implements IGitPlatformService {
   }
   async setRemoteUrl(remoteUrl: string): Promise<void> {
     await this.execP(`git remote add origin ${remoteUrl}`);
+  }
+
+  async undoCommitAndModification(): Promise<void> {
+    await this.execP(`git reset HEAD~ && git checkout -- .`);
   }
 }

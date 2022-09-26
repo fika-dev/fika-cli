@@ -1,6 +1,6 @@
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
-import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";

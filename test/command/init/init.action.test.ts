@@ -2,14 +2,11 @@ import { initAction } from "@/command/init/init.action";
 import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
-import { clearLocalConfig, clearTestFikaPath, readLocalConfig, sendPromptData } from "test/test-utils";
 import promptly from "promptly";
-import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
-import { GitPlatformService } from "@/domain/service/git_platform.service";
-import { exec } from "child_process";
-import { promisify } from "util";
+import { clearLocalConfig, clearTestFikaPath, readLocalConfig, restoreGitRepo } from "test/test-utils";
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 // jest.spyOn(process.stdout, 'write').mockImplementation(()=>true)
 
@@ -36,6 +33,7 @@ afterAll(async () => {
   await gitPlatformService.deleteLocalBranch('test_develop');
   await gitPlatformService.deleteLocalBranch('test_master');
   await gitPlatformService.deleteLocalBranch('test_release');
+  await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });
 
 test('1. test prompt askremoteUrl', async () => { 
@@ -67,6 +65,9 @@ test('2. get main, develop and release branch after initialiase', async () => {
   );
   await gitPlatformService.removeRemoteUrl();
   const gitInitSpy = jest.spyOn(gitPlatformService, 'gitInit');
+  const stageSpy = jest.spyOn(gitPlatformService, 'stageAllChanges').mockImplementation(()=>undefined);
+  const commitSpy =  jest.spyOn(gitPlatformService, 'commitWithMessage').mockImplementation(()=>undefined);
+  const pushSpy =  jest.spyOn(gitPlatformService, 'pushBranchWithUpstream').mockImplementation(()=>undefined);
   jest.spyOn(promptly, 'prompt').mockImplementation(async (data) => {
     if (data.includes("develop")) {
       return 'test_develop'
@@ -75,19 +76,24 @@ test('2. get main, develop and release branch after initialiase', async () => {
     } else if (data.includes("master")) {
       return 'test_master'
     } else if (data.includes("remote origin")) {
-       return 'https://gitHoob.com/stuf'
+       return 'https://github.com/fika-dev/fika-cli-test-samples.git'
     } else {
       return;
     }
   });
   await initAction();
   const branchArr = await gitPlatformService.getBranches();
-  expect(gitInitSpy).toBeCalled();
+  expect(gitInitSpy).not.toBeCalled();
+  expect(commitSpy).toBeCalled();
+  expect(pushSpy).toBeCalled();
+  expect(stageSpy).toBeCalled();
   expect(branchArr).toContain('test_develop');
   expect(branchArr).toContain('test_release');
   expect(branchArr).toContain('test_master');
   const currentBranch = await gitPlatformService.getBranchName();
   expect(currentBranch).toEqual('test_develop');
+  commitSpy.mockRestore();
+  pushSpy.mockRestore();
 });
 
 test('3. test prompt askBranchName', async () => { 

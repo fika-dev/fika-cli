@@ -2,10 +2,11 @@ import { startAction } from "@/command/start/start.action";
 import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
-import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
+import BaseException from "@/domain/value_object/exceptions/base_exception";
 import { Uuid } from "@/domain/value_object/uuid.vo";
 import { TEST_CHANGE_FILE_PATH, TEST_CPR_BRANCH_NAME, TEST_START_DOC_ID } from "test/test-constants";
 import { checkAndCloneRepo, checkAndDeleteIssue, createTestConfig, makeMeaninglessChange, restoreGitRepo, setAuthToken, setUseToken } from "test/test-utils";
@@ -26,6 +27,13 @@ beforeEach(async()=>{
   jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   jest.spyOn(configService, 'getWorkspaceType').mockImplementation(()=>'notion');
+  jest.spyOn(gitPlatformService, 'createIssue').mockImplementation((issue)=>{
+    const updated = {
+      ...issue,
+      gitIssueUrl: 'https://github.com/fika-dev/fika-cli-test-samples/issues/1507'
+    }
+    return Promise.resolve(updated);
+  });
   await gitPlatformService.checkoutToBranchWithoutReset('develop');
   await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });
@@ -34,13 +42,12 @@ afterEach(() => {
   messageService.endWaiting();
 });
 
-test('1. test pull from develop', async () => {
-  await gitPlatformService.checkoutToBranchWithoutReset('develop');
-  await gitPlatformService.pullFrom('develop');
-});
+// test('1. test pull from develop', async () => {
+//   await gitPlatformService.checkoutToBranchWithoutReset('develop');
+//   await gitPlatformService.pullFrom('develop');
+// });
 
 test('2. check unstaged change', async () => {
-  
   await gitPlatformService.checkoutToBranchWithReset(TEST_CPR_BRANCH_NAME);
   const isChanged = await gitPlatformService.checkUnstagedChanges();
   expect(isChanged).toBe(false);
@@ -55,7 +62,28 @@ test('2. check unstaged change', async () => {
   expect(isChanged4).toBe(true);
 });
 
-test('3. test start action without existing issue', async () => {
+test('2.1. catch user stopped exception', async () => {
+  await checkAndDeleteIssue(TEST_START_DOC_ID);
+  await gitPlatformService.checkoutToBranchWithReset("develop");
+  const localConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
+  localConfig.start.pullBeforeAlways = false;
+  jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
+  makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
+  const spy = jest.spyOn(promptService, "confirmAction").mockImplementationOnce((m)=>{
+    return Promise.resolve(false)
+  });
+  let message: string
+  try{
+    await startAction(TEST_START_DOC_ID)
+  }catch(e){
+    const exception = e as BaseException;
+    message = exception.name;
+  }
+  await gitPlatformService.stash('tmp');
+  expect(message).toEqual("UserStopped:UnstagedChange");
+});
+
+test('3. notion test start action without existing issue', async () => {
   await checkAndDeleteIssue(TEST_START_DOC_ID);
   const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   await gitPlatformService.checkoutToBranchWithReset('develop');

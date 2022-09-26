@@ -3,7 +3,7 @@ import { CONFIG_FILE_NAME, FIKA_PATH, LOCAL_CONFIG_NAME, SNAPSHOT_FILE_NAME } fr
 import container from "@/config/ioc_config";
 import { Config } from "@/domain/entity/config.entity";
 import { Issue } from "@/domain/entity/issue.entity";
-import { IGitPlatformService } from "@/domain/entity/i_git_platform.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { SyncedSnapshot } from "@/domain/entity/synced_snapshot.entity";
 import { IConfigService, LocalConfig } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";
