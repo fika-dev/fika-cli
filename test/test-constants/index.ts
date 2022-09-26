@@ -29,6 +29,20 @@ export const TEST_CPR_COMMIT_MESSAGE = '[add] meaningless white space';
 
 export const TEST_CHANGE_FILE_PATH = './test/testing-env/fika-cli-test-samples/sample_01/readme.md';
 
+export const TEST_GIT_VERSION_OUTPUT = 'git version 2.32.1 (Apple Git-133)';
+
+export const TEST_GH_VERSION_OUTPUT = `gh version 2.14.7 (2022-08-25)
+    https://github.com/cli/cli/releases/tag/v2.14.7 
+
+
+    A new release of gh is available: 2.14.7 → 2.16.0
+    To upgrade, run: brew upgrade gh
+    https://github.com/cli/cli/releases/tag/v2.16.0`;
+
+export const TEST_GIT_VERSION_ONE_LINE_OUPUT = 'gh version 2.14.7 (2022-08-25)';
+
+export const TEST_NOT_INSTALLED = 'command not found:';
+
 export const TEST_BRANCH_LIST = `
 develop
 feature/iss/#138
