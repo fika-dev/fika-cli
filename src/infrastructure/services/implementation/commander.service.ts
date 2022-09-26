@@ -1,5 +1,5 @@
 import { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
-import { ExecuteGitCommand } from "@/domain/git-command/command.types";
+import { ExecuteGitCommand, ExecuteCommand } from "@/domain/git-command/command.types";
 import { exec } from "child_process";
 import { inject } from "inversify";
 import { promisify } from "util";
@@ -19,6 +19,17 @@ class GitCommanderServie implements ICmdService {
       command = `LC_ALL=C git ${gitCommand.command}`;
     }
     return () => this.exec(command);
+  };
+
+  public excuteCommand: ExecuteCommand = command => {
+    let execCommand: string;
+    if (process.platform == "win32") {
+      const windowsCommand = command.windowsCommand ?? command.command;
+      execCommand = windowsCommand;
+    } else {
+      execCommand = `LC_ALL=C  ${command.command}`;
+    }
+    return () => this.exec(execCommand);
   };
 
   private async exec(command: string): Promise<string> {

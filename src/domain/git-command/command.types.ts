@@ -11,8 +11,11 @@ export interface Command {
 
 export interface GitCommand extends Command {}
 
-export type GitCommandOutput = string;
+export type CommandOutput = string;
+export type GitCommandOutput = CommandOutput;
+
 export type ExecuteGitCommand = (gitCommand: GitCommand) => T.Task<GitCommandOutput>;
+export type ExecuteCommand = (command: Command) => T.Task<GitCommandOutput>;
 
 export interface CheckoutToIssue {
   (issue: Issue): TE.TaskEither<CheckoutFailure, CheckoutSuccess>;
