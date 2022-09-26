@@ -39,7 +39,7 @@ export const TEST_GH_VERSION_OUTPUT = `gh version 2.14.7 (2022-08-25)
     To upgrade, run: brew upgrade gh
     https://github.com/cli/cli/releases/tag/v2.16.0`;
 
-export const TEST_GIT_VERSION_ONE_LINE_OUPUT = 'gh version 2.14.7 (2022-08-25)';
+export const TEST_GH_VERSION_ONE_LINE_OUPUT = 'gh version 2.14.7 (2022-08-25)';
 
 export const TEST_NOT_INSTALLED = 'command not found:';
 
