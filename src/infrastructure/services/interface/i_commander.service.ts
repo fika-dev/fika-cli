@@ -1,5 +1,5 @@
-import { GitCommandExecuter } from "@/domain/git-command/command.types";
+import { ExecuteGitCommand } from "@/domain/git-command/command.types";
 
 export interface ICmdService {
-  excuteGitCommand: GitCommandExecuter;
+  excuteGitCommand: ExecuteGitCommand;
 }

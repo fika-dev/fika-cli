@@ -17,7 +17,7 @@ import {
 } from "../git-command/parser/parser.functions";
 import { HowToCheck } from "./context.types";
 
-const howToCheck: HowToCheck = {
+export const howToCheck: HowToCheck = {
   git: {
     head: {
       command: statusCmd,

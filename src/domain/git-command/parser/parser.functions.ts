@@ -1,14 +1,13 @@
-import { DomainError } from "@/domain/general/general.types";
 import {
   validateBranchName,
   validateHttpsGithubAddress,
   validateIncludeString,
   validateSshGithubAddress,
 } from "@/domain/rules/validation-rules/validate.functions";
+import { ValidationError } from "@/domain/rules/validation-rules/validation-rule.types";
 import * as E from "fp-ts/Either";
 import { flow, pipe } from "fp-ts/function";
-import { GitOutputParser, GitOutputPattern } from "../../context/git-context/git-context.types";
-import { GitCommandError } from "../command.types";
+import { ContextValueOrError, GitOutputParser } from "../../context/git-context/git-context.types";
 import {
   headPattern,
   mergeConflictStatusPattern,
@@ -45,7 +44,9 @@ export const checkRemoteOrigin: GitOutputParser = result => {
     ),
     E.alt(() => validateHttpsGithubAddress(preprocessed)),
     E.alt(() => validateSshGithubAddress(preprocessed)),
-    E.getOrElse(e => e as DomainError)
+    E.getOrElse((e: ValidationError) => {
+      return e as ContextValueOrError;
+    })
   );
 };
 
@@ -58,7 +59,9 @@ export const checkCurrentBranch: GitOutputParser = result => {
       E.chain(_ => E.right("Empty"))
     ),
     E.alt(() => validateBranchName(preprocessed)),
-    E.getOrElse(e => e as DomainError)
+    E.getOrElse((e: ValidationError) => {
+      return e as ContextValueOrError;
+    })
   );
 };
 

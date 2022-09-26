@@ -18,8 +18,8 @@ export interface GitContext {
   remoteBranches?: Branch[];
   conflict?: ConflictStatus;
 }
-
-export type GitOutputParser = (result: string) => ContextValue | DomainError;
+export type ContextValueOrError = ContextValue | DomainError;
+export type GitOutputParser = (result: string) => ContextValueOrError;
 
 export type GitContextUpdater = (gitContext: GitContext) => GitContext;
 // export type GitOutputParser = (

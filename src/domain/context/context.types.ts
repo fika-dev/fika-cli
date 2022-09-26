@@ -1,7 +1,8 @@
-import { Unit } from "../general/general.types";
-import { GitCommand } from "../git-command/command.types";
+import { DomainError, Unit } from "../general/general.types";
+import { ExecuteGitCommand, GitCommand } from "../git-command/command.types";
 import { CmdContext } from "./cmd-context/cmd-context.types";
 import { GitContext, GitOutputParser } from "./git-context/git-context.types";
+import * as T from "fp-ts/Task";
 
 export interface Context {
   git: GitContext;
@@ -29,6 +30,10 @@ export type HowToCheck = {
     [key in keyof CmdContext]: CommandAndParser;
   };
 };
+
+export type CheckContext = (
+  excuteGitCommand: ExecuteGitCommand
+) => (key: ContextKey) => T.Task<ContextValue | DomainError>;
 
 export interface CommandAndParser {
   command: GitCommand;

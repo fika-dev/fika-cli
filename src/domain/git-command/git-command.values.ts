@@ -13,19 +13,19 @@ export const statusCmd: GitCommand = {
 };
 
 export const getRemoteOriginCmd: GitCommand = {
-  command: "git remote get-url",
+  command: "remote get-url",
   argument: "origin",
 };
 
 export const getCurrentBranch: GitCommand = {
-  command: "git rev-parse --abbrev-ref HEAD",
+  command: "rev-parse --abbrev-ref HEAD",
 };
 
 export const getLocalBranches: GitCommand = {
-  command: "git branch --format='%(refname:short)'",
+  command: "branch --format='%(refname:short)'",
   windowsCommand: "git branch --format=%(refname:short)",
 };
 
 export const getRemoteBranches: GitCommand = {
-  command: "git branch -r",
+  command: "branch -r",
 };
