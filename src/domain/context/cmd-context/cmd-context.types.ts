@@ -6,8 +6,6 @@ type NotWindows = "NotWindows";
 type OS = Windows | NotWindows;
 type NotInstalled = "NotInstalled";
 export interface CmdContext {
-  currentPath?: Path;
-  os?: OS;
   gitVersion?: VersionTag | NotInstalled;
   ghCliVersion?: VersionTag | NotInstalled;
 }

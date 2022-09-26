@@ -3,11 +3,13 @@ import * as TE from "fp-ts/TaskEither";
 import { Issue } from "../entity/issue.entity";
 import { DomainError, DomainSuccess } from "../general/general.types";
 type MainCommand = string;
-export interface GitCommand {
+export interface Command {
   command: MainCommand;
   windowsCommand?: MainCommand;
   argument?: string;
 }
+
+export interface GitCommand extends Command {}
 
 export type GitCommandOutput = string;
 export type ExecuteGitCommand = (gitCommand: GitCommand) => T.Task<GitCommandOutput>;
