@@ -1,10 +1,10 @@
 import { checkContext } from "@/domain/context/context.functions";
-import { ExecuteGitCommand } from "@/domain/git-command/command.types";
+import { ExecuteCommand, ExecuteGitCommand } from "@/domain/git-command/command.types";
 import { ValidationError } from "@/domain/rules/validation-rules/validation-rule.types";
-import { isGitCleanStatus } from "@/domain/rules/validation-rules/validation-rules.functions";
+import { isGitCleanStatus, isGitAndGhCliInstalled } from "@/domain/rules/validation-rules/validation-rules.functions";
 import * as T from 'fp-ts/Task';
 import container from "src/config/ioc_config";
-import { TEST_BRANCH_LIST, TEST_GIT_CLEAN_STATUS, TEST_GIT_STATUS_STRING, TEST_HTTPS_GITHUB_REPO } from "test/test-constants";
+import { TEST_BRANCH_LIST, TEST_GIT_CLEAN_STATUS, TEST_GIT_STATUS_STRING, TEST_HTTPS_GITHUB_REPO, TEST_GIT_VERSION_OUTPUT, TEST_NOT_INSTALLED, TEST_GH_VERSION_OUTPUT } from "test/test-constants";
 
 beforeAll(()=>{
   jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
@@ -30,6 +30,8 @@ const mockExecuteGitCommand: ExecuteGitCommand = (gitCommand) => {
   }
 }
 
+
+
 const mockExecuteGitCommandForError: ExecuteGitCommand = (gitCommand) => {
   if (gitCommand.command === 'status'){
     return T.of(TEST_GIT_STATUS_STRING);
@@ -48,3 +50,27 @@ test('1. isGitCleanStatus', async () => {
   const shouldBeFalse =  await isGitCleanStatus(mockExecuteGitCommandForError)
   expect(shouldBeFalse).toBe(false);
 });
+
+const mockExecuteCommand: ExecuteCommand = (command) => {
+  if (command.command = 'git --version') {
+    return T.of(TEST_GIT_VERSION_OUTPUT);
+  } else if (command.command = 'gh --version') {
+    return T.of(TEST_GH_VERSION_OUTPUT);
+  }
+}
+
+const mockExecuteCommandForError: ExecuteCommand = (command) => {
+  if (command.command = 'git --version') {
+    return T.of(TEST_NOT_INSTALLED);
+  } else if (command.command = 'gh --version') {
+    return T.of(TEST_NOT_INSTALLED);
+  }
+}
+
+test('2. isGitAndGhCliInstalled', async () => {
+  const shouldBeTrue = await isGitAndGhCliInstalled(mockExecuteCommand);
+  expect(shouldBeTrue).toBe(true);
+  const shouldBeFalse = await isGitAndGhCliInstalled(mockExecuteCommandForError);
+  expect(shouldBeFalse);
+});
+

@@ -5,3 +5,6 @@ export const stagedChangesPattern = "Changes to be committed:";
 export const noRemote = "error: No such remote";
 export const noHeadDefined = "fatal: ambiguous argument 'HEAD'";
 export const mergeConflictStatusPattern = "git merge --abort";
+export const commandNotFound = "command not found";
+export const existingGitVersion = "git version";
+export const existingGhVersion = "gh version";
