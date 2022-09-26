@@ -1,4 +1,4 @@
-import { CheckoutToIssueBuilder, GitCommandError } from "./command.types";
+import { CheckoutToIssueBuilder } from "./command.types";
 import { createAndCheckoutCmd } from "./git-command.values";
 import * as TE from "fp-ts/TaskEither";
 import * as E from "fp-ts/Either";
@@ -12,36 +12,36 @@ import { Context } from "../context/context.types";
 import { RuleCombinator } from "../rules/rule.types";
 
 //
-export const checkoutToIssueBuilder: CheckoutToIssueBuilder = exec => issue => {
-  return pipe(
-    issue.branchName,
-    E.fromNullable({
-      type: "UndefinedBranchNameError",
-      value: undefined,
-    } as ValidationError),
-    E.chainFirst(() => validateCheckOut(getContext)(setContext)(isCheckOutOkRule)),
-    E.map(branchName =>
-      produce(createAndCheckoutCmd, cmd => {
-        cmd.argument = branchName;
-      })
-    ),
-    TE.fromEither,
-    TE.mapLeft(e => e as DomainError),
-    TE.chain(exec),
-    TE.mapLeft(e => e as DomainError),
-    // TE.chainEitherK(gitResultParser([])),
-    TE.map(pattern => {
-      return {
-        branchName: issue.branchName,
-      };
-    }),
-    TE.mapLeft(e => {
-      return {
-        branchName: issue.branchName,
-      };
-    })
-  );
-};
+// export const checkoutToIssueBuilder: CheckoutToIssueBuilder = exec => issue => {
+//   return pipe(
+//     issue.branchName,
+//     E.fromNullable({
+//       type: "UndefinedBranchNameError",
+//       value: undefined,
+//     } as ValidationError),
+//     E.chainFirst(() => validateCheckOut(getContext)(setContext)(isCheckOutOkRule)),
+//     E.map(branchName =>
+//       produce(createAndCheckoutCmd, cmd => {
+//         cmd.argument = branchName;
+//       })
+//     ),
+//     TE.fromEither,
+//     TE.mapLeft(e => e as DomainError),
+//     TE.chain(exec),
+//     TE.mapLeft(e => e as DomainError),
+//     // TE.chainEitherK(gitResultParser([])),
+//     TE.map(pattern => {
+//       return {
+//         branchName: issue.branchName,
+//       };
+//     }),
+//     TE.mapLeft(e => {
+//       return {
+//         branchName: issue.branchName,
+//       };
+//     })
+//   );
+// };
 
 declare function getContext(): Context;
 declare function setContext(context: Context): Unit;
