@@ -1,8 +1,8 @@
 import { ghCliVersionCommand, gitVersionCheckCommand } from "../command/command.values";
 import {
-  getCurrentBranch,
-  getLocalBranches,
-  getRemoteBranches,
+  getCurrentBranchCmd,
+  getLocalBranchesCmd,
+  getRemoteBranchesCmd,
   getRemoteOriginCmd,
   statusCmd,
 } from "../git-command/git-command.values";
@@ -43,15 +43,15 @@ export const howToCheck: HowToCheck = {
       parser: checkRemoteOrigin,
     },
     currentBranch: {
-      command: getCurrentBranch,
+      command: getCurrentBranchCmd,
       parser: checkCurrentBranch,
     },
     localBranches: {
-      command: getLocalBranches,
+      command: getLocalBranchesCmd,
       parser: parseBranches,
     },
     remoteBranches: {
-      command: getRemoteBranches,
+      command: getRemoteBranchesCmd,
       parser: parseBranches,
     },
     conflict: {
