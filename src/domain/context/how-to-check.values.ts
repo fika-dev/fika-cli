@@ -1,3 +1,4 @@
+import { ghCliVersionCommand, gitVersionCheckCommand } from "../command/command.values";
 import {
   getCurrentBranch,
   getLocalBranches,
@@ -7,6 +8,8 @@ import {
 } from "../git-command/git-command.values";
 import {
   checkCurrentBranch,
+  checkGhCliVersion,
+  checkGitVersion,
   checkHeadParser,
   checkMergeConflict,
   checkRemoteOrigin,
@@ -56,5 +59,14 @@ export const howToCheck: HowToCheck = {
       parser: checkMergeConflict,
     },
   },
-  cmd: {},
+  cmd: {
+    gitVersion: {
+      command: gitVersionCheckCommand,
+      parser: checkGitVersion,
+    },
+    ghCliVersion: {
+      command: ghCliVersionCommand,
+      parser: checkGhCliVersion,
+    },
+  },
 };

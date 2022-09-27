@@ -1,7 +1,7 @@
 import { DomainError, Unit } from "../general/general.types";
-import { ExecuteGitCommand, GitCommand } from "../git-command/command.types";
+import { Command, ExecuteGitCommand, GitCommand } from "../git-command/command.types";
 import { CmdContext } from "./cmd-context/cmd-context.types";
-import { GitContext, GitOutputParser } from "./git-context/git-context.types";
+import { GitContext, CmdOutputParser } from "./git-context/git-context.types";
 import * as T from "fp-ts/Task";
 
 export interface Context {
@@ -36,6 +36,6 @@ export type CheckContext = (
 ) => (key: ContextKey) => T.Task<ContextValue | DomainError>;
 
 export interface CommandAndParser {
-  command: GitCommand;
-  parser: GitOutputParser;
+  command: Command;
+  parser: CmdOutputParser;
 }

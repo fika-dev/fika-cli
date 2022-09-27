@@ -7,8 +7,11 @@ import {
 import { ValidationError } from "@/domain/rules/validation-rules/validation-rule.types";
 import * as E from "fp-ts/Either";
 import { flow, pipe } from "fp-ts/function";
-import { ContextValueOrError, GitOutputParser } from "../../context/git-context/git-context.types";
+import { ContextValueOrError, CmdOutputParser } from "../../context/git-context/git-context.types";
 import {
+  commandNotFound,
+  existingGhVersion,
+  existingGitVersion,
   headPattern,
   mergeConflictStatusPattern,
   noHeadDefined,
@@ -25,16 +28,17 @@ const trim = (result: string) => result.trim();
 const splitToList = (seperator: string) => (result: string) => result.split(seperator);
 const listMap = f => (inputList: any[]) => inputList.map(f);
 const listFilter = f => (inputList: any[]) => inputList.filter(f);
+const keepOnlyTheFirstLine = (result: string) => result.split("\n")[0];
 
-export const checkHeadParser: GitOutputParser = result => !patternMatchedOrNot(headPattern)(result);
-export const checkUnstagedChangeParser: GitOutputParser =
+export const checkHeadParser: CmdOutputParser = result => !patternMatchedOrNot(headPattern)(result);
+export const checkUnstagedChangeParser: CmdOutputParser =
   patternMatchedOrNot(unstagedChangePattern);
-export const checkUntrackedFilesParser: GitOutputParser =
+export const checkUntrackedFilesParser: CmdOutputParser =
   patternMatchedOrNot(untrackedFilesPattern);
-export const checkStagedChangesParser: GitOutputParser = patternMatchedOrNot(stagedChangesPattern);
-export const checkMergeConflict: GitOutputParser = patternMatchedOrNot(mergeConflictStatusPattern);
+export const checkStagedChangesParser: CmdOutputParser = patternMatchedOrNot(stagedChangesPattern);
+export const checkMergeConflict: CmdOutputParser = patternMatchedOrNot(mergeConflictStatusPattern);
 
-export const checkRemoteOrigin: GitOutputParser = result => {
+export const checkRemoteOrigin: CmdOutputParser = result => {
   const preprocessed = pipe(result, trim);
   return pipe(
     preprocessed,
@@ -50,7 +54,37 @@ export const checkRemoteOrigin: GitOutputParser = result => {
   );
 };
 
-export const checkCurrentBranch: GitOutputParser = result => {
+export const checkGitVersion: CmdOutputParser = result => {
+  const preprocessed = pipe(result, trim);
+  return pipe(
+    preprocessed,
+    flow(
+      validateIncludeString(commandNotFound),
+      E.chain(_ => E.right("NotInstalled"))
+    ),
+    E.alt(() => validateIncludeString(existingGitVersion)(preprocessed)),
+    E.getOrElse((e: ValidationError) => {
+      return e as ContextValueOrError;
+    })
+  );
+};
+
+export const checkGhCliVersion: CmdOutputParser = result => {
+  const preprocessed = pipe(result, trim);
+  return pipe(
+    preprocessed,
+    flow(
+      validateIncludeString(commandNotFound),
+      E.chain(_ => E.right("NotInstalled"))
+    ),
+    E.alt(() => pipe(preprocessed, keepOnlyTheFirstLine, validateIncludeString(existingGhVersion))),
+    E.getOrElse((e: ValidationError) => {
+      return e as ContextValueOrError;
+    })
+  );
+};
+
+export const checkCurrentBranch: CmdOutputParser = result => {
   const preprocessed = pipe(result, trim);
   return pipe(
     preprocessed,
@@ -65,7 +99,7 @@ export const checkCurrentBranch: GitOutputParser = result => {
   );
 };
 
-export const parseBranches: GitOutputParser = result => {
+export const parseBranches: CmdOutputParser = result => {
   return pipe(
     result,
     trim,

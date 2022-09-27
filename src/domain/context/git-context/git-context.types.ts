@@ -19,7 +19,7 @@ export interface GitContext {
   conflict?: ConflictStatus;
 }
 export type ContextValueOrError = ContextValue | DomainError;
-export type GitOutputParser = (result: string) => ContextValueOrError;
+export type CmdOutputParser = (result: string) => ContextValueOrError;
 
 export type GitContextUpdater = (gitContext: GitContext) => GitContext;
 // export type GitOutputParser = (

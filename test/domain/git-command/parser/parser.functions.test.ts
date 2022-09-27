@@ -1,5 +1,5 @@
-import { checkCurrentBranch, checkHeadParser, checkMergeConflict, checkRemoteOrigin, checkStagedChangesParser, checkUnstagedChangeParser, checkUntrackedFilesParser, parseBranches } from "@/domain/git-command/parser/parser.functions";
-import { TEST_BRANCH_LIST, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_GIT_MERGE_CONFLICT_STATUS, TEST_GIT_NO_REMOTE, TEST_GIT_STATUS_STRING, TEST_GIT_STATUS_WITH_STAGED, TEST_HEAD_NOT_DEFINED, TEST_HTTPS_GITHUB_REPO, TEST_NO_COMMIT_STATUS, TEST_SSH_GITHUB_REPO } from "test/test-constants";
+import { checkCurrentBranch, checkGhCliVersion, checkGitVersion, checkHeadParser, checkMergeConflict, checkRemoteOrigin, checkStagedChangesParser, checkUnstagedChangeParser, checkUntrackedFilesParser, parseBranches } from "@/domain/git-command/parser/parser.functions";
+import { TEST_BRANCH_LIST, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_GIT_MERGE_CONFLICT_STATUS, TEST_GIT_NO_REMOTE, TEST_GIT_STATUS_STRING, TEST_GIT_STATUS_WITH_STAGED, TEST_HEAD_NOT_DEFINED, TEST_HTTPS_GITHUB_REPO, TEST_NO_COMMIT_STATUS, TEST_SSH_GITHUB_REPO, TEST_GIT_VERSION_OUTPUT, TEST_GH_VERSION_OUTPUT, TEST_NOT_INSTALLED, TEST_GH_VERSION_ONE_LINE_OUPUT, TEST_CPR_COMMIT_MESSAGE } from "test/test-constants";
 
 beforeAll(()=>{
   jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
@@ -84,4 +84,26 @@ test('8. parseBranches', async () => {
   // expect(empty).toEqual("Empty");
   // const unvalidBranch = parseBranches('Somthing strange is here');
   // expect(unvalidBranch).toEqual({type: "NotBranchName", value: "Somthing strange is here"});
+});
+
+test("9. checkGitVersion", async () => {
+  const validGitVersion = checkGitVersion(TEST_GIT_VERSION_OUTPUT);
+  expect(validGitVersion).toContain('git version 2.32.1');
+  const notInstalled = checkGitVersion(TEST_NOT_INSTALLED);
+  expect(notInstalled).toContain('NotInstalled');
+  const emptyValue = checkGitVersion(' ');
+  expect(emptyValue).toEqual( { type: 'NotIncludingPattern', value: '' });
+});
+
+test("10. checkGhCliVersion", async () => {
+  const validGhVersion = checkGhCliVersion(TEST_GH_VERSION_OUTPUT);
+  expect(validGhVersion).toContain('gh version 2.14.7');
+  const validGhOneLineVersion = checkGhCliVersion(TEST_GH_VERSION_ONE_LINE_OUPUT);
+  expect(validGhOneLineVersion).toContain('gh version 2.14.7')
+  const notInstalled = checkGhCliVersion(TEST_NOT_INSTALLED);
+  expect(notInstalled).toContain('NotInstalled');
+  const notInstalledFromRandomMessage = checkGhCliVersion(TEST_CPR_COMMIT_MESSAGE);
+  expect(notInstalledFromRandomMessage).toEqual({ type: 'NotIncludingPattern', value: '[add] meaningless white space' });
+  const emptyValue = checkGhCliVersion(' ');
+  expect(emptyValue).toEqual( { type: 'NotIncludingPattern', value: '' });
 });
