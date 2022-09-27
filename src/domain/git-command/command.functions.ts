@@ -1,4 +1,4 @@
-import { CheckoutToIssueBuilder } from "./command.types";
+import { CheckoutToIssueBuilder, GitCommand } from "./command.types";
 import { createAndCheckoutCmd } from "./git-command.values";
 import * as TE from "fp-ts/TaskEither";
 import * as E from "fp-ts/Either";
@@ -10,6 +10,17 @@ import { DomainError, Unit } from "../general/general.types";
 import { Domain } from "domain";
 import { Context } from "../context/context.types";
 import { RuleCombinator } from "../rules/rule.types";
+
+export const getGitCommandWithArgument =
+  (gitCommand: GitCommand) =>
+  (...params: string[]) => {
+    return {
+      ...gitCommand,
+      argument: params.join(" "),
+    };
+  };
+
+// const pushCommandWithOriginMaster = getGitCommandWithArgument(pushBranchCmd)("origin", "master");
 
 //
 // export const checkoutToIssueBuilder: CheckoutToIssueBuilder = exec => issue => {
