@@ -22,6 +22,8 @@ import { SnapshotService } from "src/domain/service/snapshot.service";
 import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "./constants/identifiers";
 import { FIKA_PATH } from "./constants/path";
 import { fikaApiUrl } from "./constants/uri";
+import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
+import { CommanderService } from "@/infrastructure/services/implementation/commander.service";
 
 dotenv.config();
 let container = new Container();
@@ -59,6 +61,7 @@ container
   .bind<IPromptService>(SERVICE_IDENTIFIER.PromptService)
   .to(PromptService)
   .inSingletonScope();
+container.bind<ICommanderService>(SERVICE_IDENTIFIER.CommanderService).to(CommanderService);
 
 if (!process.env.FIKA_ENV) {
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(fikaApiUrl);

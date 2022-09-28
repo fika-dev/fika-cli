@@ -1,10 +1,11 @@
 import { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 import { ExecuteGitCommand, ExecuteCommand } from "@/domain/git-command/command.types";
 import { exec } from "child_process";
-import { inject } from "inversify";
+import { inject, injectable } from "inversify";
 import { promisify } from "util";
-import { ICmdService } from "../interface/i_commander.service";
-class GitCommanderServie implements ICmdService {
+import { ICommanderService } from "../interface/i_commander.service";
+@injectable()
+export class CommanderService implements ICommanderService {
   private _gitRepoPath: string;
   constructor(@inject(PARAMETER_IDENTIFIER.GitRepoPath) gitRepoPath: string) {
     this._gitRepoPath = gitRepoPath;
