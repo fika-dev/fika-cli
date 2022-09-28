@@ -8,3 +8,5 @@ export const mergeConflictStatusPattern = "git merge --abort";
 export const commandNotFound = "command not found";
 export const existingGitVersion = "git version";
 export const existingGhVersion = "gh version";
+export const errorPattern = "error";
+export const fatalPattern = "fatal";
