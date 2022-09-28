@@ -51,7 +51,7 @@ export const deleteLocalBranchCmd: GitCommand = {
 };
 
 // fetchFromRemote(): Promise<void>;
-export const fetchFromRemoteCmd: GitCommand = {
+export const fetchCmd: GitCommand = {
   command: "fetch",
 };
 

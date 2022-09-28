@@ -1,4 +1,4 @@
-import { CheckoutToIssueBuilder, GitCommand } from "./command.types";
+import { CheckoutToIssueBuilder, ExecuteGitCommand, GitCommand } from "./command.types";
 import { createAndCheckoutCmd } from "./git-command.values";
 import * as TE from "fp-ts/TaskEither";
 import * as E from "fp-ts/Either";
@@ -8,7 +8,7 @@ import produce from "immer";
 import { ValidateContext, ValidationError } from "../rules/validation-rules/validation-rule.types";
 import { DomainError, Unit } from "../general/general.types";
 import { Domain } from "domain";
-import { Context } from "../context/context.types";
+import { CommandAndParser, Context, ContextValue } from "../context/context.types";
 import { RuleCombinator } from "../rules/rule.types";
 
 export const getGitCommandWithArgument =
@@ -18,6 +18,16 @@ export const getGitCommandWithArgument =
       ...gitCommand,
       argument: params.join(" "),
     };
+  };
+
+export const executeAndParseGitCommand =
+  (excuteGitCommand: ExecuteGitCommand) =>
+  (commandAndParser: CommandAndParser): T.Task<ContextValue | DomainError> => {
+    return pipe(
+      commandAndParser.command,
+      excuteGitCommand,
+      T.map(output => commandAndParser.parser(output))
+    );
   };
 
 // const pushCommandWithOriginMaster = getGitCommandWithArgument(pushBranchCmd)("origin", "master");
