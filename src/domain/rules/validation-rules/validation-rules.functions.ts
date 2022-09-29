@@ -1,5 +1,6 @@
 import { checkContext } from "@/domain/context/context.functions";
 import { ContextKey, ContextValue } from "@/domain/context/context.types";
+import { Branch } from "@/domain/context/git-context/git-context.types";
 import { ExecuteCommand } from "@/domain/git-command/command.types";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
@@ -10,10 +11,16 @@ import { ValidationResolverBuilder } from "./validation-rule.types";
 const isContextRule: IsContextRule =
   (key: ContextKey, expectedValue: ContextValue) => async (excuteGitCommand: ExecuteCommand) =>
     (await checkContext(excuteGitCommand)(key)()) === expectedValue;
-
 const isNotContextRule: IsContextRule =
   (key: ContextKey, expectedValue: ContextValue) => async (excuteGitCommand: ExecuteCommand) =>
     (await checkContext(excuteGitCommand)(key)()) !== expectedValue;
+const containsContextRule =
+  (excuteGitCommand: ExecuteCommand) => async (key: ContextKey, expectedValue: ContextValue) => {
+    const values = (await checkContext(excuteGitCommand)(key)()) as string[];
+    const stringValue = expectedValue as string;
+    const found = values.find(v => v === stringValue);
+    return found === undefined ? false : true;
+  };
 
 const headExists: DefinedRule = isContextRule({ domain: "git", field: "head" }, true);
 const unstagedChangesNotExist: DefinedRule = isContextRule(
@@ -41,6 +48,12 @@ const isGhCliInstalled: DefinedRule = isNotContextRule(
   "NotInstalled"
 );
 
+export const existsLocalBranch = (executeCommand: ExecuteCommand) => async (branchName: Branch) =>
+  containsContextRule(executeCommand)({ domain: "git", field: "localBranches" }, branchName);
+
+export const existsRemoteBranch = (executeCommand: ExecuteCommand) => async (branchName: Branch) =>
+  containsContextRule(executeCommand)({ domain: "git", field: "remoteBranches" }, branchName);
+
 export const isGitAndGhCliInstalled: DefinedRule = async (executeCommand: ExecuteCommand) => {
   const rules = [isGitInstalled, isGhCliInstalled];
   const ruleResults = await Promise.all(rules.map(rule => rule(executeCommand)));
@@ -59,6 +72,12 @@ export const isGitCleanStatus: DefinedRule = async (executeGitCommand: ExecuteCo
 
   const ruleResults = await Promise.all(rules.map(rule => rule(executeGitCommand)));
   return ruleResults.every(result => result === true);
+};
+
+export const isThereSomthingToStash: DefinedRule = async (executeGitCommand: ExecuteCommand) => {
+  const rules = [unstagedChangesNotExist, untrackedFilesNotExist, stagedChangesNotExist];
+  const ruleResults = await Promise.all(rules.map(rule => rule(executeGitCommand)));
+  return ruleResults.some(result => result === true);
 };
 
 export const resolveValidationError: ValidationResolverBuilder<any> =

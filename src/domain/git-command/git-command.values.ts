@@ -8,13 +8,14 @@ export const abortMergeCmd: GitCommand = {
 // applyStash(id: string): Promise<void>;
 // need one arg id
 export const applyStashCmd: GitCommand = {
-  command: "git stash apply stash^",
-  windowsCommand: "git stash apply stash^^",
+  command: "git stash apply",
+  windowsCommand: "git stash apply",
   requiredArgument: true,
 };
 
 export const checkoutCmd: GitCommand = {
   command: "checkout",
+  requiredArgument: true,
 };
 
 // checkRemoteBranchExist(branchName: string): Promise<boolean>;
@@ -33,6 +34,11 @@ export const checkUnstagedChangesCmd: GitCommand = {
 
 export const createAndCheckoutCmd: GitCommand = {
   command: "checkout -b",
+};
+
+export const createBranchCmd: GitCommand = {
+  command: "branch",
+  requiredArgument: true,
 };
 
 // commitWithMessage(message: string): Promise<void>;
@@ -158,7 +164,7 @@ export const stageAllChangesCmd: GitCommand = {
 //stash(id: string): Promise<void>;
 //need one argument Id
 export const stashCmd: GitCommand = {
-  command: "stash push -u -m ",
+  command: "stash push -u ",
 };
 
 export const statusCmd: GitCommand = {
