@@ -11,7 +11,7 @@ export class CommanderService implements ICommanderService {
     this._gitRepoPath = gitRepoPath;
   }
 
-  public excuteGitCommand: ExecuteGitCommand = gitCommand => {
+  public executeGitCommand: ExecuteGitCommand = gitCommand => {
     let command: string;
     if (process.platform == "win32") {
       const windowsCommand = gitCommand.windowsCommand ?? gitCommand.command;
@@ -22,7 +22,7 @@ export class CommanderService implements ICommanderService {
     return () => this.exec(command);
   };
 
-  public excuteCommand: ExecuteCommand = command => {
+  public executeCommand: ExecuteCommand = command => {
     let execCommand: string;
     if (process.platform == "win32") {
       const windowsCommand = command.windowsCommand ?? command.command;

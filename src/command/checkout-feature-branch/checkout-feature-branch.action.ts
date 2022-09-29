@@ -54,7 +54,7 @@ const _checkoutFeatureBranchFunctional = async (issueNumber?: number) => {
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
-  const execute = commanderService.excuteGitCommand;
+  const execute = commanderService.executeGitCommand;
   if (issueNumber === undefined) {
     const branchName = await getLatestBranchByCommit(execute)();
     await checkoutWithChanges(execute)(branchName);

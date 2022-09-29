@@ -15,7 +15,13 @@ export const validateNumber: Validate<number> = (value: number) => {
 export const validateIssueNumber: Validate<number> = (
   issueNumber: number
 ): E.Either<ValidationError, number> => {
-  return pipe(issueNumber, validateNumber);
+  return pipe(
+    issueNumber,
+    validateNumber,
+    E.mapLeft(e => {
+      return { type: "NotIssueNumberError", value: issueNumber } as ValidationError;
+    })
+  );
 };
 
 export const validateHttpAddress: Validate<string> = (unvalidatedAddress: string) => {
