@@ -77,7 +77,7 @@ export const isGitCleanStatus: DefinedRule = async (executeGitCommand: ExecuteCo
 export const isThereSomthingToStash: DefinedRule = async (executeGitCommand: ExecuteCommand) => {
   const rules = [unstagedChangesNotExist, untrackedFilesNotExist, stagedChangesNotExist];
   const ruleResults = await Promise.all(rules.map(rule => rule(executeGitCommand)));
-  return ruleResults.some(result => result === true);
+  return ruleResults.some(result => result === false);
 };
 
 export const resolveValidationError: ValidationResolverBuilder<any> =
