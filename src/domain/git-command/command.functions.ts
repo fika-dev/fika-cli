@@ -10,6 +10,7 @@ import {
   applyStashCmd,
   checkoutCmd,
   createBranchCmd,
+  fetchCmd,
   getBranchesCmd,
   getGitCommandWithArgument,
   stashCmd,
@@ -107,10 +108,18 @@ const _stashApply = (execute: ExecuteGitCommand) => async () => {
   })();
 };
 
+const _fetch = (execute: ExecuteGitCommand) => async () => {
+  return await executeAndParseGitCommand(execute)({
+    command: fetchCmd,
+    parser: checkNoError,
+  })();
+};
+
 const _createTrackingBranchIfNeeded =
   (execute: ExecuteGitCommand) => async (branchName: string) => {
     const doesExistLocalBranch = await existsLocalBranch(execute)(branchName);
     if (!doesExistLocalBranch) {
+      await _fetch(execute)();
       const doesExistRemoteBranch = await existsRemoteBranch(execute)(`origin/${branchName}`);
       if (doesExistRemoteBranch) {
         await _createTrackingLocalBranch(execute)(branchName);

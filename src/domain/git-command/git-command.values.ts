@@ -90,10 +90,6 @@ export const getLatestTagCmd: GitCommand = {
 };
 
 // Adding Cmd
-export const getLocalBranchesCmd: GitCommand = {
-  command: "branch --format='%(refname:short)'",
-  windowsCommand: "git branch --format=%(refname:short)",
-};
 
 // Adding Cmd
 export const getRemoteBranchesCmd: GitCommand = {

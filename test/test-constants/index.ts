@@ -77,6 +77,10 @@ feature/iss-113
 feature/iss-115
 feature/iss-117`
 
+export const TEST_NOT_LOCAL_BRANCH = 'feature/iss/#409';
+
+export const TEST_NOT_LOCAL_BUT_REMOTE_BRANCH = 'feature/iss/#412';
+
 export const TEST_HEAD_NOT_DEFINED = `
 HEAD
 fatal: ambiguous argument 'HEAD': unknown revision or path not in the working tree.
@@ -152,6 +156,11 @@ feature/iss/#1507
 feature/iss/#912
 conflicting
 main
+`
+
+export const TEST_REMOTE_BRANCHES = `  origin/develop
+origin/feature/iss/#2
+origin/feature/iss/#412
 `
 
 export const TEST_USER_CONFIG: Config = {
