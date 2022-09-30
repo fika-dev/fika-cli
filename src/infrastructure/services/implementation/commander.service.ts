@@ -1,33 +1,34 @@
 import { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 import { ExecuteGitCommand, ExecuteCommand } from "@/domain/git-command/command.types";
 import { exec } from "child_process";
-import { inject } from "inversify";
+import { inject, injectable } from "inversify";
 import { promisify } from "util";
-import { ICmdService } from "../interface/i_commander.service";
-class GitCommanderServie implements ICmdService {
+import { ICommanderService } from "../interface/i_commander.service";
+@injectable()
+export class CommanderService implements ICommanderService {
   private _gitRepoPath: string;
   constructor(@inject(PARAMETER_IDENTIFIER.GitRepoPath) gitRepoPath: string) {
     this._gitRepoPath = gitRepoPath;
   }
 
-  public excuteGitCommand: ExecuteGitCommand = gitCommand => {
+  public executeGitCommand: ExecuteGitCommand = gitCommand => {
     let command: string;
     if (process.platform == "win32") {
       const windowsCommand = gitCommand.windowsCommand ?? gitCommand.command;
-      command = `git ${windowsCommand}`;
+      command = `git ${windowsCommand}  ${gitCommand.argument}`;
     } else {
-      command = `LC_ALL=C git ${gitCommand.command}`;
+      command = `LC_ALL=C git ${gitCommand.command} ${gitCommand.argument}`;
     }
     return () => this.exec(command);
   };
 
-  public excuteCommand: ExecuteCommand = command => {
+  public executeCommand: ExecuteCommand = command => {
     let execCommand: string;
     if (process.platform == "win32") {
       const windowsCommand = command.windowsCommand ?? command.command;
       execCommand = windowsCommand;
     } else {
-      execCommand = `LC_ALL=C  ${command.command}`;
+      execCommand = `LC_ALL=C  ${command.command} ${command.argument}`;
     }
     return () => this.exec(execCommand);
   };
