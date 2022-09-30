@@ -1,8 +1,14 @@
+import {
+  checkoutToIssue,
+  checkoutWithChanges,
+  getLatestBranchByCommit,
+  getRemoteOrigin,
+} from "@/domain/git-command/command.functions";
+import { validateIssueNumber } from "@/domain/rules/validation-rules/validate.functions";
+import { IConnectService } from "@/domain/service/i_connect.service";
+import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
 import * as E from "fp-ts/Either";
-import { flow } from "fp-ts/lib/function";
-import * as O from "fp-ts/Option";
-import * as T from "fp-ts/Task";
-import * as TE from "fp-ts/TaskEither";
+import { pipe } from "fp-ts/lib/function";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
 import { IPromptService } from "src/domain/service/i-prompt.service";
@@ -10,14 +16,6 @@ import { IConfigService } from "src/domain/service/i_config.service";
 import { IGitPlatformService } from "src/domain/service/i_git_platform.service";
 import { IMessageService } from "src/domain/service/i_message.service";
 
-import { GetContext } from "@/domain/context/context.types";
-import { Unit } from "@/domain/general/general.types";
-import { CheckoutToIssue, ExecuteGitCommand } from "@/domain/git-command/command.types";
-import { GetIssueRecordByNumber, ValidateIssueNumber } from "@/domain/issue/issue.types";
-import { ReportError, ReportSuccess } from "@/domain/report/report.types";
-import { ValidateContext } from "@/domain/rules/validation-rules/validation-rule.types";
-import { RuleCombinator } from "src/domain/rules/rule.types";
-import { Context } from "vm";
 // import { checkoutToIssueBuilder } from "@/domain/git-command/command.functions";
 
 const _checkoutFeatureBranchLegacy = async (issueNumber?: number) => {
@@ -51,37 +49,30 @@ const _checkoutFeatureBranchLegacy = async (issueNumber?: number) => {
     messageService.showWarning("Could not find a feature branch that matches your request");
   }
 };
-export const checkoutFeatureBranchAction = _checkoutFeatureBranchLegacy;
 
-// const _functionalCheckoutFeatureBranch = async (issueNumber?: number) => {
-//   const validateCheckOut = validateCheckOutBuilder(getContext)(setContext);
-//   const checkoutToIssue = checkoutToIssueBuilder(exec);
-//   return flow(
-//     O.fromNullable,
-//     O.fold(
-//       () => T.of("Unit"),
-//       flow(
-//         validateIssueNumber,
-//         E.chainFirst(() => validateCheckOut(isCheckOutOkRule)),
-//         TE.fromEither,
-//         TE.chain(findIssueRecordByNumber),
-//         TE.chain(checkoutToIssue),
-//         TE.fold(
-//           e => T.of(reportError(e)),
-//           s => T.of(reportSuccess(s))
-//         )
-//       )
-//     ),
-//     O.getOrElse
-//   )(issueNumber);
-// };
-
-declare const getContext: GetContext;
-declare function setContext(context: Context): Unit;
-declare const validateCheckOutBuilder: ValidateContext;
-declare const exec: ExecuteGitCommand;
-declare const validateIssueNumber: ValidateIssueNumber;
-declare const findIssueRecordByNumber: GetIssueRecordByNumber;
-declare const reportError: ReportError;
-declare const reportSuccess: ReportSuccess;
-declare const isCheckOutOkRule: RuleCombinator;
+const _checkoutFeatureBranchFunctional = async (issueNumber?: number) => {
+  const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
+  const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
+  const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
+  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
+  const execute = commanderService.executeGitCommand;
+  if (issueNumber === undefined) {
+    const branchName = await getLatestBranchByCommit(execute)(
+      configService.getIssueBranchPattern()
+    );
+    await checkoutWithChanges(execute)(branchName);
+  } else {
+    const validIssueNumber = pipe(
+      issueNumber,
+      validateIssueNumber,
+      E.getOrElse(e => {
+        throw e;
+      })
+    );
+    const remoteOrigin = await getRemoteOrigin(execute)();
+    const issue = await connectService.getIssueRecord(validIssueNumber, remoteOrigin);
+    await checkoutToIssue(execute)(issue);
+    messageService.showSuccess(`Checkout to branch: ${issue.branchName}`);
+  }
+};
+export const checkoutFeatureBranchAction = _checkoutFeatureBranchFunctional;

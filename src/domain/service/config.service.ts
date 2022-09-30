@@ -2,7 +2,11 @@ import { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 import fs from "fs";
 import { inject, injectable } from "inversify";
 import path from "path";
-import { defaultConfig, defaultLocalConfig } from "src/config/constants/default_config";
+import {
+  defaultConfig,
+  defaultLocalConfig,
+  issueNumberTag,
+} from "src/config/constants/default_config";
 import { CONFIG_FILE_NAME, LOCAL_CONFIG_NAME } from "src/config/constants/path";
 import { version } from "../../../package.json";
 import { AddOnType } from "../entity/add_on/add_on.entity";
@@ -73,7 +77,7 @@ export class ConfigService implements IConfigService {
     if (!this.localConfig) {
       this.localConfig = this.getLocalConfig();
     }
-    const fragments = this.localConfig.branchNames.issueBranchTemplate.split("<ISSUE_NUMBER>");
+    const fragments = this.localConfig.branchNames.issueBranchTemplate.split(issueNumberTag);
     if (fragments.length == 1) {
       return parseInt(branch.replace(fragments[0], ""));
     } else {

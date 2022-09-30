@@ -17,11 +17,10 @@ export const validateIssueNumber: Validate<number> = (
 ): E.Either<ValidationError, number> => {
   return pipe(
     issueNumber,
-    O.fromNullable,
-    O.foldW(
-      () => E.left({ type: "NotIssueNumberError", value: undefined } as ValidationError),
-      number => validateNumber(number)
-    )
+    validateNumber,
+    E.mapLeft(e => {
+      return { type: "NotIssueNumberError", value: issueNumber } as ValidationError;
+    })
   );
 };
 
