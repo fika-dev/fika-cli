@@ -15,9 +15,9 @@ export class CommanderService implements ICommanderService {
     let command: string;
     if (process.platform == "win32") {
       const windowsCommand = gitCommand.windowsCommand ?? gitCommand.command;
-      command = `git ${windowsCommand}`;
+      command = `git ${windowsCommand}  ${gitCommand.argument}`;
     } else {
-      command = `LC_ALL=C git ${gitCommand.command}`;
+      command = `LC_ALL=C git ${gitCommand.command} ${gitCommand.argument}`;
     }
     return () => this.exec(command);
   };
@@ -28,7 +28,7 @@ export class CommanderService implements ICommanderService {
       const windowsCommand = command.windowsCommand ?? command.command;
       execCommand = windowsCommand;
     } else {
-      execCommand = `LC_ALL=C  ${command.command}`;
+      execCommand = `LC_ALL=C  ${command.command} ${command.argument}`;
     }
     return () => this.exec(execCommand);
   };

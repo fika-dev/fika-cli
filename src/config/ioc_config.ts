@@ -61,7 +61,10 @@ container
   .bind<IPromptService>(SERVICE_IDENTIFIER.PromptService)
   .to(PromptService)
   .inSingletonScope();
-container.bind<ICommanderService>(SERVICE_IDENTIFIER.CommanderService).to(CommanderService);
+container
+  .bind<ICommanderService>(SERVICE_IDENTIFIER.CommanderService)
+  .to(CommanderService)
+  .inSingletonScope();
 
 if (!process.env.FIKA_ENV) {
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(fikaApiUrl);
