@@ -1,3 +1,4 @@
+import { issueNumberTag } from "@/config/constants/default_config";
 import { DomainError } from "@/domain/general/general.types";
 import {
   validateBranchName,
@@ -34,6 +35,12 @@ const splitToList = (seperator: string) => (result: string) => result.split(sepe
 const listMap = f => (inputList: any[]) => inputList.map(f);
 const listFilter = f => (inputList: any[]) => inputList.filter(f);
 const keepOnlyTheFirstLine = (result: string) => result.split("\n")[0];
+
+export const isFeatureBranch = (issueBranchPattern: string) => (log: string) => {
+  const pt = issueBranchPattern.replace(issueNumberTag, "(\\d{1,6})");
+  const re = new RegExp(pt);
+  return re.test(log);
+};
 
 export const checkHeadParser: CmdOutputParser = result => !isPatternMatched(headPattern)(result);
 export const checkUnstagedChangeParser: CmdOutputParser = isPatternMatched(unstagedChangePattern);

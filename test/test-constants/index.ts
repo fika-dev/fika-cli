@@ -1,9 +1,12 @@
+import { issueNumberTag } from "@/config/constants/default_config";
 import { AddOnType } from "@/domain/entity/add_on/add_on.entity";
 import { Config } from "src/domain/entity/config.entity";
 import { ObjectType } from "src/domain/entity/dev_object.entity";
 
 // export const TEST_NOTION_WORKSPACE_ID = '6e9f6c0d-9018-43cf-8081-9ddb21368fc2';
 export const TEST_NOTION_WORKSPACE_ID = 'd3224eba-6e67-4730-9b6f-a9ef1dc7e4ac';
+
+export const TEST_ISSUE_BRANCH_TEMPLATE = `feature/iss/#${issueNumberTag}`
 
 export const TEST_JIRA_WORKSPACE_ID = '275b18d8-c1b6-4b30-940a-529e6f3e5235';
 
@@ -42,6 +45,24 @@ export const TEST_GH_VERSION_OUTPUT = `gh version 2.14.7 (2022-08-25)
 export const TEST_GH_VERSION_ONE_LINE_OUPUT = 'gh version 2.14.7 (2022-08-25)';
 
 export const TEST_NOT_INSTALLED = 'command not found:';
+
+export const TEST_GIT_STASH_NORMAL_OUTPUT = 'Saved working directory and index state WIP on #430: e80ea84 fix';
+
+export const TEST_GIT_STASH_APPLY_NORMAL_OUTPUT = `On branch feature/iss/#430
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   src/command/checkout-feature-branch/checkout-feature-branch.action.ts
+	modified:   src/config/constants/default_config.ts
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	test/domain/git-command/command.functions.test.ts
+
+no changes added to commit (use "git add" and/or "git commit -a")`;
+
+export const TEST_GIT_STASH_APPLY_ERR = `test/domain/git-command/command.functions.test.ts already exists, no checkout
+error: could not restore untracked files from stash`
 
 export const TEST_BRANCH_LIST = `
 develop
@@ -123,6 +144,16 @@ No commits yet
 nothing to commit (create/copy files and use "git add" to track)
 `
 
+export const TEST_BRANCH_SORTED = `feature/iss/#2
+develop
+something
+feature/iss/#406
+feature/iss/#1507
+feature/iss/#912
+conflicting
+main
+`
+
 export const TEST_USER_CONFIG: Config = {
   workspace: {
     "id": TEST_NOTION_WORKSPACE_ID,
@@ -158,6 +189,7 @@ export const TEST_USER_CONFIG: Config = {
     },
   ]
 }
+
 
 export const OLD_TEST_CONFIG = `
 {

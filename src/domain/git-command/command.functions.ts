@@ -1,9 +1,9 @@
-import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
-import container from "src/config/ioc_config";
-import * as T from "fp-ts/Task";
-import { IPromptService } from "src/domain/service/i-prompt.service";
 import { Issue } from "@/domain/entity/issue.entity";
 import { DomainError } from "@/domain/general/general.types";
+import * as T from "fp-ts/Task";
+import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
+import container from "src/config/ioc_config";
+import { IPromptService } from "src/domain/service/i-prompt.service";
 
 import { ExecuteGitCommand, GitCommand } from "@/domain/git-command/command.types";
 import {
@@ -11,9 +11,14 @@ import {
   checkoutCmd,
   createBranchCmd,
   getBranchesCmd,
+  getGitCommandWithArgument,
   stashCmd,
 } from "@/domain/git-command/git-command.values";
-import { checkNoError, parseBranches } from "@/domain/git-command/parser/parser.functions";
+import {
+  checkNoError,
+  isFeatureBranch,
+  parseBranches,
+} from "@/domain/git-command/parser/parser.functions";
 import {
   existsLocalBranch,
   existsRemoteBranch,
@@ -21,17 +26,8 @@ import {
 } from "@/domain/rules/validation-rules/validation-rules.functions";
 import { UserStopped } from "@/domain/value_object/exceptions/user_stopped";
 import { pipe } from "fp-ts/lib/function";
-import { CommandAndParser, ContextValue } from "../context/context.types";
 import { checkContext } from "../context/context.functions";
-
-export const getGitCommandWithArgument =
-  (gitCommand: GitCommand) =>
-  (...params: string[]) => {
-    return {
-      ...gitCommand,
-      argument: params.join(" "),
-    };
-  };
+import { CommandAndParser, ContextValue } from "../context/context.types";
 
 export const executeAndParseGitCommand =
   (excuteGitCommand: ExecuteGitCommand) =>
@@ -126,14 +122,24 @@ const _createTrackingBranchIfNeeded =
     }
   };
 
-export const getLatestBranchByCommit = (execute: ExecuteGitCommand) => async () => {
-  const getSortedBranchesCmd = getGitCommandWithArgument(getBranchesCmd)("--sort=-committerdate ");
-  const branches = await executeAndParseGitCommand(execute)({
-    command: getSortedBranchesCmd,
-    parser: parseBranches,
-  })();
-  return branches[0];
-};
+export const getLatestBranchByCommit =
+  (execute: ExecuteGitCommand) => async (featureBranchPattern: string) => {
+    const getSortedBranchesCmd =
+      getGitCommandWithArgument(getBranchesCmd)("--sort=-committerdate ");
+    const branches = (await executeAndParseGitCommand(execute)({
+      command: getSortedBranchesCmd,
+      parser: parseBranches,
+    })()) as string[];
+    const isFeatureBranchWithPattern = isFeatureBranch(featureBranchPattern);
+    const featureBranches = branches.filter(isFeatureBranchWithPattern);
+    if (featureBranches.length > 0) {
+      return featureBranches[0];
+    } else {
+      throw {
+        type: "NoFeatureBranchInLocal",
+      };
+    }
+  };
 
 export const checkoutWithChanges = (execute: ExecuteGitCommand) => async (branchName: string) => {
   const needToStash = await _checkNeedToStash(execute)();

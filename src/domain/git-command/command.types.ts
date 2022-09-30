@@ -12,7 +12,7 @@ export interface Command {
 
 export interface GitCommand extends Command {}
 
-export type GitCommandWithArguments = (...params: string[]) => GitCommand;
+export type GitCommandWithArguments = (cmd: GitCommand) => (...params: string[]) => GitCommand;
 
 export type CommandOutput = string;
 export type GitCommandOutput = CommandOutput;

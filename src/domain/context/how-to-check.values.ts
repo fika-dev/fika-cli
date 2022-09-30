@@ -1,9 +1,12 @@
 import { ghCliVersionCommand, gitVersionCheckCommand } from "../command/command.values";
+import * as command from "../git-command/command.functions";
+import { GitCommand } from "../git-command/command.types";
 import {
   getCurrentBranchCmd,
   getLocalBranchesCmd,
   getRemoteBranchesCmd,
   getRemoteOriginCmd,
+  getRemoteUrlCmd,
   statusCmd,
 } from "../git-command/git-command.values";
 import {

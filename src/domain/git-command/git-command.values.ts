@@ -1,4 +1,13 @@
-import { GitCommand, GitCommandWithArguments } from "./command.types";
+import { GitCommand } from "./command.types";
+
+export const getGitCommandWithArgument =
+  (gitCommand: GitCommand) =>
+  (...params: string[]) => {
+    return {
+      ...gitCommand,
+      argument: params.join(" "),
+    };
+  };
 
 // abortMerge(): Promise<void>;
 export const abortMergeCmd: GitCommand = {
@@ -74,14 +83,6 @@ export const getCurrentBranchCmd: GitCommand = {
   command: "rev-parse --abbrev-ref HEAD",
 };
 
-//async getGitRepoUrl(): Promise<string>
-// need one argument origin and post-treatment needed :
-// return gitRepoUrlWithGit.replace(".git", "").trim();
-export const getGitRepoUrlCmd: GitCommand = {
-  command: "remote get-url ",
-  requiredArgument: true,
-};
-
 // getLatestTag(): Promise<VersionTag>
 // need to catch the fatal error and send undefined
 export const getLatestTagCmd: GitCommand = {
@@ -100,7 +101,7 @@ export const getRemoteBranchesCmd: GitCommand = {
 };
 
 // need one argument origin
-export const getRemoteOriginCmd: GitCommand = {
+export const getRemoteUrlCmd: GitCommand = {
   command: "remote get-url",
   requiredArgument: true,
 };
@@ -123,16 +124,6 @@ export const getUpstreamBranchCmd: GitCommand = {
 // gitInit(): Promise<void>
 export const gitInitCmd: GitCommand = {
   command: "init .",
-};
-
-// isGitRepo(): boolean; Not a git cmd
-
-// isThereRemoteUrl(): Promise<boolean>
-// need one argument origin and post treatment needed :
-//  return remoteResp.trim().length > 0;} catch (e) {if (e.stderr.includes("No such remote")) {return false;} else {throw e;}
-export const isThereRemoteUrlCmd: GitCommand = {
-  command: "remote get-url ",
-  requiredArgument: true,
 };
 
 //  pullFrom(branchName: string): Promise<GitStatus>;
@@ -164,7 +155,7 @@ export const stageAllChangesCmd: GitCommand = {
 //stash(id: string): Promise<void>;
 //need one argument Id
 export const stashCmd: GitCommand = {
-  command: "stash push -u ",
+  command: "stash -u ",
 };
 
 export const statusCmd: GitCommand = {
@@ -182,3 +173,5 @@ export const tagCommitCmd: GitCommand = {
 export const undoCommitAndModificationCmd: GitCommand = {
   command: "reset HEAD~ && git checkout -- .",
 };
+
+export const getRemoteOriginCmd: GitCommand = getGitCommandWithArgument(getRemoteUrlCmd)("origin");
