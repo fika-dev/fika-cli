@@ -1,3 +1,4 @@
+import { Issue } from "@/domain/entity/issue.entity";
 import {
   checkoutToIssue,
   checkoutWithChanges,
@@ -71,8 +72,21 @@ const _checkoutFeatureBranchFunctional = async (issueNumber?: number) => {
     );
     const remoteOrigin = await getRemoteOrigin(execute)();
     const issue = await connectService.getIssueRecord(validIssueNumber, remoteOrigin);
-    await checkoutToIssue(execute)(issue);
-    messageService.showSuccess(`Checkout to branch: ${issue.branchName}`);
+    const confirmedIssue = _checkIssueBranch(configService.getIssueBranch)(issue);
+    await checkoutToIssue(execute)(confirmedIssue);
+    messageService.showSuccess(`Checkout to branch: ${confirmedIssue.branchName}`);
   }
 };
+
+const _checkIssueBranch =
+  (getIssueBranch: (number: number) => string) =>
+  (issue: Issue): Issue => {
+    const issueNumber = Issue.parseNumberFromUrl(issue.gitIssueUrl);
+    const branchName = getIssueBranch(issueNumber);
+    return {
+      ...issue,
+      branchName,
+    };
+  };
+
 export const checkoutFeatureBranchAction = _checkoutFeatureBranchFunctional;
