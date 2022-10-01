@@ -225,9 +225,15 @@ export class ConnectService implements IConnectService {
     }
   }
   async getIssueRecord(issueNumber: number, gitRepoUrl: string): Promise<Issue> {
+    let cleanGitRepoUrl: string;
+    if (gitRepoUrl.endsWith(".git")) {
+      cleanGitRepoUrl = gitRepoUrl.slice(undefined, gitRepoUrl.length - 4);
+    } else {
+      cleanGitRepoUrl = gitRepoUrl;
+    }
     try {
       const response = await this.axiosInstance.get(
-        `/git/issue?gitRepoUrl=${gitRepoUrl}&issueNumber=${issueNumber}`,
+        `/git/issue?gitRepoUrl=${cleanGitRepoUrl}&issueNumber=${issueNumber}`,
         {
           headers: {
             "content-type": "application/json",
