@@ -81,12 +81,16 @@ const _checkoutFeatureBranchFunctional = async (issueNumber?: number) => {
 const _checkIssueBranch =
   (getIssueBranch: (number: number) => string) =>
   (issue: Issue): Issue => {
-    const issueNumber = Issue.parseNumberFromUrl(issue.gitIssueUrl);
-    const branchName = getIssueBranch(issueNumber);
-    return {
-      ...issue,
-      branchName,
-    };
+    if (issue.branchName) {
+      return issue;
+    } else {
+      const issueNumber = Issue.parseNumberFromUrl(issue.gitIssueUrl);
+      const branchName = getIssueBranch(issueNumber);
+      return {
+        ...issue,
+        branchName,
+      };
+    }
   };
 
 export const checkoutFeatureBranchAction = _checkoutFeatureBranchFunctional;
