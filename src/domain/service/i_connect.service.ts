@@ -28,7 +28,7 @@ export interface IConnectService {
     workspaceType: WorkspaceType
   ): Promise<Issue>;
 
-  deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void>;
+  deleteIssueRecord(gitRepoUrl: string, issueNumber: number): Promise<void>;
   useToken(token: string): void;
   isAvailableEmail(email: string): Promise<boolean>;
   requestOtpEmail(email: string, password: string): Promise<void>;

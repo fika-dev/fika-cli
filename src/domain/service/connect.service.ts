@@ -68,7 +68,7 @@ export class ConnectService implements IConnectService {
       throw new Error("couldnt get hash");
     }
   }
-  async deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void> {
+  async deleteIssueRecord(gitRepoUrl: string, issueNumber: number): Promise<void> {
     try {
       const response = await this.axiosInstance.delete("/git/issue", {
         headers: {
