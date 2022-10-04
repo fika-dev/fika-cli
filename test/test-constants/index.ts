@@ -16,15 +16,23 @@ export const TEST_START_DOC_ID = 'https://www.notion.so/test-fika-start-doc-4af4
 
 export const TEST_START_DOC_JIRA_URL = 'https://fika-dev.atlassian.net/browse/FB-1';
 
+export const TEST_START_ISSUE = {
+  gitIssueUrl: undefined,
+  issueUrl: 'https://www.notion.so/test-fika-start-doc-4af459df4efb448483fe3e2b703d50fd',
+  title: 'test fika start doc',
+  body: 'Notion Document: https://www.notion.so/test-fika-start-doc-4af459df4efb448483fe3e2b703d50fd',
+  labels: []
+};
+
 export const TEST_CI_DOC_ID = 'https://www.notion.so/test-document-8d3ec82f2fc14b64b150f298c48598ae';
 
 export const TEST_CPR_DOC_ID =  'https://www.notion.so/for-pull-request-test-document-643f1f31906d498c8556d92fc1c614dc'
 
 export const TEST_CPR_BRANCH_NAME = 'feature/iss/#2';
 
-export const TEST_HTTPS_GITHUB_REPO = 'https://github.com/fika-dev/fika-cli.git';
+export const TEST_HTTPS_GITHUB_REPO = 'https://github.com/fika-dev/fika-cli-test-samples.git';
 
-export const TEST_SSH_GITHUB_REPO = 'git@github.com:fika-dev/test-repo.git';
+export const TEST_SSH_GITHUB_REPO = 'git@github.com:fika-dev/fika-cli-test-samples.git';
 
 export const TEST_UNVALID_BRANCH_NAME = 'feature is not';
 
