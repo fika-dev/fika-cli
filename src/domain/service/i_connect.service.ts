@@ -12,10 +12,9 @@ export interface UserWithToken {
 }
 
 export interface IConnectService {
+  getHash(): Promise<string>;
   requestWorkspace(workspaceType: WorkspaceType, workspaceId: Uuid): Promise<Workspace>;
-  create(devObj: DevObject): Promise<string>;
-  update(devObj: DevObject): Promise<string>;
-  remove(devObj: DevObject): Promise<string>;
+  useToken(token: string): void;
 
   getWorkspaceIssue(
     documentUrl: string,
@@ -28,27 +27,27 @@ export interface IConnectService {
     workspaceType: WorkspaceType
   ): Promise<Issue>;
 
+  createIssueRecord(issue: Issue): Promise<void>;
+  getIssueRecord(issueNumber: number, gitRepoUrl: string): Promise<Issue>;
+  getIssueRecordByPage(issueUrl: string, gitRepoUrl: string): Promise<Issue>;
   deleteIssueRecord(gitRepoUrl: string, issueNumber: number): Promise<void>;
-  useToken(token: string): void;
+
   isAvailableEmail(email: string): Promise<boolean>;
   requestOtpEmail(email: string, password: string): Promise<void>;
   signup(email: string, password: string, otpToken: string): Promise<UserWithToken>;
   signin(email: string, password: string): Promise<UserWithToken>;
   checkUpdate(currentVersion: string): Promise<UpdateInfo>;
-  createIssueRecord(issue: Issue): Promise<void>;
-  getIssueRecord(issueNumber: number, gitRepoUrl: string): Promise<Issue>;
-  getIssueRecordByPage(issueUrl: string, gitRepoUrl: string): Promise<Issue>;
-  createRelease(
+
+  createReleaseRecord(
     gitRepoUrl: string,
     tag: VersionTag,
     issuesWithPRList: IssueWithPR[]
   ): Promise<string>;
   createReleaseNotionPage(botId: Uuid, commitId: string, releaseId: string): Promise<string>;
-  createPullRequest(
+  createPullRequestRecord(
     gitRepoUrl: string,
     notionPageUrl: string,
     issueNumber: number,
     prNumber: number
   ): Promise<string>;
-  getHash(): Promise<string>;
 }
