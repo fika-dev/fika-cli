@@ -84,14 +84,15 @@ describe("2. test issue record", () => {
   const gitRepoUrl = TEST_HTTPS_GITHUB_REPO.replace('.git','');
   const issueNumber = 510;
   it("2.1. test createIssueRecord", async () => {
-    
     const branchName = configService.getIssueBranch(issueNumber);
     const issue = {...TEST_START_ISSUE, gitIssueUrl: `${gitRepoUrl}/issues/${issueNumber}`, branchName};
     await connectService.createIssueRecord(issue);
     const issueRecord = await connectService.getIssueRecord(Issue.parseNumberFromUrl(issue.gitIssueUrl), TEST_HTTPS_GITHUB_REPO.replace('.git',''));
+    const issueRecord2 = await connectService.getIssueRecordByPage(issue.issueUrl, TEST_HTTPS_GITHUB_REPO.replace('.git',''));
     expect(issueRecord.issueUrl).toEqual(issue.issueUrl);
     expect(issueRecord.branchName).toEqual(issue.branchName);
     expect(issueRecord.gitIssueUrl).toBeDefined();
+    expect(issueRecord2).toEqual(issueRecord);
   });
 
   it("2.2. test delete record", async () => {
@@ -102,6 +103,16 @@ describe("2. test issue record", () => {
       expect(e.message).toBe('Request failed with status code 404');
     }
   });
-  
 });
+
+
+describe("3. test auth related API", () => {
+  it("3.1. test isAvailableEmail", async () => {
+    const sholdBeFalse = await connectService.isAvailableEmail("wonmo.jung@kkiri.app");
+    expect(sholdBeFalse).toBe(false);
+    const shouldBeTrue = await connectService.isAvailableEmail("untested@kkiri.app");
+    expect(shouldBeTrue).toBe(true);
+  });
+});
+
 
