@@ -342,7 +342,7 @@ export class ConnectService implements IConnectService {
     }
   }
 
-  async getIssue(
+  async getWorkspaceIssue(
     documentUrl: string,
     workpaceId: Uuid,
     workspaceType: WorkspaceType

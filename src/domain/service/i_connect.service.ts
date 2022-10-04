@@ -16,12 +16,18 @@ export interface IConnectService {
   create(devObj: DevObject): Promise<string>;
   update(devObj: DevObject): Promise<string>;
   remove(devObj: DevObject): Promise<string>;
-  getIssue(documentUrl: string, workspaceId: Uuid, workspaceType: WorkspaceType): Promise<Issue>;
+
+  getWorkspaceIssue(
+    documentUrl: string,
+    workspaceId: Uuid,
+    workspaceType: WorkspaceType
+  ): Promise<Issue>;
   updateWorkspaceIssue(
     updatedIssue: Issue,
     workspaceId: Uuid,
     workspaceType: WorkspaceType
   ): Promise<Issue>;
+
   deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void>;
   useToken(token: string): void;
   isAvailableEmail(email: string): Promise<boolean>;

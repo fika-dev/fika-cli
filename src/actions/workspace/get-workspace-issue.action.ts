@@ -9,6 +9,6 @@ export const getWorkspaceIssue = async (documentUrl: string): Promise<Issue> => 
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const workpaceId = configService.getWorkspaceId();
   const workspaceType = configService.getWorkspaceType();
-  const issue = await connectService.getIssue(documentUrl, workpaceId, workspaceType);
+  const issue = await connectService.getWorkspaceIssue(documentUrl, workpaceId, workspaceType);
   return issue;
 };
