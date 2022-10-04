@@ -1,20 +1,20 @@
 import { WorkspaceType } from "../entity/add_on/workspace_platform.entity";
-import { DevObject } from "../entity/dev_object.entity";
 import { Issue } from "../entity/issue.entity";
-import { IssueWithPR } from "./i_git_platform.service";
 import { Workspace } from "../entity/workspace.entity";
 import { UpdateInfo } from "../value_object/update-info.vo";
 import { Uuid } from "../value_object/uuid.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
+import { IssueWithPR } from "./i_git_platform.service";
 
 export interface UserWithToken {
   accessToken: string;
 }
 
 export interface IConnectService {
-  getHash(): Promise<string>;
-  requestWorkspace(workspaceType: WorkspaceType, workspaceId: Uuid): Promise<Workspace>;
   useToken(token: string): void;
+
+  requestWorkspace(workspaceType: WorkspaceType, workspaceId: Uuid): Promise<Workspace>;
+  getHash(): Promise<string>;
 
   getWorkspaceIssue(
     documentUrl: string,
@@ -36,7 +36,6 @@ export interface IConnectService {
   requestOtpEmail(email: string, password: string): Promise<void>;
   signup(email: string, password: string, otpToken: string): Promise<UserWithToken>;
   signin(email: string, password: string): Promise<UserWithToken>;
-  checkUpdate(currentVersion: string): Promise<UpdateInfo>;
 
   createReleaseRecord(
     gitRepoUrl: string,
@@ -50,4 +49,6 @@ export interface IConnectService {
     issueNumber: number,
     prNumber: number
   ): Promise<string>;
+
+  checkUpdate(currentVersion: string): Promise<UpdateInfo>;
 }

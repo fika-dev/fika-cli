@@ -12,11 +12,11 @@ export const setAction = async (workspaceTypeAndId: string) => {
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const [workspaceType, idString] = workspaceTypeAndId.split(":");
   const workspaceId: Uuid = new Uuid(idString);
-  const notionWorkspace = await connectService.requestWorkspace(
+  const workspace = await connectService.requestWorkspace(
     workspaceType as WorkspaceType,
     workspaceId
   );
-  configService.updateWorkspace(notionWorkspace);
+  configService.updateWorkspace(workspace);
   messageService.showSuccess(
     "Notion is connected successfully",
     "Fika Quick Start Documentation",
