@@ -93,7 +93,12 @@ describe("2. test issue record", () => {
     expect(issueRecord.branchName).toEqual(issue.branchName);
     expect(issueRecord.gitIssueUrl).toBeDefined();
     expect(issueRecord2).toEqual(issueRecord);
+    await connectService.createIssueRecord({...issue, branchName: 'new-branch'});
+    const issueRecord3 = await connectService.getIssueRecordByPage(issue.issueUrl, TEST_HTTPS_GITHUB_REPO.replace('.git',''));
+    expect(issueRecord3.branchName).toEqual('new-branch');
   });
+
+  
 
   it("2.2. test delete record", async () => {
     await connectService.deleteIssueRecord(gitRepoUrl, issueNumber);
