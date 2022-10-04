@@ -170,6 +170,11 @@ export const checkoutToIssue = (execute: ExecuteGitCommand) => async (issue: Iss
   }
 };
 
+export const checkoutToBranchName = (execute: ExecuteGitCommand) => async (branchName: string) => {
+  await _createTrackingBranchIfNeeded(execute)(branchName);
+  await checkoutWithChanges(execute)(branchName);
+};
+
 export const getRemoteOrigin = (execute: ExecuteGitCommand) => async (): Promise<string> => {
   const originOrError = await checkContext(execute)({ domain: "git", field: "remote" })();
   if (typeof originOrError === "string") {
