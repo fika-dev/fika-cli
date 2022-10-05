@@ -8,7 +8,7 @@ import { Container } from "inversify";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { AnalyzeService } from "src/domain/service/analyze.service";
 import { ConfigService } from "src/domain/service/config.service";
-import { ConnectService } from "src/domain/service/connnect.service";
+import { ConnectService } from "@/domain/service/connect.service";
 import { GitPlatformService } from "src/domain/service/git_platform.service";
 import { IAnalyzeService } from "src/domain/service/i_analyze.service";
 import { IConfigService } from "src/domain/service/i_config.service";

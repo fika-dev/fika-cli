@@ -68,7 +68,7 @@ export class ConnectService implements IConnectService {
       throw new Error("couldnt get hash");
     }
   }
-  async deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void> {
+  async deleteIssueRecord(gitRepoUrl: string, issueNumber: number): Promise<void> {
     try {
       const response = await this.axiosInstance.delete("/git/issue", {
         headers: {
@@ -121,7 +121,7 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async createPullRequest(
+  async createPullRequestRecord(
     gitRepoUrl: string,
     notionPageUrl: string,
     issueNumber: number,
@@ -150,7 +150,7 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async createRelease(
+  async createReleaseRecord(
     gitRepoUrl: string,
     tag: VersionTag,
     issuesWithPRList: IssueWithPR[]
@@ -342,7 +342,7 @@ export class ConnectService implements IConnectService {
     }
   }
 
-  async getIssue(
+  async getWorkspaceIssue(
     documentUrl: string,
     workpaceId: Uuid,
     workspaceType: WorkspaceType
@@ -403,15 +403,6 @@ export class ConnectService implements IConnectService {
       );
       throw new Error(axiosError.message);
     }
-  }
-  create(devObj: DevObject): Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-  update(devObj: DevObject): Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-  remove(devObj: DevObject): Promise<string> {
-    throw new Error("Method not implemented.");
   }
 
   async requestWorkspace(workspaceType: WorkspaceType, workspaceId: Uuid): Promise<Workspace> {
