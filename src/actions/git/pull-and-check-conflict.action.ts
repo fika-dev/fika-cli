@@ -5,6 +5,7 @@ import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
 import { gitPullAction } from "./git-pull.action";
 
+// NEED TO BE REMOVED
 export const pullAndCheckConflict = async (baseBranch: string): Promise<void> => {
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   const gitPlatformService = container.get<IGitPlatformService>(
