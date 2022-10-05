@@ -70,24 +70,24 @@ it("1.test git merge conflict", async ()=>{
 it("2.test finish without change & without merge check, without checkout", async () => {
   try {
     await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
-  const localConfig = defaultLocalConfig;
-  localConfig.finish.checkMergeConflict = false;
-  jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
-  jest.spyOn(promptService, 'confirmAction').mockImplementation((message: string) => message.includes("Do you wanna stay ")? Promise.resolve(true): Promise.resolve(false));
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
-  await finishAction();
-  expect(spy).toBeCalled();
-  const currentBranch = await gitPlatformService.getBranchName();
-  expect(currentBranch).toBe(TEST_CPR_BRANCH_NAME);
-  await deleteBranch(TEST_CPR_BRANCH_NAME);  
-  } catch (e) {
+    const localConfig = defaultLocalConfig;
+    localConfig.finish.checkMergeConflict = false;
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
+    jest.spyOn(promptService, 'confirmAction').mockImplementation((message: string) => message.includes("Do you wanna stay ")? Promise.resolve(true): Promise.resolve(false));
+    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
+    await finishAction();
+    expect(spy).toBeCalled();
+    const currentBranch = await gitPlatformService.getBranchName();
+    expect(currentBranch).toBe(TEST_CPR_BRANCH_NAME);
     await deleteBranch(TEST_CPR_BRANCH_NAME);  
+  } catch (e) {
+    // await deleteBranch(TEST_CPR_BRANCH_NAME);  
   }
 });
 
 it("3.test finish without change & without merge check, with checkout", async () => {
-  try {
-    await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
+  
+  await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
   const localConfig = defaultLocalConfig;
   localConfig.finish.checkMergeConflict = false;
   localConfig.finish.checkOutToDevelop = true;
@@ -98,51 +98,42 @@ it("3.test finish without change & without merge check, with checkout", async ()
   const currentBranch = await gitPlatformService.getBranchName();
   expect(currentBranch).toBe('develop');
   await deleteBranch(TEST_CPR_BRANCH_NAME);  
-  } catch (e) {
-    await deleteBranch(TEST_CPR_BRANCH_NAME);  
-  }
+  
   
 });
 
 it("4. checkOutToDevelop is false & confirm to stay", async () => {
-  try {
     await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
-  const localConfig = defaultLocalConfig;
-  localConfig.finish.checkOutToDevelop = false;
-  jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
-  jest.spyOn(promptService, 'confirmAction').mockImplementation(() => Promise.resolve(true));
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
-  await finishAction();
-    expect(spy).toBeCalledWith("Staying in the same branch");
+    const localConfig = defaultLocalConfig;
+    localConfig.finish.checkOutToDevelop = false;
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
+    jest.spyOn(promptService, 'confirmAction').mockImplementation(() => Promise.resolve(true));
+    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
+    await finishAction();
+    expect(spy).toHaveBeenLastCalledWith("Staying in the current branch");
     await deleteBranch(TEST_CPR_BRANCH_NAME);  
-  } catch (e) {
-    await deleteBranch(TEST_CPR_BRANCH_NAME);  
-  }
-  
 });
 
 it("5. checkOutToDevelop is false & confirm to checkout to dev", async () => {
-  try {
-  await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
-  const localConfig = defaultLocalConfig;
-  localConfig.finish.checkOutToDevelop = false;
-  jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
-  jest.spyOn(promptService, 'confirmAction').mockImplementation((message: string) => message.includes("Do you wanna stay ")? Promise.resolve(false): Promise.resolve(false));
-  await finishAction();
-  const currentBranch = await gitPlatformService.getBranchName();
+  
+    await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
+    const localConfig = defaultLocalConfig;
+    localConfig.finish.checkOutToDevelop = false;
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
+    jest.spyOn(promptService, 'confirmAction').mockImplementation((message: string) => message.includes("Do you wanna stay ")? Promise.resolve(false): Promise.resolve(false));
+    await finishAction();
+    const currentBranch = await gitPlatformService.getBranchName();
     expect(currentBranch).toBe('develop');
     await deleteBranch(TEST_CPR_BRANCH_NAME);  
-  } catch (e) {
-    await deleteBranch(TEST_CPR_BRANCH_NAME);  
-  }
+  
 });
 
 it("6. test when PR is already opened", async () => {
-  await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
-  jest.spyOn(gitPlatformService, 'createPR').mockImplementation(() => {
-    throw new GhPrAlreadyExists("GhPrAlreadyExists");
-  });
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => {})
+    await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
+    jest.spyOn(gitPlatformService, 'createPR').mockImplementation(() => {
+      throw new GhPrAlreadyExists("GhPrAlreadyExists");
+    });
+    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => {})
   try {
     await createPR();  
   } catch (e) {
