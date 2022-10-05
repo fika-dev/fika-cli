@@ -5,4 +5,9 @@ export type OutputPattern = {
   value: GitOutputStatus;
 };
 
-export type GitOutputStatus = "NO_CHANGE" | "FF_UPDATED" | "CONFLICT" | "MERGED" | "NO_REMOTE";
+export type GitOutputStatus =
+  | "NO_CHANGE"
+  | "FF_UPDATED"
+  | "MERGE_CONFLICT"
+  | "MERGED"
+  | "NO_REMOTE_REF";

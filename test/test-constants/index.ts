@@ -50,6 +50,46 @@ export const TEST_GH_VERSION_OUTPUT = `gh version 2.14.7 (2022-08-25)
     To upgrade, run: brew upgrade gh
     https://github.com/cli/cli/releases/tag/v2.16.0`;
 
+export const TEST_GIT_PULL_UPDATED_OUTPUT = `From https://github.com/fika-dev/fika-cli-test-samples
+* branch            develop    -> FETCH_HEAD
+Updating b9d9b71..ead2b6b
+Fast-forward
+README.md            | 18 ++++++++++++++++++
+sample_01/readme.md  | 42 ++++++++++++++++++++++++++++++++++--------
+some_random_test.txt |  1 +
+3 files changed, 53 insertions(+), 8 deletions(-)
+create mode 100644 README.md
+create mode 100644 some_random_test.txt`;
+
+export const TEST_GIT_PULL_NO_CHANGE_OUTPUT = `From https://github.com/fika-dev/fika-cli-test-samples
+* branch            develop    -> FETCH_HEAD
+Already up to date.`;
+
+
+export const TEST_GIT_PULL_CONFLICT_OUTPUT = `From
+* branch            develop    -> FETCH_HEAD
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.`;
+
+export const TEST_GIT_PULL_NO_REMOTE_REF_OUTPUT = `fatal: couldn't find remote ref conflicting_234`;
+
+// NEED TO BE APPLIED TO TEST
+export const TEST_GIT_PULL_UNRESOLVED_MERGE_OUTPUT = `error: Pulling is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+fatal: Exiting because of an unresolved conflict.`;
+
+// NEED TO BE APPLIED TO TEST
+export const TEST_GIT_PULL_UNRESOLVED_MERGE_OUTPUT_2 = `error: You have not concluded your merge (MERGE_HEAD exists).
+hint: Please, commit your changes before merging.
+fatal: Exiting because of unfinished merge.`;
+
+
+export const TEST_GIT_GET_CURRENT_BRANCH_OUTPUT = `feature/iss/#440
+`;
+
+
 export const TEST_GH_VERSION_ONE_LINE_OUPUT = 'gh version 2.14.7 (2022-08-25)';
 
 export const TEST_NOT_INSTALLED = 'command not found:';

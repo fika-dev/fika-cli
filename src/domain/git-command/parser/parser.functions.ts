@@ -33,9 +33,9 @@ const isPatternMatched = (pattern: string) => (result: string) => {
   return lowerCaseResult.includes(lowerCasePattern) ? true : false;
 };
 
-const isResultMatchedWith = (result: string) => (pattern: string) => {
+const isResultMatchedWith = (result: string) => (outputPattern: OutputPattern) => {
   const lowerCaseResult = result.toLowerCase();
-  const lowerCasePattern = pattern.toLowerCase();
+  const lowerCasePattern = outputPattern.pattern.toLowerCase();
   return lowerCaseResult.includes(lowerCasePattern) ? true : false;
 };
 
@@ -135,11 +135,9 @@ export const parseBranches: CmdOutputParser = result => {
 };
 
 export const parsePullOutput: CmdOutputParser = result => {
-  const found = pipe(
-    pullOutputPatterns,
-    listMap(isResultMatchedWith(result)),
-    listFind((tOrF: boolean) => tOrF)
-  ) as OutputPattern | undefined;
+  const found = pipe(pullOutputPatterns, listFind(isResultMatchedWith(result))) as
+    | OutputPattern
+    | undefined;
   if (found) {
     return found.value;
   } else {

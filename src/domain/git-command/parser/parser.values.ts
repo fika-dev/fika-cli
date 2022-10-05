@@ -23,11 +23,11 @@ export const pullOutputPatterns: OutputPatterns = [
   },
   {
     pattern: "Merge conflict",
-    value: "CONFLICT",
+    value: "MERGE_CONFLICT",
   },
   {
     pattern: "couldn't find remote ref",
-    value: "NO_REMOTE",
+    value: "NO_REMOTE_REF",
   },
   {
     pattern: "Merge made",
