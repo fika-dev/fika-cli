@@ -5,20 +5,23 @@ import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
 import { IPromptService } from "src/domain/service/i-prompt.service";
 
-import { ExecuteGitCommand, GitCommand } from "@/domain/git-command/command.types";
+import { ExecuteGitCommand } from "@/domain/git-command/command.types";
 import {
   applyStashCmd,
   checkoutCmd,
   createBranchCmd,
   fetchCmd,
   getBranchesCmd,
+  getCurrentBranchCmd,
   getGitCommandWithArgument,
+  pullFromCmd,
   stashCmd,
 } from "@/domain/git-command/git-command.values";
 import {
   checkNoError,
   isFeatureBranch,
   parseBranches,
+  parsePullOutput,
 } from "@/domain/git-command/parser/parser.functions";
 import {
   existsLocalBranch,
@@ -51,7 +54,7 @@ const _createTrackingLocalBranch = (execute: ExecuteGitCommand) => async (branch
   })();
 };
 
-const _createLocalBranch =
+export const createLocalBranch =
   (execute: ExecuteGitCommand) => async (branchName: string, baseBranchName: string) => {
     const createLocalBranchCmd = getGitCommandWithArgument(createBranchCmd)(
       branchName,
@@ -125,11 +128,33 @@ const _createTrackingBranchIfNeeded =
         await _createTrackingLocalBranch(execute)(branchName);
       } else {
         throw {
-          type: "NoLocalAndRemoteBranch",
+          type: "NotExistingBranch",
+          value: branchName,
         } as DomainError;
       }
     }
   };
+export const pullFrom = (execute: ExecuteGitCommand) => async (remoteBranch: string) => {
+  const pullFromBranchCmd = getGitCommandWithArgument(pullFromCmd)(remoteBranch);
+  return await executeAndParseGitCommand(execute)({
+    command: pullFromBranchCmd,
+    parser: parsePullOutput,
+  })();
+};
+
+export const getCurrentBranch = (execute: ExecuteGitCommand) => async () => {
+  const branches = (await executeAndParseGitCommand(execute)({
+    command: getCurrentBranchCmd,
+    parser: parseBranches,
+  })()) as string[];
+  if (branches.length > 0) {
+    return branches[0];
+  } else {
+    throw {
+      type: "NoCurrentBranch",
+    };
+  }
+};
 
 export const getLatestBranchByCommit =
   (execute: ExecuteGitCommand) => async (featureBranchPattern: string) => {
@@ -145,7 +170,8 @@ export const getLatestBranchByCommit =
       return featureBranches[0];
     } else {
       throw {
-        type: "NoFeatureBranchInLocal",
+        type: "NoLocalFeatureBranch",
+        value: featureBranchPattern,
       };
     }
   };
@@ -165,7 +191,7 @@ export const checkoutToIssue = (execute: ExecuteGitCommand) => async (issue: Iss
     await checkoutWithChanges(execute)(issue.branchName);
   } else {
     throw {
-      type: "NoBranchNameInIssue",
+      type: "NoBranchNameInIssueRecord",
     } as DomainError;
   }
 };

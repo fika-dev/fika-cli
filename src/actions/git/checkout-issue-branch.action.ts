@@ -4,7 +4,7 @@ import { Issue } from "@/domain/entity/issue.entity";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
-
+// NEED TO BE REMOVED
 export const checkoutIssueBranch = async (
   issue: Issue,
   stashId: string | undefined

@@ -278,7 +278,7 @@ test('4.3 checkoutToIssue with no local and remote error', async () => {
       branchName: TEST_NOT_LOCAL_BRANCH,
     });
   }catch(e){
-    expect(e.type).toBe("NoLocalAndRemoteBranch")
+    expect(e.type).toBe("NotExistingBranch")
     expect(hasCreateBranchCalled).toBe(false);
   }
 });
