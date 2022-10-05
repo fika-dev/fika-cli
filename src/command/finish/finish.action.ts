@@ -7,6 +7,7 @@ import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IConfigService } from "src/domain/service/i_config.service";
+import { pullAction } from "../pull/pull.action";
 
 export const finishAction = async (baseBranch?: string) => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
@@ -25,7 +26,7 @@ export const finishAction = async (baseBranch?: string) => {
     if (!proceed) return;
   }
   if (localConfig.finish.checkMergeConflict) {
-    await pullAndCheckConflict(developBranch);
+    await pullAction(developBranch);
   }
   await createPR();
   if (localConfig.finish.checkOutToDevelop) {
