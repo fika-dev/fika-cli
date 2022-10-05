@@ -143,6 +143,7 @@ export const parsePullOutput: CmdOutputParser = result => {
   } else {
     throw {
       type: "NotMatchedPulltOutput",
+      value: result,
     };
   }
 };
