@@ -1,11 +1,10 @@
 import { createPR } from "@/actions/complex/create-PR.action";
-import { pullAndCheckConflict } from "@/actions/git/pull-and-check-conflict.action";
 import { checkoutBaseBranch } from "@/actions/git/checkout-base-branch.action";
 import { IPromptService } from "@/domain/service/i-prompt.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
-import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IConfigService } from "src/domain/service/i_config.service";
 import { pullAction } from "../pull/pull.action";
 

@@ -1,5 +1,4 @@
 import { createPR } from "@/actions/complex/create-PR.action";
-import { pullAndCheckConflict } from "@/actions/git/pull-and-check-conflict.action";
 import { finishAction } from "@/command/finish/finish.action";
 import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
@@ -52,19 +51,9 @@ afterAll(() => {
   
 });
 
-it("1.test git merge conflict", async ()=>{
-  jest.spyOn(promptService, 'confirmAction').mockImplementation((message: string) => Promise.resolve(true));
-  await gitPlatformService.checkoutToBranchWithoutReset("conflicting");
-  let message: string = 'not yet'
-  try{
-    await pullAndCheckConflict("conflicting_2");
-    message = "done";
-  }
-  catch(e){
-    const exception = e as BaseException;
-    message = exception.name;
-  }
-  expect(message).toContain('GitError:MergeConflict');
+// jest test function for only true case
+test("finish action", async () => {
+  await finishAction();
 });
 
 // it("2.test finish without change & without merge check, without checkout", async () => {
