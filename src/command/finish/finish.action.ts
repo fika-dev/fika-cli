@@ -1,5 +1,6 @@
 import { createPR } from "@/actions/complex/create-PR.action";
 import { checkoutBaseBranch } from "@/actions/git/checkout-base-branch.action";
+import { MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES } from "@/config/constants/messages";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
@@ -19,9 +20,7 @@ export const finishAction = async (baseBranch?: string) => {
   const isChangeExist = await gitPlatformService.checkUnstagedChanges();
   const developBranch = baseBranch ? baseBranch : localConfig.branchNames.develop;
   if (isChangeExist) {
-    const proceed = await promptService.confirmAction(
-      "There is uncommited changes\nDo you wanna continue? (y or n)"
-    );
+    const proceed = await promptService.confirmAction(MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES);
     if (!proceed) return;
   }
   if (localConfig.finish.checkMergeConflict) {

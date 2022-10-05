@@ -7,6 +7,7 @@ import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IConfigService } from "src/domain/service/i_config.service";
+import { MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES } from "@/config/constants/messages";
 
 export const checkoutDevelopBranchAction = async () => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
@@ -19,9 +20,7 @@ export const checkoutDevelopBranchAction = async () => {
   const isChangeExist = await gitPlatformService.checkUnstagedChanges();
   //const developBranch = localConfig.branchNames.develop;
   if (isChangeExist) {
-    const proceed = await promptService.confirmAction(
-      "There is uncommited changes\nDo you wanna continue? (y or n)"
-    );
+    const proceed = await promptService.confirmAction(MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES);
     if (!proceed) return;
   }
   if (localConfig.branchNames.develop && localConfig.branchNames.develop !== "") {

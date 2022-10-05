@@ -1,3 +1,4 @@
+import { MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES } from "@/config/constants/messages";
 import { Issue } from "@/domain/entity/issue.entity";
 import {
   checkoutToIssue,
@@ -38,9 +39,7 @@ const _checkoutFeatureBranchLegacy = async (issueNumber?: number) => {
     featureBranch = await gitPlatformService.getLatestBranchByCommitDate();
   }
   if (isChangeExist) {
-    const proceed = await promptService.confirmAction(
-      "There is uncommited changes\nDo you wanna continue? (y or n)"
-    );
+    const proceed = await promptService.confirmAction(MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES);
     if (!proceed) return;
   }
   if (featureBranch && featureBranch !== "") {
