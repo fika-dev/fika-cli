@@ -7,7 +7,7 @@ import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import { Uuid } from "@/domain/value_object/uuid.vo";
-import { TEST_CHANGE_FILE_PATH, TEST_CPR_BRANCH_NAME, TEST_JIRA_WORKSPACE_ID, TEST_START_DOC_ID, TEST_START_DOC_JIRA_URL } from "test/test-constants";
+import { TEST_CHANGE_FILE_PATH, TEST_CPR_BRANCH_NAME, TEST_JIRA_WORKSPACE_ID, TEST_START_DOC_URL, TEST_START_DOC_JIRA_URL } from "test/test-constants";
 import { checkAndCloneRepo, checkAndDeleteIssue, createTestConfig, makeMeaninglessChange, restoreGitRepo, setAuthToken, setUseToken } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);

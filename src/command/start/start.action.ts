@@ -1,4 +1,6 @@
 import { createIssue } from "@/actions/complex/create-issue.action";
+import { askToContinueWithUncommitedChanges } from "@/actions/git/ask-to-continue-with-uncommited-changes.action";
+import { gitPullAction } from "@/actions/git/git-pull.action";
 import { validateStartBranch } from "@/actions/git/validate-start-branch.action";
 import { getExistingIssue } from "@/actions/workspace/get-existing-issue.action";
 import {
@@ -11,22 +13,23 @@ import { ICommanderService } from "@/infrastructure/services/interface/i_command
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
 import { IConfigService } from "src/domain/service/i_config.service";
-import { pullAction } from "../pull/pull.action";
 
 export const startAction = async (documentUrl: string) => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   const existingIssue = await getExistingIssue(documentUrl);
+  await askToContinueWithUncommitedChanges();
   if (existingIssue) {
     await checkoutToIssue(commanderService.executeGitCommand)(existingIssue);
+    messageService.showSuccess(`Checkout to branch: ${existingIssue.branchName!}`);
   } else {
     const currentBranch = await getCurrentBranch(commanderService.executeGitCommand)();
     const localConfig = configService.getLocalConfig();
     const isOKToProceed = await validateStartBranch(localConfig, currentBranch);
     if (!isOKToProceed) return;
     if (localConfig.start.pullBeforeAlways) {
-      await pullAction(currentBranch);
+      await gitPullAction(currentBranch);
     }
     const updatedIssue = await createIssue(documentUrl);
     await createLocalBranch(commanderService.executeGitCommand)(

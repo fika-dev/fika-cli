@@ -9,9 +9,29 @@ export const gitPullAction = async (branchName: string): Promise<GitOutputStatus
   const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   messageService.showWaiting(`Pulling ${branchName} from remote`);
-  const isUpdated = (await pullFrom(commanderService.executeGitCommand)(
+  const gitStatus = (await pullFrom(commanderService.executeGitCommand)(
     branchName
   )) as GitOutputStatus;
   messageService.endWaiting();
-  return isUpdated;
+  if (gitStatus === "FF_UPDATED") {
+    messageService.showSuccess(`Synced from origin ${branchName}`);
+  } else if (gitStatus === "NO_CHANGE") {
+    messageService.showSuccess(`nothing to update from origin ${branchName}`);
+  } else if (gitStatus === "NO_REMOTE_REF") {
+    throw {
+      type: "GitErrorNoRemoteBranch",
+      value: branchName,
+    };
+  } else if (gitStatus === "MERGE_CONFLICT") {
+    throw {
+      type: "GitErrorMergeConflict",
+      value: branchName,
+    };
+  } else {
+    throw {
+      type: "GitErrorFailedToPull",
+      value: `branchName: ${branchName}, gitStatus: ${gitStatus}`,
+    };
+  }
+  return gitStatus;
 };

@@ -1,32 +1,74 @@
 import { startAction } from "@/command/start/start.action";
 import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
+import { MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES } from "@/config/constants/messages";
 import container from "@/config/ioc_config";
-import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
+import { GitCommand } from "@/domain/git-command/command.types";
+import { checkoutCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getRemoteBranchesCmd, pullFromCmd, statusCmd } from "@/domain/git-command/git-command.values";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
+import { IConnectService } from "@/domain/service/i_connect.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
-import BaseException from "@/domain/value_object/exceptions/base_exception";
+import { WorkspaceNotConnected } from "@/domain/value_object/exceptions/workspace_not_connected";
 import { Uuid } from "@/domain/value_object/uuid.vo";
-import { TEST_CHANGE_FILE_PATH, TEST_CPR_BRANCH_NAME, TEST_START_DOC_ID } from "test/test-constants";
-import { checkAndCloneRepo, checkAndDeleteIssue, createTestConfig, makeMeaninglessChange, restoreGitRepo, setAuthToken, setUseToken } from "test/test-utils";
+import * as T from 'fp-ts/Task';
+import { TEST_BRANCH_LIST, TEST_GIT_CLEAN_STATUS, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_REMOTE_BRANCHES, TEST_STARTED_DOC_URL, TEST_START_DOC_URL } from "test/test-constants";
+import { createTestConfig, setUseToken, spyWithMock } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
 const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
 const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
+const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
+const defaultMock = (additionalMock)=> (cmd: GitCommand) => {
+  const t = additionalMock(cmd);
+  if (t !== undefined){
+    return t
+  }else{
+    if(cmd.command === pullFromCmd.command){
+      return T.of(TEST_GIT_PULL_UPDATED_OUTPUT);
+    }if (cmd.command === getCurrentBranchCmd.command){
+      return T.of('develop');
+    }if (cmd.command === statusCmd.command){
+      return T.of(TEST_GIT_CLEAN_STATUS);
+    }if (cmd.command === checkoutCmd.command){
+      return T.of('');
+    }if (cmd.command === createBranchCmd.command){
+      return T.of('');
+    }if (cmd.command === getBranchesCmd.command){
+      return T.of(TEST_BRANCH_LIST);
+    }if (cmd.command === getRemoteBranchesCmd.command){
+      return T.of(TEST_REMOTE_BRANCHES);
+    }if (cmd.command === fetchCmd.command){
+      return T.of('');
+    }
+    throw cmd;
+  }
+}
 
 beforeAll(async () => {
-  await checkAndCloneRepo();
   createTestConfig(process.env.TESTING_PATH + "/.fika");
   setUseToken(process.env.TESTING_USER_TOKEN);
-});
-
-beforeEach(async()=>{
   jest.restoreAllMocks();
   jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   jest.spyOn(configService, 'getWorkspaceType').mockImplementation(()=>'notion');
+  jest.spyOn(connectService, 'getIssueRecordByPage').mockImplementation((docUrl, _)=>{
+    if (docUrl === TEST_STARTED_DOC_URL) {
+      return Promise.resolve({
+        id: 'a38a4d5d-1407-4fce-a7ec-192d8ab58495',
+        title: 'test fika start doc',
+        issueUrl: 'https://www.notion.so/test-fika-start-doc-4af459df4efb448483fe3e2b703d50fd',
+        gitIssueUrl: 'https://github.com/fika-dev/fika-cli-test-samples/issues/2',
+        labels: [],
+        branchName: 'feature/iss/#2'
+      });
+    }else if (docUrl === TEST_START_DOC_URL){
+      return Promise.resolve(undefined);
+    }
+  });
+  jest.spyOn(connectService, 'createIssueRecord').mockImplementation((issue)=>Promise.resolve(undefined));
   jest.spyOn(gitPlatformService, 'createIssue').mockImplementation((issue)=>{
     const updated = {
       ...issue,
@@ -34,124 +76,116 @@ beforeEach(async()=>{
     }
     return Promise.resolve(updated);
   });
-  await gitPlatformService.checkoutToBranchWithoutReset('develop');
-  await restoreGitRepo(process.env.TESTING_REPO_PATH);
+});
+
+beforeEach(async()=>{
+  
 });
 
 afterEach(() => {
   messageService.endWaiting();
 });
 
-// test('1. test pull from develop', async () => {
-//   await gitPlatformService.checkoutToBranchWithoutReset('develop');
-//   await gitPlatformService.pullFrom('develop');
+
+
+
+// test('1. start an issue without issue url', async () => { 
 // });
 
-test('2. check unstaged change', async () => {
-  await gitPlatformService.checkoutToBranchWithReset(TEST_CPR_BRANCH_NAME);
-  const isChanged = await gitPlatformService.checkUnstagedChanges();
-  expect(isChanged).toBe(false);
-  makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
-  const isChanged2 = await gitPlatformService.checkUnstagedChanges();
-  expect(isChanged2).toBe(true);
-  await gitPlatformService.stash('tmp');
-  const isChanged3 = await gitPlatformService.checkUnstagedChanges();
-  expect(isChanged3).toBe(false);
-  await gitPlatformService.applyStash('tmp');
-  const isChanged4 = await gitPlatformService.checkUnstagedChanges();
-  expect(isChanged4).toBe(true);
-});
+// NEED TO ADD VALIDATION FOR URL
+// test('2. start with not correct issue url (https://xyw.abcd.kr)', async () => { 
+// });
 
-test('2.1. catch user stopped exception', async () => {
-  await checkAndDeleteIssue(TEST_START_DOC_ID);
-  await gitPlatformService.checkoutToBranchWithReset("develop");
-  const localConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
-  localConfig.start.pullBeforeAlways = false;
-  jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
-  makeMeaninglessChange(TEST_CHANGE_FILE_PATH);
-  const spy = jest.spyOn(promptService, "confirmAction").mockImplementationOnce((m)=>{
-    return Promise.resolve(false)
-  });
-  let message: string
+// NEED TO BE HANDLED IN SERVER SIDE
+// test('3. start an issue of different workspace', async () => {
+// });
+
+test('4. start an issue without connected workspace', async () => {
+  spyWithMock(defaultMock((_)=>undefined));
+  jest.spyOn(configService, 'getWorkspaceId').mockImplementationOnce(()=>{throw new WorkspaceNotConnected("WORKSPACE_NOT_CONNECTED");});
   try{
-    await startAction(TEST_START_DOC_ID)
+    await startAction(TEST_START_DOC_URL);
+    expect(true).toBe(false);
   }catch(e){
-    const exception = e as BaseException;
-    message = exception.name;
+    expect(e).toBeInstanceOf(WorkspaceNotConnected);
   }
-  await gitPlatformService.stash('tmp');
-  expect(message).toEqual("UserStopped:UnstagedChange");
 });
 
-test('3. notion test start action without existing issue', async () => {
-  await checkAndDeleteIssue(TEST_START_DOC_ID);
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
-  await gitPlatformService.checkoutToBranchWithReset('develop');
-  await startAction(TEST_START_DOC_ID);
-  const branchName = await gitPlatformService.getBranchName();
-  expect(branchName).toContain('feat');
-  expect(spy).toBeCalled();
-});
+// test('5. start before login', async () => {});
 
-test('4. test checkout to existing issue', async () => {
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
-  await gitPlatformService.checkoutToBranchWithReset('develop');
-  await startAction(TEST_START_DOC_ID);
-  const branchName = await gitPlatformService.getBranchName();
-  expect(branchName).toContain('feat');
-  expect(spy).toBeCalled();
-});
-
-test('5. test without checkout ', async () => {
-  await checkAndDeleteIssue(TEST_START_DOC_ID);
-  const checkoutFalse = defaultLocalConfig;
-  checkoutFalse.start.checkoutToFeature = false;
-  jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => checkoutFalse);
-  await gitPlatformService.checkoutToBranchWithReset('develop');
-  await startAction(TEST_START_DOC_ID);
-  const branchName = await gitPlatformService.getBranchName();
-  expect(branchName).toEqual('develop');
-});
-
-test('6. test only allowed branch warning ', async () => {
-  await checkAndDeleteIssue(TEST_START_DOC_ID);
-  jest.spyOn(promptService, 'confirmAction').mockImplementation(async () => true);
-  let isWarningMessageCorrect: boolean;
-  const spyWarning = jest.spyOn(messageService, 'showWarning').mockImplementation((message)=>{
-    if (message.includes('only allowed branch')){
-      isWarningMessageCorrect = true;
-    }else{
-      isWarningMessageCorrect = false;
-    }
-  });
-  const spySuccess = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
-  await gitPlatformService.checkoutToBranchWithReset('something');
-  await startAction(TEST_START_DOC_ID);
-  const branchName = await gitPlatformService.getBranchName();
-  expect(branchName).toEqual('something');
-  expect(spyWarning).toBeCalled();
-  expect(spySuccess).not.toBeCalled();
-  expect(isWarningMessageCorrect).toEqual(true);
-});
-
-
-test('7. test nok OK to start ', async () => {
-  await checkAndDeleteIssue(TEST_START_DOC_ID);
-  const localConfig = defaultLocalConfig;
-  localConfig.start.fromDevelopOnly = false;
-  localConfig.start.pullBeforeAlways = false;
-  localConfig.start.checkoutToFeature = true;
+test('6. start from the feature branch', async () => {
+  const localConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
+  localConfig.start.fromDevelopOnly = true;
   jest.spyOn(configService, 'getLocalConfig').mockImplementation(() => localConfig);
-  const spyConfirm = jest.spyOn(promptService, 'confirmAction').mockImplementation(async () => true);
-  const spySuccess = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
-  await gitPlatformService.checkoutToBranchWithReset('something');
-  await startAction(TEST_START_DOC_ID);
-  const branchName = await gitPlatformService.getBranchName();
-  expect(spyConfirm).toBeCalled();
-  expect(spySuccess).toBeCalled();
-  expect(branchName).toContain('feat');
+  const spy = jest.spyOn(messageService, "showWarning").mockImplementationOnce(()=>undefined);
+  spyWithMock(defaultMock((cmd)=>{
+    if (cmd.command === getCurrentBranchCmd.command){
+      return T.of('feature/iss/#2');
+    }else{
+      return undefined;
+    }
+  }));
+  await startAction(TEST_START_DOC_URL);
+  expect(spy).toHaveBeenCalledWith('(current branch is feature/iss/#2) develop is the only allowed branch to start')
+});
+
+test('7. start an issue uncommitted changes from develop branch', async () => {
+  const spy = jest.spyOn(promptService, "confirmAction").mockImplementation((m) => Promise.resolve(false));
+  spyWithMock(defaultMock((cmd)=>{
+    if (cmd.command === statusCmd.command){
+      return T.of(TEST_GIT_STATUS_WITH_STAGED);
+    }else{
+      return undefined;
+    }
+  }));
+  try{
+    await startAction(TEST_START_DOC_URL);
+  }catch(e){
+    expect(e.type).toEqual('UserCancel');
+    expect(spy).toHaveBeenCalledWith(MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES);
+  }
+});
+
+test('8. start from develop with git clean status', async () => {
+  spyWithMock(defaultMock((cmd)=>{
+    if (cmd.command === statusCmd.command){
+      return T.of(TEST_GIT_CLEAN_STATUS);
+    }if (cmd.command === getBranchesCmd.command){
+      return T.of(TEST_BRANCH_LIST+'\nfeature/iss/#1507');
+    }
+    return undefined;
+  }));
+  await startAction(TEST_START_DOC_URL);
+  expect(messageService.showSuccess).toHaveBeenNthCalledWith(4, 'Checkout to branch: feature/iss/#1507');
+
+  
+});
+
+test('9.1. start already started issue not in local', async () => {
+  spyWithMock(defaultMock((cmd)=>{
+    if (cmd.command === statusCmd.command){
+      return T.of(TEST_GIT_CLEAN_STATUS);
+    }
+    return undefined;
+  }));
+  await startAction(TEST_STARTED_DOC_URL);
+  expect(messageService.showSuccess).toHaveBeenNthCalledWith(1, 'Checkout to branch: feature/iss/#2');
+});
+
+test('9.2. start already started issue existing in local', async () => {
+  spyWithMock(defaultMock((cmd)=>{
+    if (cmd.command === statusCmd.command){
+      return T.of(TEST_GIT_CLEAN_STATUS);
+    }if (cmd.command === getBranchesCmd.command){
+      return T.of(TEST_BRANCH_LIST+'\nfeature/iss/#2');
+    }if (cmd.command === createBranchCmd.command){
+      throw cmd.argument;
+    }
+    return undefined;
+  }));
+  await startAction(TEST_STARTED_DOC_URL);
+  expect(messageService.showSuccess).toHaveBeenNthCalledWith(1, 'Checkout to branch: feature/iss/#2');
 });
 
 
-
-
+// test('10. start an issue which is not accessible to fika', async () => {});
