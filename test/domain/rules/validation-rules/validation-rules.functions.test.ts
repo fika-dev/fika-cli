@@ -1,7 +1,8 @@
 import { checkContext } from "@/domain/context/context.functions";
 import { ExecuteCommand, ExecuteGitCommand } from "@/domain/git-command/command.types";
+import { getBranchesCmd } from "@/domain/git-command/git-command.values";
 import { ValidationError } from "@/domain/rules/validation-rules/validation-rule.types";
-import { isGitCleanStatus, isGitAndGhCliInstalled } from "@/domain/rules/validation-rules/validation-rules.functions";
+import { isGitCleanStatus, isGitAndGhCliInstalled, existsLocalBranch } from "@/domain/rules/validation-rules/validation-rules.functions";
 import * as T from 'fp-ts/Task';
 import container from "src/config/ioc_config";
 import { TEST_BRANCH_LIST, TEST_GIT_CLEAN_STATUS, TEST_GIT_STATUS_STRING, TEST_HTTPS_GITHUB_REPO, TEST_GIT_VERSION_OUTPUT, TEST_NOT_INSTALLED, TEST_GH_VERSION_OUTPUT } from "test/test-constants";
@@ -54,9 +55,10 @@ test('1. isGitCleanStatus', async () => {
 const mockExecuteCommand: ExecuteCommand = (command) => {
   if (command.command = 'git --version') {
     return T.of(TEST_GIT_VERSION_OUTPUT);
-  } else if (command.command = 'gh --version') {
-    return T.of(TEST_GH_VERSION_OUTPUT);
+  }if (command.command = getBranchesCmd.command) {
+    return T.of(TEST_BRANCH_LIST);
   }
+  throw command
 }
 
 const mockExecuteCommandForError: ExecuteCommand = (command) => {
@@ -72,5 +74,20 @@ test('2. isGitAndGhCliInstalled', async () => {
   expect(shouldBeTrue).toBe(true);
   const shouldBeFalse = await isGitAndGhCliInstalled(mockExecuteCommandForError);
   expect(shouldBeFalse);
+});
+
+
+
+test('3. existsLocalBranch', async () => {
+  const mock: ExecuteCommand = (command) => {
+    if (command.command = getBranchesCmd.command) {
+      return T.of(TEST_BRANCH_LIST);
+    }
+    throw command
+  }
+  const shouldBeTrue = await existsLocalBranch(mock)("feature/iss/#138");
+  expect(shouldBeTrue).toBe(true);
+  const shouldBeFalse = await existsLocalBranch(mock)("feature/iss/#2");
+  expect(shouldBeFalse).toBe(false);
 });
 
