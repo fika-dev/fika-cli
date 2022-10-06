@@ -86,7 +86,6 @@ it("2.test without number", async () => {
   const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
   let checkoutBranch: string;
   const mockExecuteWithChange: ExecuteGitCommand = (gitCommand) => {
-    console.log('🧪', ' in CheckoutFeatureBranchActionTest: ', 'gitCommand: ',gitCommand);
     if (gitCommand.command === "status"){
       return T.of(TEST_GIT_CLEAN_STATUS);
     }

@@ -1,11 +1,12 @@
 //import { createPR } from "@/actions/complex/create-PR.action";
 //import { pullAndCheckConflict } from "@/actions/git/pull-and-check-conflict.action";
+import { askToContinueWithUncommitedChanges } from "@/actions/git/ask-to-continue-with-uncommited-changes.action";
 import { checkoutBaseBranch } from "@/actions/git/checkout-base-branch.action";
 import { IPromptService } from "@/domain/service/i-prompt.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
-import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IConfigService } from "src/domain/service/i_config.service";
 
 export const checkoutDevelopBranchAction = async () => {
@@ -16,14 +17,7 @@ export const checkoutDevelopBranchAction = async () => {
     SERVICE_IDENTIFIER.GitPlatformService
   );
   const localConfig = configService.getLocalConfig();
-  const isChangeExist = await gitPlatformService.checkUnstagedChanges();
-  //const developBranch = localConfig.branchNames.develop;
-  if (isChangeExist) {
-    const proceed = await promptService.confirmAction(
-      "There is uncommited changes\nDo you wanna continue? (y or n)"
-    );
-    if (!proceed) return;
-  }
+  await askToContinueWithUncommitedChanges();
   if (localConfig.branchNames.develop && localConfig.branchNames.develop !== "") {
     await checkoutBaseBranch(localConfig.branchNames.develop);
   } else {

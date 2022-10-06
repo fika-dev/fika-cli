@@ -1,3 +1,4 @@
+import { askToContinueWithUncommitedChanges } from "@/actions/git/ask-to-continue-with-uncommited-changes.action";
 import { Issue } from "@/domain/entity/issue.entity";
 import {
   checkoutToIssue,
@@ -20,13 +21,11 @@ import { IMessageService } from "src/domain/service/i_message.service";
 // import { checkoutToIssueBuilder } from "@/domain/git-command/command.functions";
 
 const _checkoutFeatureBranchLegacy = async (issueNumber?: number) => {
-  const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  const isChangeExist = await gitPlatformService.checkUnstagedChanges();
 
   let featureBranch: string;
   if (issueNumber && !isNaN(issueNumber)) {
@@ -37,12 +36,7 @@ const _checkoutFeatureBranchLegacy = async (issueNumber?: number) => {
   } else {
     featureBranch = await gitPlatformService.getLatestBranchByCommitDate();
   }
-  if (isChangeExist) {
-    const proceed = await promptService.confirmAction(
-      "There is uncommited changes\nDo you wanna continue? (y or n)"
-    );
-    if (!proceed) return;
-  }
+  await askToContinueWithUncommitedChanges();
   if (featureBranch && featureBranch !== "") {
     await gitPlatformService.checkoutToFeatureBranch(featureBranch);
     messageService.showSuccess(`Checkout to branch: ${featureBranch}`);

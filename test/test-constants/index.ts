@@ -12,7 +12,9 @@ export const TEST_JIRA_WORKSPACE_ID = '275b18d8-c1b6-4b30-940a-529e6f3e5235';
 
 export const TEST_USER_HASH = '5387961cb9c99be489af15acc544bf74c5df625305726ff4c1b3dfb104fd482558326a76';
 
-export const TEST_START_DOC_ID = 'https://www.notion.so/test-fika-start-doc-4af459df4efb448483fe3e2b703d50fd';
+export const TEST_START_DOC_URL = 'https://www.notion.so/test-fika-start-doc-4af459df4efb448483fe3e2b703d50fd';
+
+export const TEST_STARTED_DOC_URL = 'https://www.notion.so/test-fika-started-doc-4ssdfasd4efb448483fe3e2b703d50fd';
 
 export const TEST_START_DOC_JIRA_URL = 'https://fika-dev.atlassian.net/browse/FB-1';
 
@@ -49,6 +51,46 @@ export const TEST_GH_VERSION_OUTPUT = `gh version 2.14.7 (2022-08-25)
     A new release of gh is available: 2.14.7 → 2.16.0
     To upgrade, run: brew upgrade gh
     https://github.com/cli/cli/releases/tag/v2.16.0`;
+
+export const TEST_GIT_PULL_UPDATED_OUTPUT = `From https://github.com/fika-dev/fika-cli-test-samples
+* branch            develop    -> FETCH_HEAD
+Updating b9d9b71..ead2b6b
+Fast-forward
+README.md            | 18 ++++++++++++++++++
+sample_01/readme.md  | 42 ++++++++++++++++++++++++++++++++++--------
+some_random_test.txt |  1 +
+3 files changed, 53 insertions(+), 8 deletions(-)
+create mode 100644 README.md
+create mode 100644 some_random_test.txt`;
+
+export const TEST_GIT_PULL_NO_CHANGE_OUTPUT = `From https://github.com/fika-dev/fika-cli-test-samples
+* branch            develop    -> FETCH_HEAD
+Already up to date.`;
+
+
+export const TEST_GIT_PULL_CONFLICT_OUTPUT = `From
+* branch            develop    -> FETCH_HEAD
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.`;
+
+export const TEST_GIT_PULL_NO_REMOTE_REF_OUTPUT = `fatal: couldn't find remote ref conflicting_234`;
+
+// NEED TO BE APPLIED TO TEST
+export const TEST_GIT_PULL_UNRESOLVED_MERGE_OUTPUT = `error: Pulling is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+fatal: Exiting because of an unresolved conflict.`;
+
+// NEED TO BE APPLIED TO TEST
+export const TEST_GIT_PULL_UNRESOLVED_MERGE_OUTPUT_2 = `error: You have not concluded your merge (MERGE_HEAD exists).
+hint: Please, commit your changes before merging.
+fatal: Exiting because of unfinished merge.`;
+
+
+export const TEST_GIT_GET_CURRENT_BRANCH_OUTPUT = `feature/iss/#440
+`;
+
 
 export const TEST_GH_VERSION_ONE_LINE_OUPUT = 'gh version 2.14.7 (2022-08-25)';
 

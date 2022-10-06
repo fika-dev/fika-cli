@@ -17,8 +17,8 @@ export const abortMergeCmd: GitCommand = {
 // applyStash(id: string): Promise<void>;
 // need one arg id
 export const applyStashCmd: GitCommand = {
-  command: "git stash apply",
-  windowsCommand: "git stash apply",
+  command: "stash apply",
+  windowsCommand: "stash apply",
   requiredArgument: true,
 };
 
@@ -125,7 +125,7 @@ export const gitInitCmd: GitCommand = {
 //  pullFrom(branchName: string): Promise<GitStatus>;
 // need one argument branchName and post treatment with catching errors
 export const pullFromCmd: GitCommand = {
-  command: "pull --no-ff origin ",
+  command: "pull --ff origin ",
   requiredArgument: true,
 };
 
