@@ -10,6 +10,7 @@ import { ValidationError } from "@/domain/rules/validation-rules/validation-rule
 import * as E from "fp-ts/Either";
 import { flow, pipe } from "fp-ts/function";
 import { ContextValueOrError, CmdOutputParser } from "../../context/git-context/git-context.types";
+import { OutputPattern, OutputPatterns } from "./parser.type";
 import {
   commandNotFound,
   errorPattern,
@@ -20,6 +21,7 @@ import {
   mergeConflictStatusPattern,
   noHeadDefined,
   noRemote,
+  pullOutputPatterns,
   stagedChangesPattern,
   unstagedChangePattern,
   untrackedFilesPattern,
@@ -30,10 +32,23 @@ const isPatternMatched = (pattern: string) => (result: string) => {
   const lowerCasePattern = pattern.toLowerCase();
   return lowerCaseResult.includes(lowerCasePattern) ? true : false;
 };
+
+const isResultMatchedWith = (result: string) => (outputPattern: OutputPattern) => {
+  const lowerCaseResult = result.toLowerCase();
+  const lowerCasePattern = outputPattern.pattern.toLowerCase();
+  return lowerCaseResult.includes(lowerCasePattern) ? true : false;
+};
+
+const isPatternMatchedInFront = (pattern: string) => (result: string) => {
+  const lowerCaseResult = result.toLowerCase();
+  const lowerCasePattern = pattern.toLowerCase();
+  return lowerCaseResult.startsWith(lowerCasePattern) ? true : false;
+};
 const trim = (result: string) => result.trim();
 const splitToList = (seperator: string) => (result: string) => result.split(seperator);
 const listMap = f => (inputList: any[]) => inputList.map(f);
 const listFilter = f => (inputList: any[]) => inputList.filter(f);
+const listFind = f => (inputList: any[]) => inputList.find(f);
 const keepOnlyTheFirstLine = (result: string) => result.split("\n")[0];
 
 export const isFeatureBranch = (issueBranchPattern: string) => (log: string) => {
@@ -119,10 +134,24 @@ export const parseBranches: CmdOutputParser = result => {
   );
 };
 
+export const parsePullOutput: CmdOutputParser = result => {
+  const found = pipe(pullOutputPatterns, listFind(isResultMatchedWith(result))) as
+    | OutputPattern
+    | undefined;
+  if (found) {
+    return found.value;
+  } else {
+    throw {
+      type: "NotMatchedPulltOutput",
+      value: result,
+    };
+  }
+};
+
 export const checkNoError: CmdOutputParser = result => {
   const errorPatterns = [errorPattern, fatalPattern];
   const isThereError = errorPatterns
-    .map(pattern => !isPatternMatched(pattern)(result))
+    .map(pattern => !isPatternMatchedInFront(pattern)(result))
     .every(v => v);
   return isThereError
     ? ({

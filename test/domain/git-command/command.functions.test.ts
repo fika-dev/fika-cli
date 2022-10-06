@@ -1,14 +1,15 @@
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
-import { checkoutToIssue, checkoutWithChanges, getLatestBranchByCommit, getRemoteOrigin } from "@/domain/git-command/command.functions";
+import { checkoutToIssue, checkoutWithChanges, getCurrentBranch, getLatestBranchByCommit, getRemoteOrigin, pullFrom } from "@/domain/git-command/command.functions";
 import { ExecuteGitCommand } from "@/domain/git-command/command.types";
-import { applyStashCmd, createBranchCmd, fetchCmd, getBranchesCmd, getRemoteBranchesCmd, getRemoteUrlCmd, stashCmd } from "@/domain/git-command/git-command.values";
+import { applyStashCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getRemoteBranchesCmd, getRemoteUrlCmd, pullFromCmd, stashCmd } from "@/domain/git-command/git-command.values";
+import { GitOutputStatus } from "@/domain/git-command/parser/parser.type";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import * as T from 'fp-ts/Task';
 import container from "src/config/ioc_config";
-import { TEST_BRANCH_SORTED, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_GIT_NO_REMOTE, TEST_GIT_STASH_APPLY_ERR, TEST_GIT_STASH_APPLY_NORMAL_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_HTTPS_GITHUB_REPO, TEST_ISSUE_BRANCH_TEMPLATE, TEST_NOT_LOCAL_BRANCH, TEST_NOT_LOCAL_BUT_REMOTE_BRANCH, TEST_REMOTE_BRANCHES, TEST_SSH_GITHUB_REPO } from "test/test-constants";
+import { TEST_BRANCH_SORTED, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_GIT_GET_CURRENT_BRANCH_OUTPUT, TEST_GIT_NO_REMOTE, TEST_GIT_PULL_CONFLICT_OUTPUT, TEST_GIT_PULL_NO_CHANGE_OUTPUT, TEST_GIT_PULL_NO_REMOTE_REF_OUTPUT, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_STASH_APPLY_ERR, TEST_GIT_STASH_APPLY_NORMAL_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_HTTPS_GITHUB_REPO, TEST_ISSUE_BRANCH_TEMPLATE, TEST_NOT_LOCAL_BRANCH, TEST_NOT_LOCAL_BUT_REMOTE_BRANCH, TEST_REMOTE_BRANCHES, TEST_SSH_GITHUB_REPO } from "test/test-constants";
 
 beforeAll(()=>{
-  jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
+  // jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
 });
 
 beforeEach(()=>{
@@ -38,7 +39,8 @@ test('1. getLatestBranchByCommit', async () => {
     const developBranch =  await getLatestBranchByCommit(mockExecuteGitCommandForError)(TEST_ISSUE_BRANCH_TEMPLATE);
   }catch(e){
     expect(e).toEqual({
-      type: "NoFeatureBranchInLocal",
+      type: "NoLocalFeatureBranch",
+      value: TEST_ISSUE_BRANCH_TEMPLATE
     });
   }
 });
@@ -278,9 +280,61 @@ test('4.3 checkoutToIssue with no local and remote error', async () => {
       branchName: TEST_NOT_LOCAL_BRANCH,
     });
   }catch(e){
-    expect(e.type).toBe("NoLocalAndRemoteBranch")
+    expect(e.type).toBe("NotExistingBranch")
     expect(hasCreateBranchCalled).toBe(false);
   }
 });
 
+test('5.1 pullFrom with updated', async () => {
+  const mock: ExecuteGitCommand = (gitCommand) => {
+    if (gitCommand.command === pullFromCmd.command){
+      return T.of(TEST_GIT_PULL_UPDATED_OUTPUT);
+    }
+  }
+  const status = await pullFrom(mock)('develop') as GitOutputStatus;
+  expect(status).toEqual('FF_UPDATED');
+});
 
+
+test('5.2 pullFrom with no remote', async () => {
+  const mock: ExecuteGitCommand = (gitCommand) => {
+    if (gitCommand.command === pullFromCmd.command){
+      return T.of(TEST_GIT_PULL_NO_REMOTE_REF_OUTPUT);
+    }
+  }
+  const status = await pullFrom(mock)('develop') as GitOutputStatus;
+  expect(status).toEqual('NO_REMOTE_REF');
+});
+
+test('5.3 pullFrom with conflict', async () => {
+  const mock: ExecuteGitCommand = (gitCommand) => {
+    if (gitCommand.command === pullFromCmd.command){
+      return T.of(TEST_GIT_PULL_CONFLICT_OUTPUT);
+    }
+  }
+  const status = await pullFrom(mock)('develop') as GitOutputStatus;
+  expect(status).toEqual('MERGE_CONFLICT');
+});
+
+test('5.4 pullFrom with no change', async () => {
+  const mock: ExecuteGitCommand = (gitCommand) => {
+    if (gitCommand.command === pullFromCmd.command){
+      return T.of(TEST_GIT_PULL_NO_CHANGE_OUTPUT);
+    }
+  }
+  const status = await pullFrom(mock)('develop') as GitOutputStatus;
+  expect(status).toEqual('NO_CHANGE');
+});
+  
+
+
+// jest test iterations for getCurrentBranch method
+test('6.1 getCurrentBranch', async () => {
+  const mock: ExecuteGitCommand = (gitCommand) => {
+    if (gitCommand.command === getCurrentBranchCmd.command){
+      return T.of(TEST_GIT_GET_CURRENT_BRANCH_OUTPUT);
+    }
+  }
+  const branch = await getCurrentBranch(mock)();
+  expect(branch).toBe(TEST_GIT_GET_CURRENT_BRANCH_OUTPUT.trim());
+});

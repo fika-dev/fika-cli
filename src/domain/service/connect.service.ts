@@ -366,7 +366,7 @@ export class ConnectService implements IConnectService {
         console.log(
           "🧪",
           " in ConnnectService: ",
-          " in getIssue: ",
+          " in getWorkspaceIssue: ",
           "error code: ",
           axiosError.code
         );

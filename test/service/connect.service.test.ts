@@ -5,7 +5,7 @@ import { IConfigService } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { Uuid } from "@/domain/value_object/uuid.vo";
-import { TEST_HTTPS_GITHUB_REPO, TEST_JIRA_WORKSPACE_ID, TEST_NOTION_WORKSPACE_ID, TEST_START_DOC_ID, TEST_START_DOC_JIRA_URL, TEST_START_ISSUE } from "test/test-constants";
+import { TEST_HTTPS_GITHUB_REPO, TEST_JIRA_WORKSPACE_ID, TEST_NOTION_WORKSPACE_ID, TEST_START_DOC_URL, TEST_START_DOC_JIRA_URL, TEST_START_ISSUE } from "test/test-constants";
 import { checkAndCloneRepo, createTestConfig, restoreGitRepo, setUseToken } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
@@ -59,7 +59,7 @@ describe("0. test connect workspace", () => {
 
 describe("1. test workspace issue", () => {
   it("1.1. test notion getIssue", async () => {
-    const issue = await connectService.getWorkspaceIssue(TEST_START_DOC_ID, new Uuid(TEST_NOTION_WORKSPACE_ID), 'notion');
+    const issue = await connectService.getWorkspaceIssue(TEST_START_DOC_URL, new Uuid(TEST_NOTION_WORKSPACE_ID), 'notion');
     expect(issue).toEqual({
       gitIssueUrl: undefined,
       issueUrl: 'https://www.notion.so/test-fika-start-doc-4af459df4efb448483fe3e2b703d50fd',

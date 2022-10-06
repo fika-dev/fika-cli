@@ -12,6 +12,10 @@ import fs from "fs";
 import path from "path";
 import { TEST_USER_CONFIG } from "test/test-constants";
 import { promisify } from 'util';
+import { ExecuteGitCommand } from "@/domain/git-command/command.types";
+import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
+
+const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
 
 export const clearTestFikaPath = (currentPath: string)=>{
   const fikaPath = currentPath + '/.fika';
@@ -164,3 +168,5 @@ export const sendPromptData = (line: string, delay = 0)=> {
       setTimeout(() => process.stdin.emit('data', `${line}\n`), delay);
   }
 }
+
+export const spyWithMock = (fn: ExecuteGitCommand) => jest.spyOn(commanderService, 'executeGitCommand').mockImplementation(fn);
