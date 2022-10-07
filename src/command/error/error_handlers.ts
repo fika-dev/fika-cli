@@ -9,7 +9,7 @@ export function errorHandler(e: any) {
     SERVICE_IDENTIFIER.ErrorHandlingService
   );
   if (!(e instanceof BaseException)) {
-    const unknownError = new UnknownError("UNKNOWN_ERROR", e.message);
+    const unknownError = new UnknownError("UNKNOWN_ERROR", `type: ${e.type}, value: ${e.value}`);
     errorHandlingService.handle(unknownError);
   } else {
     errorHandlingService.handle(e);
