@@ -11,5 +11,12 @@ export const getFikaIssue = async (gitRepoUrl: string, branchName: string): Prom
     configService.parseIssueNumber(branchName),
     gitRepoUrl
   );
-  return issue;
+  if (issue) {
+    return issue;
+  } else {
+    throw {
+      type: "IssueRecordNotFound",
+      value: branchName,
+    };
+  }
 };
