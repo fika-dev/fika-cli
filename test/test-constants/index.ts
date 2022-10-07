@@ -87,6 +87,15 @@ export const TEST_GIT_PULL_UNRESOLVED_MERGE_OUTPUT_2 = `error: You have not conc
 hint: Please, commit your changes before merging.
 fatal: Exiting because of unfinished merge.`;
 
+export const TEST_GIT_PUSH_OUTPUT = `Enumerating objects: 17, done.
+Counting objects: 100% (17/17), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (9/9), done.
+Writing objects: 100% (9/9), 1.02 KiB | 1.02 MiB/s, done.
+Total 9 (delta 7), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (7/7), completed with 7 local objects.
+To https://github.com/fika-dev/fika-cli.git
+   0c748be..5211e06  feature/iss/#442 -> feature/iss/#442`
 
 export const TEST_GIT_GET_CURRENT_BRANCH_OUTPUT = `feature/iss/#440
 `;

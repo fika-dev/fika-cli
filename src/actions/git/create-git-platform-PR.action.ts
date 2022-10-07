@@ -5,6 +5,8 @@ import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import BaseException from "@/domain/value_object/exceptions/base_exception";
+import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
+import { pushBranch } from "@/domain/git-command/command.functions";
 
 export const createGitPlatformPR = async (branchName: string, issue: Issue): Promise<Issue> => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
@@ -13,7 +15,8 @@ export const createGitPlatformPR = async (branchName: string, issue: Issue): Pro
     SERVICE_IDENTIFIER.GitPlatformService
   );
   const gitPlatformConfig = configService.getGitPlatformConfig();
-  await gitPlatformService.pushBranch(branchName);
+  const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
+  await pushBranch(commanderService.executeGitCommand)(branchName);
   gitPlatformService.configGitPlatform(gitPlatformConfig);
   try {
     const updatedIssue = await gitPlatformService.createPR(issue, branchName);
