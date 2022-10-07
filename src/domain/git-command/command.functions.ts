@@ -15,6 +15,7 @@ import {
   getCurrentBranchCmd,
   getGitCommandWithArgument,
   pullFromCmd,
+  pushBranchCmd,
   stashCmd,
 } from "@/domain/git-command/git-command.values";
 import {
@@ -208,4 +209,12 @@ export const getRemoteOrigin = (execute: ExecuteGitCommand) => async (): Promise
   } else {
     throw originOrError;
   }
+};
+
+export const pushBranch = (execute: ExecuteGitCommand) => async (branchName: string) => {
+  const createTackingBranchCmd = getGitCommandWithArgument(pushBranchCmd)("origin", branchName);
+  return await executeAndParseGitCommand(execute)({
+    command: createTackingBranchCmd,
+    parser: checkNoError,
+  })();
 };
