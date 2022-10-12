@@ -36,8 +36,7 @@ type GitErrorSubType =
   | "NoCurrentBranch"
   | "NoLocalFeatureBranch"
   | "NoBranchNameInIssueRecord"
-  | "GitErrorFailedToPull"
   | "ErrorMessageFound"
-  | "NotMatchedPulltOutput";
+  | "NotMatchedPullOutput";
 
 type BackendErrorSubType = "IssueRecordNotFound";

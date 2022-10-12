@@ -7,6 +7,7 @@ import { IPromptService } from "src/domain/service/i-prompt.service";
 
 import { ExecuteGitCommand } from "@/domain/git-command/command.types";
 import {
+  abortMergeCmd,
   applyStashCmd,
   checkoutCmd,
   createBranchCmd,
@@ -197,6 +198,7 @@ export const checkoutToIssue = (execute: ExecuteGitCommand) => async (issue: Iss
     throw {
       type: "GitError",
       subType: "NoBranchNameInIssueRecord",
+      value: issue.title,
     } as DomainError;
   }
 };
@@ -219,6 +221,13 @@ export const pushBranch = (execute: ExecuteGitCommand) => async (branchName: str
   const createTackingBranchCmd = getGitCommandWithArgument(pushBranchCmd)("origin", branchName);
   return await executeAndParseGitCommand(execute)({
     command: createTackingBranchCmd,
+    parser: checkNoError,
+  })();
+};
+
+export const abortMerge = (execute: ExecuteGitCommand) => async () => {
+  return await executeAndParseGitCommand(execute)({
+    command: abortMergeCmd,
     parser: checkNoError,
   })();
 };

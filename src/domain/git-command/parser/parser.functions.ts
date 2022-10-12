@@ -142,9 +142,9 @@ export const parsePullOutput: CmdOutputParser = result => {
   } else {
     throw {
       type: "GitError",
-      subType: "NotMatchedPulltOutput",
+      subType: "NotMatchedPullOutput",
       value: result,
-    };
+    } as DomainError;
   }
 };
 
