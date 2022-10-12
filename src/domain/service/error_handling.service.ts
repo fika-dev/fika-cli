@@ -14,7 +14,7 @@ import { IMessageService } from "./i_message.service";
 
 @injectable()
 export class ErrorHandlingService implements IErrorHandlingService {
-  handleError(exception: DomainError): void {
+  async handleError(exception: DomainError): Promise<void> {
     const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
     if (exception.type === "ValidationError") {
       messageService.showError({
@@ -51,20 +51,18 @@ export class ErrorHandlingService implements IErrorHandlingService {
           guideUrl:
             "https://fikadev.notion.site/GitErrorMergeConflict-1cd3cda89e0040a5a6791b9ebe61fa37",
         });
-        promptService
-          .confirmAction("Do you wanna resolve this conflict right now? (y or n)")
-          .then(answer => {
-            if (!answer) {
-              const commanderService = container.get<ICommanderService>(
-                SERVICE_IDENTIFIER.CommanderService
-              );
-              abortMerge(commanderService.executeGitCommand)().then(() => {
-                messageService.showSuccess("We canceled the merge process.");
-              });
-            } else {
-              messageService.showSuccess("Please resolve the conflict and run the command again.");
-            }
-          });
+        const answer = await promptService.confirmAction(
+          "Do you wanna resolve this conflict right now? (y or n)"
+        );
+        if (!answer) {
+          const commanderService = container.get<ICommanderService>(
+            SERVICE_IDENTIFIER.CommanderService
+          );
+          await abortMerge(commanderService.executeGitCommand)();
+          messageService.showSuccess("We canceled the merge process.");
+        } else {
+          messageService.showSuccess("Please resolve the conflict and run the command again.");
+        }
         return;
       }
       if (exception.subType === "NotExistingBranch") {
@@ -119,7 +117,7 @@ export class ErrorHandlingService implements IErrorHandlingService {
     }
     if (exception.type === "UserError") {
       if (exception.subType === "UserCancel") {
-        messageService.showSuccess("User canceled the process");
+        messageService.showSuccess("User canceled the process.");
         return;
       }
     }
