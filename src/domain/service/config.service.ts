@@ -29,7 +29,7 @@ export class ConfigService implements IConfigService {
 
   constructor(
     @inject(PARAMETER_IDENTIFIER.FikaPath) fikaPath: string,
-    @inject(PARAMETER_IDENTIFIER.GitRepoPath) localPath: string
+    @inject(PARAMETER_IDENTIFIER.ExcutedLocation) localPath: string
   ) {
     this.fikaPath = fikaPath;
     this.localPath = localPath;
