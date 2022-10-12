@@ -7,6 +7,7 @@ import { IPromptService } from "src/domain/service/i-prompt.service";
 
 import { ExecuteGitCommand } from "@/domain/git-command/command.types";
 import {
+  abortMergeCmd,
   applyStashCmd,
   checkoutCmd,
   createBranchCmd,
@@ -129,7 +130,8 @@ const _createTrackingBranchIfNeeded =
         await _createTrackingLocalBranch(execute)(branchName);
       } else {
         throw {
-          type: "NotExistingBranch",
+          type: "GitError",
+          subType: "NotExistingBranch",
           value: branchName,
         } as DomainError;
       }
@@ -152,7 +154,8 @@ export const getCurrentBranch = (execute: ExecuteGitCommand) => async () => {
     return branches[0];
   } else {
     throw {
-      type: "NoCurrentBranch",
+      type: "GitError",
+      subType: "NoCurrentBranch",
     };
   }
 };
@@ -171,7 +174,8 @@ export const getLatestBranchByCommit =
       return featureBranches[0];
     } else {
       throw {
-        type: "NoLocalFeatureBranch",
+        type: "GitError",
+        subType: "NoLocalFeatureBranch",
         value: featureBranchPattern,
       };
     }
@@ -192,7 +196,9 @@ export const checkoutToIssue = (execute: ExecuteGitCommand) => async (issue: Iss
     await checkoutWithChanges(execute)(issue.branchName);
   } else {
     throw {
-      type: "NoBranchNameInIssueRecord",
+      type: "GitError",
+      subType: "NoBranchNameInIssueRecord",
+      value: issue.title,
     } as DomainError;
   }
 };
@@ -215,6 +221,13 @@ export const pushBranch = (execute: ExecuteGitCommand) => async (branchName: str
   const createTackingBranchCmd = getGitCommandWithArgument(pushBranchCmd)("origin", branchName);
   return await executeAndParseGitCommand(execute)({
     command: createTackingBranchCmd,
+    parser: checkNoError,
+  })();
+};
+
+export const abortMerge = (execute: ExecuteGitCommand) => async () => {
+  return await executeAndParseGitCommand(execute)({
+    command: abortMergeCmd,
     parser: checkNoError,
   })();
 };

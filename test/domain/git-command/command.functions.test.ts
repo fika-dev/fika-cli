@@ -39,7 +39,8 @@ test('1. getLatestBranchByCommit', async () => {
     const developBranch =  await getLatestBranchByCommit(mockExecuteGitCommandForError)(TEST_ISSUE_BRANCH_TEMPLATE);
   }catch(e){
     expect(e).toEqual({
-      type: "NoLocalFeatureBranch",
+      type: "GitError",
+      subType: "NoLocalFeatureBranch",
       value: TEST_ISSUE_BRANCH_TEMPLATE
     });
   }
@@ -280,7 +281,7 @@ test('4.3 checkoutToIssue with no local and remote error', async () => {
       branchName: TEST_NOT_LOCAL_BRANCH,
     });
   }catch(e){
-    expect(e.type).toBe("NotExistingBranch")
+    expect(e.subType).toBe("NotExistingBranch")
     expect(hasCreateBranchCalled).toBe(false);
   }
 });

@@ -13,7 +13,8 @@ export const askToContinueWithUncommitedChanges = async () => {
     const proceed = await promptService.confirmAction(MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES);
     if (!proceed)
       throw {
-        type: "UserCancel",
+        type: "UserError",
+        subType: "UserCancel",
         value: "because of uncommited changes",
       };
   }

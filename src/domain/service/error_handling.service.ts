@@ -1,15 +1,152 @@
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
+import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
 import { injectable } from "inversify";
+import { DomainError } from "../general/general.types";
+import { abortMerge } from "../git-command/command.functions";
 import BaseException from "../value_object/exceptions/base_exception";
 import { NO_BASE_BRANCH_MESSAGE } from "../value_object/exceptions/no_base_branch.vo";
 import { NO_GIT_REMOTE_MESSAGE } from "../value_object/exceptions/no_git_remote.vo";
 import { WRONG_TAG_FORMAT } from "../value_object/exceptions/wrong_tag_format";
+import { IPromptService } from "./i-prompt.service";
 import { IErrorHandlingService } from "./i_error_handling.service";
 import { IMessageService } from "./i_message.service";
 
 @injectable()
 export class ErrorHandlingService implements IErrorHandlingService {
+  async handleError(exception: DomainError): Promise<void> {
+    const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
+    if (exception.type === "ValidationError") {
+      messageService.showError({
+        message: `Validation for a given value failed. ${exception.subType}: ${exception.value}`,
+        code: exception.subType,
+        guideUrl: "https://www.notion.so/fika/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
+      });
+      return;
+    }
+    if (exception.type === "GitError") {
+      if (exception.subType === "GitErrorNoRemoteBranch") {
+        messageService.showError({
+          message: `failed to pull because the ${exception.value} branch could not be found from remote`,
+          code: exception.subType,
+          guideUrl:
+            "https://fikadev.notion.site/GitErrorNoRemoteBranch-59ab604806c540ea81b48c2545098a57",
+        });
+        return;
+      }
+      if (exception.subType === "GitErrorFailedToPull") {
+        messageService.showError({
+          message: `failed to pull on the branch: ${exception.value}`,
+          code: exception.subType,
+          guideUrl:
+            "https://www.notion.so/fikadev/GitErrorFailedToPull-419a3e2819814c48b35af9a67beb51e6",
+        });
+        return;
+      }
+      if (exception.subType === "GitErrorMergeConflict") {
+        const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
+        messageService.showError({
+          message: "git pull has failed becaus of merge conflict to resolve manually",
+          code: exception.subType,
+          guideUrl:
+            "https://fikadev.notion.site/GitErrorMergeConflict-1cd3cda89e0040a5a6791b9ebe61fa37",
+        });
+        const answer = await promptService.confirmAction(
+          "Do you wanna resolve this conflict right now? (y or n)"
+        );
+        if (!answer) {
+          const commanderService = container.get<ICommanderService>(
+            SERVICE_IDENTIFIER.CommanderService
+          );
+          await abortMerge(commanderService.executeGitCommand)();
+          messageService.showSuccess("We canceled the merge process.");
+        } else {
+          messageService.showSuccess("Please resolve the conflict and run the command again.");
+        }
+        return;
+      }
+      if (exception.subType === "NotExistingBranch") {
+        messageService.showError({
+          message: `The branch: ${exception.value} does not exist`,
+          code: exception.subType,
+          guideUrl:
+            "https://fikadev.notion.site/NotExistingBranch-0328e27181164c5789a8fbed50c924e9",
+        });
+        return;
+      }
+      if (exception.subType === "NoCurrentBranch") {
+        messageService.showError({
+          message: "Can not find any branches from this repo\nPlease check your git status",
+          code: exception.subType,
+          guideUrl: "https://fikadev.notion.site/NoCurrentBranch-1318a1bdddaa40c4ad38fb5d9894a298",
+        });
+        return;
+      }
+      if (exception.subType === "NoLocalFeatureBranch") {
+        messageService.showError({
+          message: "Can not find any local feature branches from this repo",
+          code: exception.subType,
+          guideUrl:
+            "https://www.notion.so/fikadev/NoLocalFeatureBranch-91f8b7dcb88146cf8cc5fe9bc0bbf815",
+        });
+        return;
+      }
+      if (exception.subType === "NotMatchedPullOutput") {
+        messageService.showError({
+          message: `The output from git pull is not matched with any expected output\n${exception.value}`,
+          code: exception.subType,
+          guideUrl:
+            "https://www.notion.so/fikadev/NotMatchedPullOutput-1d16ad886bb348138e86812b22aed554",
+        });
+        return;
+      }
+      if (exception.subType === "ErrorMessageFound") {
+        messageService.showError({
+          message: `The output from git command contains error message\n${exception.value}`,
+          code: exception.subType,
+          guideUrl:
+            "https://www.notion.so/fikadev/ErrorMessageFound-c5f66fadbd4f439bb5a85c8353dda4e5",
+        });
+        return;
+      }
+      messageService.showError({
+        message: "Unknown Git Error",
+        code: exception.subType,
+      });
+      return;
+    }
+    if (exception.type === "UserError") {
+      if (exception.subType === "UserCancel") {
+        messageService.showSuccess("User canceled the process.");
+        return;
+      }
+    }
+    if (exception.type === "BackendError") {
+      if (exception.subType === "IssueRecordNotFound") {
+        messageService.showError({
+          message: `The issue with number: ${exception.value.issueNumber} has not found with the given repo ${exception.value.gitRepoUrl}`,
+          code: exception.subType,
+          guideUrl:
+            "https://www.notion.so/fikadev/IssueRecordNotFound-1427132e42c4468d86c996b2c5dfc8c0",
+        });
+        return;
+      }
+      if (exception.subType === "NoBranchNameInIssueRecord") {
+        messageService.showError({
+          message: `Branch name is empty from the issue record with the issue: ${exception.value}`,
+          code: exception.subType,
+          guideUrl:
+            "https://www.notion.so/fikadev/NoBranchNameInIssueRecord-99bb36772b734cd1907372eeca68d3dc",
+        });
+        return;
+      }
+      return;
+    }
+    messageService.showError({
+      message: "Unknown Error",
+      code: exception.type,
+    });
+  }
   handle(exception: BaseException): void {
     const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
     messageService.endWaiting();
@@ -17,13 +154,13 @@ export class ErrorHandlingService implements IErrorHandlingService {
       messageService.showError({
         message: `github client 에 로그인이 되지 않았습니다.\n\n gh auth login\n\n 으로 login 을 해주세요.`,
         code: exception.name,
-        guideUrl: "https://www.notion.so/haamki/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
+        guideUrl: "https://www.notion.so/fika/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
       });
     } else if (exception.name === "NO_GH_CLI") {
       messageService.showError({
         message: `github client 가 설치되지 않았습니다.\n설치 후 다시 시도해주세요.`,
         code: exception.name,
-        guideUrl: "https://www.notion.so/haamki/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
+        guideUrl: "https://www.notion.so/fika/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
       });
     } else if (exception.name === "GhPrAlreadyExists") {
       messageService.showWarning(
@@ -42,7 +179,7 @@ export class ErrorHandlingService implements IErrorHandlingService {
       messageService.showError({
         message: `Workspace is not connected. Please follow below guide.`,
         code: exception.name,
-        guideUrl: "https://www.notion.so/haamki/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
+        guideUrl: "https://www.notion.so/fika/Fika-fika-cli-ce7bcef95ec1498eaf98ff15e1c759a1",
       });
     } else if (exception.name === "WRONG_PROPERTY_TITLE_NAME") {
       messageService.showError({
