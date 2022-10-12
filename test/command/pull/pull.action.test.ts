@@ -113,7 +113,7 @@ test('3.test pullAction something wrong unknown reason', async () => {
     await pullAction();
     expect(true).toEqual(false);
   }catch(e){
-    expect(e.subType).toEqual('NotMatchedPulltOutput');
+    expect(e.subType).toEqual('NotMatchedPullOutput');
   }
 });
 

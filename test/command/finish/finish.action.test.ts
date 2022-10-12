@@ -123,7 +123,10 @@ test("2. finish from develop branch (after commit)", async ()=>{
     expect(true).toEqual(false);
   }catch(e){
     expect(e.subType).toEqual('IssueRecordNotFound');
-    expect(e.value).toEqual('develop');
+    expect(e.value).toEqual({
+      issueNumber: NaN,
+      gitRepoUrl: TEST_HTTPS_GITHUB_REPO.slice(0, -4)
+    });
   }
 })
 
