@@ -118,6 +118,8 @@ test('3.test pullAction something wrong unknown reason', async () => {
 });
 
 test('4.test pullAction continue with uncommited changes', async () => { 
+
+  
   spyWithMock((cmd) => {
     if(cmd.command === pullFromCmd.command){
       return T.of(TEST_GIT_PULL_UPDATED_OUTPUT);
