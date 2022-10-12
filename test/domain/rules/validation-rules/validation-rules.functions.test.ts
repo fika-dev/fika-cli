@@ -1,11 +1,10 @@
-import { checkContext } from "@/domain/context/context.functions";
 import { ExecuteCommand, ExecuteGitCommand } from "@/domain/git-command/command.types";
 import { getBranchesCmd } from "@/domain/git-command/git-command.values";
-import { ValidationError } from "@/domain/rules/validation-rules/validation-rule.types";
-import { isGitCleanStatus, isGitAndGhCliInstalled, existsLocalBranch } from "@/domain/rules/validation-rules/validation-rules.functions";
+
+import { existsLocalBranch, isGitAndGhCliInstalled, isGitCleanStatus } from "@/domain/rules/validation-rules/validation-rules.functions";
 import * as T from 'fp-ts/Task';
 import container from "src/config/ioc_config";
-import { TEST_BRANCH_LIST, TEST_GIT_CLEAN_STATUS, TEST_GIT_STATUS_STRING, TEST_HTTPS_GITHUB_REPO, TEST_GIT_VERSION_OUTPUT, TEST_NOT_INSTALLED, TEST_GH_VERSION_OUTPUT } from "test/test-constants";
+import { TEST_BRANCH_LIST, TEST_GIT_CLEAN_STATUS, TEST_GIT_STATUS_STRING, TEST_GIT_VERSION_OUTPUT, TEST_HTTPS_GITHUB_REPO, TEST_NOT_INSTALLED } from "test/test-constants";
 
 beforeAll(()=>{
   jest.spyOn(process.stdout, "write").mockImplementation(()=>true);

@@ -26,7 +26,7 @@ test('1. validateNumber', async () => {
   const nan = validateNumber(NaN);
   expect(E.isLeft(nan)).toEqual(true);
   assert.deepEqual(nan, E.left({
-    type: "NotNumberError", value: NaN 
+    type: "ValidationError",subType: "NotNumberError", value: NaN 
  }))
 });
 
@@ -37,7 +37,7 @@ test('2. validateIssueNumber', async () => {
   const undefinedIssueNumber = validateIssueNumber(undefined);
   expect(E.isLeft(undefinedIssueNumber)).toBe(true);
   assert.deepEqual(undefinedIssueNumber, E.left({
-    type: "NotIssueNumberError", value: undefined 
+    type: "ValidationError",subType: "NotIssueNumberError", value: undefined 
   }))
 });
 

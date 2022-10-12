@@ -72,7 +72,7 @@ test('7. checkCurrentBranch', async () => {
   const empty = checkCurrentBranch(TEST_HEAD_NOT_DEFINED);
   expect(empty).toEqual("Empty");
   const unvalidBranch = checkCurrentBranch('Somthing strange is here');
-  expect(unvalidBranch).toEqual({type: "NotBranchName", value: "Somthing strange is here"});
+  expect(unvalidBranch).toEqual({type: 'ValidationError',subType: "NotBranchName", value: "Somthing strange is here"});
 });
 
 test('8. parseBranches', async () => {
@@ -83,7 +83,7 @@ test('8. parseBranches', async () => {
   // const empty = parseBranches(TEST_HEAD_NOT_DEFINED);
   // expect(empty).toEqual("Empty");
   // const unvalidBranch = parseBranches('Somthing strange is here');
-  // expect(unvalidBranch).toEqual({type: "NotBranchName", value: "Somthing strange is here"});
+  // expect(unvalidBranch).toEqual({type: 'ValidationError',subType: "NotBranchName", value: "Somthing strange is here"});
 });
 
 test("9. checkGitVersion", async () => {
@@ -92,7 +92,7 @@ test("9. checkGitVersion", async () => {
   const notInstalled = checkGitVersion(TEST_NOT_INSTALLED);
   expect(notInstalled).toContain('NotInstalled');
   const emptyValue = checkGitVersion(' ');
-  expect(emptyValue).toEqual( { type: 'NotIncludingPattern', value: '' });
+  expect(emptyValue).toEqual( { type: 'ValidationError',subType: 'NotIncludingPattern', value: '' });
 });
 
 test("10. checkGhCliVersion", async () => {
@@ -103,7 +103,7 @@ test("10. checkGhCliVersion", async () => {
   const notInstalled = checkGhCliVersion(TEST_NOT_INSTALLED);
   expect(notInstalled).toContain('NotInstalled');
   const notInstalledFromRandomMessage = checkGhCliVersion(TEST_CPR_COMMIT_MESSAGE);
-  expect(notInstalledFromRandomMessage).toEqual({ type: 'NotIncludingPattern', value: '[add] meaningless white space' });
+  expect(notInstalledFromRandomMessage).toEqual({ type: 'ValidationError',subType: 'NotIncludingPattern', value: '[add] meaningless white space' });
   const emptyValue = checkGhCliVersion(' ');
-  expect(emptyValue).toEqual( { type: 'NotIncludingPattern', value: '' });
+  expect(emptyValue).toEqual( { type: 'ValidationError',subType: 'NotIncludingPattern', value: '' });
 });

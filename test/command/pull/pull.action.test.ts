@@ -70,7 +70,7 @@ test('2.test pullAction something wrong', async () => {
     await pullAction();
     expect(true).toEqual(false);
   }catch(e){
-    expect(e.type).toEqual('GitErrorMergeConflict');
+    expect(e.subType).toEqual('GitErrorMergeConflict');
   }
 });
 
@@ -92,7 +92,7 @@ test('2.test pullAction merge conflict', async () => {
     await pullAction();
     expect(true).toEqual(false);
   }catch(e){
-    expect(e.type).toEqual('GitErrorMergeConflict');
+    expect(e.subType).toEqual('GitErrorMergeConflict');
   }
 });
 
@@ -113,7 +113,7 @@ test('3.test pullAction something wrong unknown reason', async () => {
     await pullAction();
     expect(true).toEqual(false);
   }catch(e){
-    expect(e.type).toEqual('NotMatchedPulltOutput');
+    expect(e.subType).toEqual('NotMatchedPulltOutput');
   }
 });
 
@@ -155,6 +155,6 @@ test('5.test pullAction refuse to continue', async () => {
     await pullAction();
     expect(true).toEqual(false);
   }catch(e){
-    expect(e.type).toEqual('UserCancel');
+    expect(e.subType).toEqual('UserCancel');
   }
 });

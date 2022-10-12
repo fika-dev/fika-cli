@@ -129,7 +129,8 @@ const _createTrackingBranchIfNeeded =
         await _createTrackingLocalBranch(execute)(branchName);
       } else {
         throw {
-          type: "NotExistingBranch",
+          type: "GitError",
+          subType: "NotExistingBranch",
           value: branchName,
         } as DomainError;
       }
@@ -152,7 +153,8 @@ export const getCurrentBranch = (execute: ExecuteGitCommand) => async () => {
     return branches[0];
   } else {
     throw {
-      type: "NoCurrentBranch",
+      type: "GitError",
+      subType: "NoCurrentBranch",
     };
   }
 };
@@ -171,7 +173,8 @@ export const getLatestBranchByCommit =
       return featureBranches[0];
     } else {
       throw {
-        type: "NoLocalFeatureBranch",
+        type: "GitError",
+        subType: "NoLocalFeatureBranch",
         value: featureBranchPattern,
       };
     }
@@ -192,7 +195,8 @@ export const checkoutToIssue = (execute: ExecuteGitCommand) => async (issue: Iss
     await checkoutWithChanges(execute)(issue.branchName);
   } else {
     throw {
-      type: "NoBranchNameInIssueRecord",
+      type: "GitError",
+      subType: "NoBranchNameInIssueRecord",
     } as DomainError;
   }
 };

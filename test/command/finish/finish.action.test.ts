@@ -122,7 +122,7 @@ test("2. finish from develop branch (after commit)", async ()=>{
     await finishAction();
     expect(true).toEqual(false);
   }catch(e){
-    expect(e.type).toEqual('IssueRecordNotFound');
+    expect(e.subType).toEqual('IssueRecordNotFound');
     expect(e.value).toEqual('develop');
   }
 })
@@ -138,7 +138,7 @@ test("3. finish but there is a conflict after pulling", async ()=>{
     await finishAction();
     expect(true).toEqual(false);
   }catch(e){
-    expect(e.type).toEqual('GitErrorMergeConflict');
+    expect(e.subType).toEqual('GitErrorMergeConflict');
   }
 })
 

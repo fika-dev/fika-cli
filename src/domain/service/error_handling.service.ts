@@ -1,6 +1,7 @@
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
 import { injectable } from "inversify";
+import { DomainError } from "../general/general.types";
 import BaseException from "../value_object/exceptions/base_exception";
 import { NO_BASE_BRANCH_MESSAGE } from "../value_object/exceptions/no_base_branch.vo";
 import { NO_GIT_REMOTE_MESSAGE } from "../value_object/exceptions/no_git_remote.vo";
@@ -10,6 +11,9 @@ import { IMessageService } from "./i_message.service";
 
 @injectable()
 export class ErrorHandlingService implements IErrorHandlingService {
+  handleError(exception: DomainError): void {
+    throw exception;
+  }
   handle(exception: BaseException): void {
     const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
     messageService.endWaiting();
