@@ -25,7 +25,7 @@ export class GitPlatformService implements IGitPlatformService {
   private _gitPlatform: GitPlatform;
   constructor(
     @inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService,
-    @inject(PARAMETER_IDENTIFIER.ExcutedLocation) gitRepoPath: string
+    @inject(PARAMETER_IDENTIFIER.GitRepoPath) gitRepoPath: string
   ) {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
