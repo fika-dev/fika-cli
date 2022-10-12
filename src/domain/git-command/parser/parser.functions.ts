@@ -6,7 +6,6 @@ import {
   validateIncludeString,
   validateSshGithubAddress,
 } from "@/domain/rules/validation-rules/validate.functions";
-import { ValidationError } from "@/domain/rules/validation-rules/validation-rule.types";
 import * as E from "fp-ts/Either";
 import { flow, pipe } from "fp-ts/function";
 import { ContextValueOrError, CmdOutputParser } from "../../context/git-context/git-context.types";
@@ -73,7 +72,7 @@ export const checkRemoteOrigin: CmdOutputParser = result => {
     ),
     E.alt(() => validateHttpsGithubAddress(preprocessed)),
     E.alt(() => validateSshGithubAddress(preprocessed)),
-    E.getOrElse((e: ValidationError) => {
+    E.getOrElse((e: DomainError) => {
       return e as ContextValueOrError;
     })
   );
@@ -88,7 +87,7 @@ export const checkGitVersion: CmdOutputParser = result => {
       E.chain(_ => E.right("NotInstalled"))
     ),
     E.alt(() => validateIncludeString(existingGitVersion)(preprocessed)),
-    E.getOrElse((e: ValidationError) => {
+    E.getOrElse((e: DomainError) => {
       return e as ContextValueOrError;
     })
   );
@@ -103,7 +102,7 @@ export const checkGhCliVersion: CmdOutputParser = result => {
       E.chain(_ => E.right("NotInstalled"))
     ),
     E.alt(() => pipe(preprocessed, keepOnlyTheFirstLine, validateIncludeString(existingGhVersion))),
-    E.getOrElse((e: ValidationError) => {
+    E.getOrElse((e: DomainError) => {
       return e as ContextValueOrError;
     })
   );
@@ -118,7 +117,7 @@ export const checkCurrentBranch: CmdOutputParser = result => {
       E.chain(_ => E.right("Empty"))
     ),
     E.alt(() => validateBranchName(preprocessed)),
-    E.getOrElse((e: ValidationError) => {
+    E.getOrElse((e: DomainError) => {
       return e as ContextValueOrError;
     })
   );
@@ -142,9 +141,10 @@ export const parsePullOutput: CmdOutputParser = result => {
     return found.value;
   } else {
     throw {
-      type: "NotMatchedPulltOutput",
+      type: "GitError",
+      subType: "NotMatchedPullOutput",
       value: result,
-    };
+    } as DomainError;
   }
 };
 
@@ -155,7 +155,9 @@ export const checkNoError: CmdOutputParser = result => {
     .every(v => v);
   return isThereError
     ? ({
-        type: "ErrorMessageFound",
+        type: "GitError",
+        subType: "ErrorMessageFound",
+        value: result,
       } as DomainError)
     : true;
 };

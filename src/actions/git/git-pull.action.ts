@@ -19,17 +19,20 @@ export const gitPullAction = async (branchName: string): Promise<GitOutputStatus
     messageService.showSuccess(`nothing to update from origin ${branchName}`);
   } else if (gitStatus === "NO_REMOTE_REF") {
     throw {
-      type: "GitErrorNoRemoteBranch",
+      type: "GitError",
+      subType: "GitErrorNoRemoteBranch",
       value: branchName,
     };
   } else if (gitStatus === "MERGE_CONFLICT") {
     throw {
-      type: "GitErrorMergeConflict",
+      type: "GitError",
+      subType: "GitErrorMergeConflict",
       value: branchName,
     };
   } else {
     throw {
-      type: "GitErrorFailedToPull",
+      type: "GitError",
+      subType: "GitErrorFailedToPull",
       value: `branchName: ${branchName}, gitStatus: ${gitStatus}`,
     };
   }

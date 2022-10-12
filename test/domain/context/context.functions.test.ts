@@ -1,9 +1,6 @@
 import { checkContext } from "@/domain/context/context.functions";
-import { ContextValue } from "@/domain/context/context.types";
 import { DomainError } from "@/domain/general/general.types";
 import { ExecuteGitCommand } from "@/domain/git-command/command.types";
-import { ValidationError } from "@/domain/rules/validation-rules/validation-rule.types";
-import { pipe } from "fp-ts/lib/function";
 import * as T from 'fp-ts/Task';
 import container from "src/config/ioc_config";
 import { TEST_BRANCH_LIST, TEST_GIT_STATUS_STRING } from "test/test-constants";
@@ -45,7 +42,7 @@ test('1. checkContext', async () => {
     domain: 'git',
     field: 'currentBranch',
   })();
-  const shouldBeErrorAsError  = shouldBeError as ValidationError;
-  expect(shouldBeErrorAsError.type).toBe("NotBranchName");
+  const shouldBeErrorAsError  = shouldBeError as DomainError;
+  expect(shouldBeErrorAsError.subType).toBe("NotBranchName");
   expect(shouldBeErrorAsError.value).toBe("Somthing strange is here");
 });

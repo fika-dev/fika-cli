@@ -15,8 +15,12 @@ export const getFikaIssue = async (gitRepoUrl: string, branchName: string): Prom
     return issue;
   } else {
     throw {
-      type: "IssueRecordNotFound",
-      value: branchName,
+      type: "BackendError",
+      subType: "IssueRecordNotFound",
+      value: {
+        issueNumber: configService.parseIssueNumber(branchName),
+        gitRepoUrl: gitRepoUrl,
+      },
     };
   }
 };

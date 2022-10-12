@@ -1,5 +1,6 @@
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
+import { DomainError } from "@/domain/general/general.types";
 import { IErrorHandlingService } from "@/domain/service/i_error_handling.service";
 import BaseException from "@/domain/value_object/exceptions/base_exception";
 import { UnknownError } from "@/domain/value_object/exceptions/unknown_error";
@@ -9,8 +10,7 @@ export function errorHandler(e: any) {
     SERVICE_IDENTIFIER.ErrorHandlingService
   );
   if (!(e instanceof BaseException)) {
-    const unknownError = new UnknownError("UNKNOWN_ERROR", `type: ${e.type}, value: ${e.value}`);
-    errorHandlingService.handle(unknownError);
+    errorHandlingService.handleError(e as DomainError);
   } else {
     errorHandlingService.handle(e);
   }

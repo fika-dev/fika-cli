@@ -141,7 +141,7 @@ test('7. start an issue uncommitted changes from develop branch', async () => {
   try{
     await startAction(TEST_START_DOC_URL);
   }catch(e){
-    expect(e.type).toEqual('UserCancel');
+    expect(e.subType).toEqual('UserCancel');
     expect(spy).toHaveBeenCalledWith(MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES);
   }
 });
