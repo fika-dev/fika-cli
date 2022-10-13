@@ -1,3 +1,5 @@
+import "reflect-metadata";
+import { Container } from "inversify";
 import { getGitRepoPath } from "@/domain/git-command/command.functions";
 import { ConnectService } from "@/domain/service/connect.service";
 import { ErrorHandlingService } from "@/domain/service/error_handling.service";
@@ -8,8 +10,6 @@ import { PromptService } from "@/domain/service/prompt.service";
 import { CommanderService } from "@/infrastructure/services/implementation/commander.service";
 import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
 import dotenv from "dotenv";
-import { Container } from "inversify";
-import "reflect-metadata";
 import { AnalyzeService } from "src/domain/service/analyze.service";
 import { ConfigService } from "src/domain/service/config.service";
 import { GitPlatformService } from "src/domain/service/git_platform.service";
