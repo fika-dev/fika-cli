@@ -151,7 +151,7 @@ export const parsePullOutput: CmdOutputParser = result => {
 export const checkNoError: CmdOutputParser = result => {
   const errorPatterns = [errorPattern, fatalPattern];
   const isThereError = errorPatterns
-    .map(pattern => !isPatternMatchedInFront(pattern)(result))
+    .map(pattern => isPatternMatchedInFront(pattern)(result))
     .every(v => v);
   return isThereError
     ? ({
@@ -160,4 +160,18 @@ export const checkNoError: CmdOutputParser = result => {
         value: result,
       } as DomainError)
     : true;
+};
+
+export const checkNoErrorAndReturnOutput: CmdOutputParser = result => {
+  const errorPatterns = [errorPattern, fatalPattern];
+  const isThereError = errorPatterns
+    .map(pattern => isPatternMatchedInFront(pattern)(result))
+    .every(v => v);
+  return isThereError
+    ? ({
+        type: "GitError",
+        subType: "ErrorMessageFound",
+        value: result,
+      } as DomainError)
+    : result;
 };

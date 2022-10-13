@@ -29,7 +29,7 @@ const _checkoutFeatureBranchLegacy = async (issueNumber?: number) => {
 
   let featureBranch: string;
   if (issueNumber && !isNaN(issueNumber)) {
-    featureBranch = configService.getIssueBranch(issueNumber);
+    featureBranch = await configService.getIssueBranch(issueNumber);
   } else if (issueNumber && isNaN(issueNumber)) {
     messageService.showWarning("Could not understand your request, please provide a valid number");
     return;
@@ -53,7 +53,7 @@ const _checkoutFeatureBranchFunctional = async (issueNumber?: number) => {
   const execute = commanderService.executeGitCommand;
   if (issueNumber === undefined) {
     const branchName = await getLatestBranchByCommit(execute)(
-      configService.getIssueBranchPattern()
+      await configService.getIssueBranchPattern()
     );
     await checkoutWithChanges(execute)(branchName);
   } else {
@@ -66,20 +66,20 @@ const _checkoutFeatureBranchFunctional = async (issueNumber?: number) => {
     );
     const remoteOrigin = await getRemoteOrigin(execute)();
     const issue = await connectService.getIssueRecord(validIssueNumber, remoteOrigin);
-    const confirmedIssue = _checkIssueBranch(configService.getIssueBranch)(issue);
+    const confirmedIssue = await _checkIssueBranch(configService.getIssueBranch)(issue);
     await checkoutToIssue(execute)(confirmedIssue);
     messageService.showSuccess(`Checkout to branch: ${confirmedIssue.branchName}`);
   }
 };
 
 const _checkIssueBranch =
-  (getIssueBranch: (number: number) => string) =>
-  (issue: Issue): Issue => {
+  (getIssueBranch: (number: number) => Promise<string>) =>
+  async (issue: Issue): Promise<Issue> => {
     if (issue.branchName) {
       return issue;
     } else {
       const issueNumber = Issue.parseNumberFromUrl(issue.gitIssueUrl);
-      const branchName = getIssueBranch(issueNumber);
+      const branchName = await getIssueBranch(issueNumber);
       return {
         ...issue,
         branchName,

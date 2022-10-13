@@ -57,40 +57,6 @@ export const setUseToken = (token)=> {
 }
 
 
-
-export const readTestFikaConfig = (currentPath: string): Config=>{
-  const fikaConfigFilePath = currentPath + '/.fika/fika.config.json';
-  if (fikaConfigFilePath){
-    const configString = fs.readFileSync(fikaConfigFilePath, 'utf-8');
-    const config = JSON.parse(configString) as Config;
-    return config;
-  }else{
-    throw new Error("Fika config file path is not set");
-  }
-}
-
-export const readLocalConfig = (currentPath: string): LocalConfig=>{
-  const fikaConfigFilePath = path.join(currentPath, LOCAL_CONFIG_NAME);
-  if (fikaConfigFilePath){
-    const configString = fs.readFileSync(fikaConfigFilePath, 'utf-8');
-    const config = JSON.parse(configString) as LocalConfig;
-    return config;
-  }else{
-    throw new Error("Fika config file path is not set");
-  }
-}
-
-export const readTestSnapshot = (currentPath: string): SyncedSnapshot=>{
-  const fikaSnapshotFilePath = path.join(currentPath, FIKA_PATH, SNAPSHOT_FILE_NAME );
-  if (fikaSnapshotFilePath){
-    const snapshotString = fs.readFileSync(fikaSnapshotFilePath, 'utf-8');
-    const snapshot = JSON.parse(snapshotString) as SyncedSnapshot;
-    return snapshot;
-  }else{
-    throw new Error("Fika snapshot file path is not set");
-  }
-}
-
 export const restoreGitRepo = async (repoPath: string) =>{
   const execP =promisify(exec);
   const {stdout, stderr} = await execP(`git restore . && git clean -f`, { cwd: repoPath });

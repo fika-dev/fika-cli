@@ -1,17 +1,9 @@
-import { initAction } from "@/command/init/init.action";
-import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
-import { IPromptService } from "@/domain/service/i-prompt.service";
-import { IConfigService } from "@/domain/service/i_config.service";
-import { clearLocalConfig, clearTestFikaPath, readLocalConfig, sendPromptData } from "test/test-utils";
-import promptly from "promptly";
+import { IErrorHandlingService } from "@/domain/service/i_error_handling.service";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
-import { GitPlatformService } from "@/domain/service/git_platform.service";
-import { exec } from "child_process";
-import { promisify } from "util";
-import { IErrorHandlingService } from "@/domain/service/i_error_handling.service";
+import { clearLocalConfig, clearTestFikaPath } from "test/test-utils";
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 // jest.spyOn(process.stdout, 'write').mockImplementation(()=>true)
 

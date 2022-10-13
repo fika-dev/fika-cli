@@ -33,13 +33,8 @@ export class ConnectService implements IConnectService {
   private token: string | undefined;
   private domain: string;
   private axiosInstance: AxiosInstance;
-  private configService: IConfigService;
-  constructor(
-    @inject(PARAMETER_IDENTIFIER.Domain) domain: string,
-    @inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService
-  ) {
+  constructor(@inject(PARAMETER_IDENTIFIER.Domain) domain: string) {
     this.domain = domain;
-    this.configService = configService;
     this.axiosInstance = axios.create({
       baseURL: this.domain,
       timeout: 10000,

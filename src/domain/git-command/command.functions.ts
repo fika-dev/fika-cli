@@ -15,12 +15,14 @@ import {
   getBranchesCmd,
   getCurrentBranchCmd,
   getGitCommandWithArgument,
+  getGitRepoPathCmd,
   pullFromCmd,
   pushBranchCmd,
   stashCmd,
 } from "@/domain/git-command/git-command.values";
 import {
   checkNoError,
+  checkNoErrorAndReturnOutput,
   isFeatureBranch,
   parseBranches,
   parsePullOutput,
@@ -230,4 +232,12 @@ export const abortMerge = (execute: ExecuteGitCommand) => async () => {
     command: abortMergeCmd,
     parser: checkNoError,
   })();
+};
+
+export const getGitRepoPath = (execute: ExecuteGitCommand) => async (): Promise<string> => {
+  const repoPath = (await executeAndParseGitCommand(execute)({
+    command: getGitRepoPathCmd,
+    parser: checkNoErrorAndReturnOutput,
+  })()) as string;
+  return repoPath;
 };

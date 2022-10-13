@@ -2,7 +2,7 @@ import { checkoutFeatureBranchAction } from "@/command/checkout-feature-branch/c
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
 import { ExecuteGitCommand } from "@/domain/git-command/command.types";
-import { createBranchCmd, fetchCmd, getBranchesCmd, getRemoteBranchesCmd, getRemoteUrlCmd } from "@/domain/git-command/git-command.values";
+import { createBranchCmd, fetchCmd, getBranchesCmd, getGitRepoPathCmd, getRemoteBranchesCmd, getRemoteUrlCmd } from "@/domain/git-command/git-command.values";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";
@@ -11,17 +11,16 @@ import { IMessageService } from "@/domain/service/i_message.service";
 import { Uuid } from "@/domain/value_object/uuid.vo";
 import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
 import * as T from 'fp-ts/Task';
-import { TEST_BRANCH_SORTED, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_HTTPS_GITHUB_REPO, TEST_REMOTE_BRANCHES } from "test/test-constants";
+import { TEST_BRANCH_SORTED, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_GIT_REPO_PATH, TEST_HTTPS_GITHUB_REPO, TEST_REMOTE_BRANCHES } from "test/test-constants";
 import { checkAndCloneRepo, createTestConfig, restoreGitRepo, setUseToken } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
 const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
 
 beforeAll(async () => {
-  await checkAndCloneRepo();
-  createTestConfig(process.env.TESTING_PATH + "/.fika");
+  // await checkAndCloneRepo();
+  // createTestConfig(process.env.TESTING_PATH + "/.fika");
   setUseToken(process.env.TESTING_USER_TOKEN);
 });
 
@@ -107,11 +106,14 @@ it("2.test without number", async () => {
     }
     if (gitCommand.command === getRemoteUrlCmd.command){
       return T.of(TEST_HTTPS_GITHUB_REPO);
+    }if (gitCommand.command === getGitRepoPathCmd.command){
+      return T.of(process.env.TESTING_REPO_PATH);
     }
+    throw gitCommand;
   }
   jest.spyOn(commanderService, 'executeGitCommand').mockImplementation((cmd)=>mockExecuteWithChange(cmd));
   await checkoutFeatureBranchAction();
-  expect(checkoutBranch).toEqual(TEST_CPR_BRANCH_NAME)
+  expect(checkoutBranch).toEqual(TEST_CPR_BRANCH_NAME);
 })
 
 // it('5.test when the branch is NOT a number', async () => {

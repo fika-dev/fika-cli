@@ -4,7 +4,7 @@ import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import { MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES } from "@/config/constants/messages";
 import container from "@/config/ioc_config";
 import { GitCommand } from "@/domain/git-command/command.types";
-import { checkoutCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getRemoteBranchesCmd, pullFromCmd, statusCmd } from "@/domain/git-command/git-command.values";
+import { checkoutCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getGitRepoPathCmd, getRemoteBranchesCmd, pullFromCmd, statusCmd } from "@/domain/git-command/git-command.values";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";
@@ -14,7 +14,7 @@ import { WorkspaceNotConnected } from "@/domain/value_object/exceptions/workspac
 import { Uuid } from "@/domain/value_object/uuid.vo";
 import * as T from 'fp-ts/Task';
 import { TEST_BRANCH_LIST, TEST_GIT_CLEAN_STATUS, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_REMOTE_BRANCHES, TEST_STARTED_DOC_URL, TEST_START_DOC_URL } from "test/test-constants";
-import { createTestConfig, setUseToken, spyWithMock } from "test/test-utils";
+import { setUseToken, spyWithMock } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
@@ -42,13 +42,15 @@ const defaultMock = (additionalMock)=> (cmd: GitCommand) => {
       return T.of(TEST_REMOTE_BRANCHES);
     }if (cmd.command === fetchCmd.command){
       return T.of('');
+    }if (cmd.command === getGitRepoPathCmd.command){
+      return T.of(process.env.TESTING_REPO_PATH);
     }
     throw cmd;
   }
 }
 
 beforeAll(async () => {
-  createTestConfig(process.env.TESTING_PATH + "/.fika");
+  // createTestConfig(process.env.TESTING_PATH + "/.fika");
   setUseToken(process.env.TESTING_USER_TOKEN);
   jest.restoreAllMocks();
   jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});

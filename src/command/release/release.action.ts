@@ -19,7 +19,7 @@ export const releaseAction = async () => {
   await gitPlatformService.fetchFromRemote();
   await gitPlatformService.checkoutToBranchWithReset("release");
   await gitPlatformService.tagCommit("release", tag);
-  const issueBranchPattern = configService.getIssueBranchPattern();
+  const issueBranchPattern = await configService.getIssueBranchPattern();
   const issueWithPRList = await gitPlatformService.findDifferenceFromMaster(
     "release",
     issueBranchPattern

@@ -100,6 +100,8 @@ To https://github.com/fika-dev/fika-cli.git
 export const TEST_GIT_GET_CURRENT_BRANCH_OUTPUT = `feature/iss/#440
 `;
 
+export const TEST_GIT_REPO_PATH = "/Users/testuser/Fika/fika-cli";
+
 export const TEST_GIT_ABORT_MERGE_FAILED_OUTPUT = 'fatal: There is no merge to abort (MERGE_HEAD missing).';
 export const TEST_GET_ABORT_MERGE_SUCCESS_OUTPUT = 'Merge aborted successfully.';
 export const TEST_GH_VERSION_ONE_LINE_OUPUT = 'gh version 2.14.7 (2022-08-25)';

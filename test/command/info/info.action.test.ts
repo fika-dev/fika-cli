@@ -9,6 +9,7 @@ import { Uuid } from "@/domain/value_object/uuid.vo";
 import { TEST_CPR_BRANCH_NAME } from "test/test-constants";
 import { checkAndCloneRepo, createTestConfig, restoreGitRepo, setUseToken } from "test/test-utils";
 import { IConnectService } from "@/domain/service/i_connect.service";
+import { defaultLocalConfig } from "@/config/constants/default_config";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
@@ -53,6 +54,7 @@ afterAll(() => {
 it("1.test info on a issue branch", async () => {
     jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => 'https://github.com/tuxshido/repo');
     jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => 'feature/issue/133');
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
     jest.spyOn(connectService, 'getIssueRecord').mockImplementation(async () => {
         return {
             gitIssueUrl: 'https://some.thing',
@@ -68,6 +70,7 @@ it("1.test info on a issue branch", async () => {
 });
 
 it("2.test info message for the develop branch", async () => {
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
     jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => Promise.resolve('https://github.com/tuxshido/repo'));
     jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => Promise.resolve('develop'));
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
@@ -84,6 +87,7 @@ it("3.test info message for the release branch", async () => {
 });
 
 it("4.test info message for the main branch", async () => {
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
     jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => Promise.resolve('https://github.com/tuxshido/repo'));
     jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => Promise.resolve('master'));
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
@@ -102,6 +106,7 @@ it("5.test info message for a non-valid", async () => {
 });
 
 it("6.test info with testing server", async () => {
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
     await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
     await infoAction();
