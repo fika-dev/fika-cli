@@ -14,7 +14,7 @@ import { WorkspaceNotConnected } from "@/domain/value_object/exceptions/workspac
 import { Uuid } from "@/domain/value_object/uuid.vo";
 import * as T from 'fp-ts/Task';
 import { TEST_BRANCH_LIST, TEST_GIT_CLEAN_STATUS, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_REMOTE_BRANCHES, TEST_STARTED_DOC_URL, TEST_START_DOC_URL } from "test/test-constants";
-import { createTestConfig, setUseToken, spyWithMock } from "test/test-utils";
+import { setUseToken, spyWithMock } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
@@ -50,7 +50,7 @@ const defaultMock = (additionalMock)=> (cmd: GitCommand) => {
 }
 
 beforeAll(async () => {
-  createTestConfig(process.env.TESTING_PATH + "/.fika");
+  // createTestConfig(process.env.TESTING_PATH + "/.fika");
   setUseToken(process.env.TESTING_USER_TOKEN);
   jest.restoreAllMocks();
   jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});

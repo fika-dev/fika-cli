@@ -19,8 +19,8 @@ const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.Message
 const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
 
 beforeAll(async () => {
-  await checkAndCloneRepo();
-  createTestConfig(process.env.TESTING_PATH + "/.fika");
+  // await checkAndCloneRepo();
+  // createTestConfig(process.env.TESTING_PATH + "/.fika");
   setUseToken(process.env.TESTING_USER_TOKEN);
 });
 
