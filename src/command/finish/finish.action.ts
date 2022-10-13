@@ -8,7 +8,7 @@ import { IConfigService } from "src/domain/service/i_config.service";
 
 export const finishAction = async (baseBranch?: string) => {
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  const localConfig = configService.getLocalConfig();
+  const localConfig = await configService.getLocalConfig();
   const developBranch = baseBranch ? baseBranch : localConfig.branchNames.develop;
   await askToContinueWithUncommitedChanges();
   if (localConfig.finish.checkMergeConflict) {

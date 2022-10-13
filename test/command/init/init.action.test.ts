@@ -117,27 +117,10 @@ test('3. test prompt askBranchName', async () => {
 test('4. get local config before create', async () => { 
   clearLocalConfig(process.env.TESTING_REPO_PATH);
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  const config = configService.getLocalConfig();
+  const config = await configService.getLocalConfig();
   expect(config.branchNames.develop).toBe('develop');
 });
 
-test('5. create local config file', async () => { 
-  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  configService.createLocalConfig({ branchNames: { ...defaultLocalConfig.branchNames } });
-  const config = readLocalConfig(process.env.TESTING_REPO_PATH);
-  expect(config.branchNames.develop).toBe(defaultLocalConfig.branchNames.develop);
-});
-
-test('6. get local config after creation', async () => { 
-  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  configService.createLocalConfig({branchNames: {
-    develop: 'dev',
-    main: 'master',
-    release: 'release',
-  }});
-  const config = configService.getLocalConfig();
-  expect(config.branchNames.develop).toBe('dev');
-});
 
 test('7. test isThereRemoteUrl return false', async () => { 
   //const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);

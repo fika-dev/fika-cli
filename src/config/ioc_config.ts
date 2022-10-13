@@ -4,7 +4,7 @@ import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IErrorHandlingService } from "@/domain/service/i_error_handling.service";
 import { PromptService } from "@/domain/service/prompt.service";
 import dotenv from "dotenv";
-import { Container } from "inversify";
+import { Container, interfaces } from "inversify";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { AnalyzeService } from "src/domain/service/analyze.service";
 import { ConfigService } from "src/domain/service/config.service";
@@ -24,9 +24,12 @@ import { FIKA_PATH } from "./constants/path";
 import { fikaApiUrl } from "./constants/uri";
 import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
 import { CommanderService } from "@/infrastructure/services/implementation/commander.service";
+import { getGitRepoPath } from "@/domain/git-command/command.functions";
 
 dotenv.config();
 let container = new Container();
+
+export type GitRepoPathProvider = () => Promise<string>;
 
 container
   .bind<IAnalyzeService>(SERVICE_IDENTIFIER.AnalyzeService)
@@ -70,21 +73,29 @@ if (!process.env.FIKA_ENV) {
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(fikaApiUrl);
   const homePath = require("os").homedir();
   container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue(`${homePath}/${FIKA_PATH}`);
-  container.bind<string>(PARAMETER_IDENTIFIER.GitRepoPath).toConstantValue(process.cwd());
+  container.bind<string>(PARAMETER_IDENTIFIER.ExcutedPath).toConstantValue(process.cwd());
 } else if (process.env.FIKA_ENV === "production") {
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(fikaApiUrl);
   const homePath = require("os").homedir();
   container.bind<string>(PARAMETER_IDENTIFIER.FikaPath).toConstantValue(`${homePath}/${FIKA_PATH}`);
-  container.bind<string>(PARAMETER_IDENTIFIER.GitRepoPath).toConstantValue(process.cwd());
+  container.bind<string>(PARAMETER_IDENTIFIER.ExcutedPath).toConstantValue(process.cwd());
 } else if (process.env.FIKA_ENV === "test") {
   const apiAddress = process.env.TEST_API_ADDRESS;
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(apiAddress);
   container
-    .bind<string>(PARAMETER_IDENTIFIER.GitRepoPath)
+    .bind<string>(PARAMETER_IDENTIFIER.ExcutedPath)
     .toConstantValue(process.env.TESTING_REPO_PATH);
   container
     .bind<string>(PARAMETER_IDENTIFIER.FikaPath)
     .toConstantValue(`${process.env.TESTING_PATH}/${FIKA_PATH}`);
+  container
+    .bind<GitRepoPathProvider>(PARAMETER_IDENTIFIER.GitRepoPath)
+    .toProvider<string>(context => async () => {
+      const commanderService = context.container.get<ICommanderService>(
+        SERVICE_IDENTIFIER.CommanderService
+      );
+      return await getGitRepoPath(commanderService.executeGitCommand)();
+    });
 } else {
   const apiAddress = process.env.LOCAL_API_ADDRESS;
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(apiAddress);
@@ -92,7 +103,7 @@ if (!process.env.FIKA_ENV) {
     .bind<string>(PARAMETER_IDENTIFIER.FikaPath)
     .toConstantValue(`${process.env.TESTING_PATH}/${FIKA_PATH}`);
   container
-    .bind<string>(PARAMETER_IDENTIFIER.GitRepoPath)
+    .bind<string>(PARAMETER_IDENTIFIER.ExcutedPath)
     .toConstantValue(process.env.TESTING_REPO_PATH);
 }
 

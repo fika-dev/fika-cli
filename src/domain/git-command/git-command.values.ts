@@ -170,4 +170,8 @@ export const undoCommitAndModificationCmd: GitCommand = {
   command: "reset HEAD~ && git checkout -- .",
 };
 
+export const getGitRepoPathCmd: GitCommand = {
+  command: "rev-parse --show-toplevel",
+};
+
 export const getRemoteOriginCmd: GitCommand = getGitCommandWithArgument(getRemoteUrlCmd)("origin");

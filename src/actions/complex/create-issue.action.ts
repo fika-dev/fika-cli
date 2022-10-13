@@ -17,7 +17,7 @@ export const createIssue = async (documentUrl: string): Promise<Issue> => {
   messageService.showWaiting(`Creating Github issue of [${issue.title}]`);
   const updatedIssue = await createGitPlatformIssue(issue);
   const issueNumber = Issue.parseNumberFromUrl(updatedIssue.gitIssueUrl!);
-  const branchName = configService.getIssueBranch(issueNumber);
+  const branchName = await configService.getIssueBranch(issueNumber);
   const issueWithBranch: Issue = {
     ...updatedIssue,
     branchName,

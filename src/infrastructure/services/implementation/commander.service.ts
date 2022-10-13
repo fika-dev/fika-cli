@@ -7,7 +7,7 @@ import { ICommanderService } from "../interface/i_commander.service";
 @injectable()
 export class CommanderService implements ICommanderService {
   private _gitRepoPath: string;
-  constructor(@inject(PARAMETER_IDENTIFIER.GitRepoPath) gitRepoPath: string) {
+  constructor(@inject(PARAMETER_IDENTIFIER.ExcutedPath) gitRepoPath: string) {
     this._gitRepoPath = gitRepoPath;
   }
 

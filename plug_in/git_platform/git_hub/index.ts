@@ -72,7 +72,7 @@ export class GitHub extends GitPlatform {
 
   async createPR(issue: Issue, branchName: string, baseBranchName: string): Promise<Issue> {
     const labelOptions = issue.labels.join(" ");
-    const issueNumber = this.configService.parseIssueNumber(branchName);
+    const issueNumber = await this.configService.parseIssueNumber(branchName);
     try {
       const { stdout, stderr } = await this.execP(
         `gh pr create --base ${baseBranchName}  --title "${issue.title}" --body "Notion 다큐먼트: ${issue.issueUrl}\n 해결이슈: #${issueNumber}" --label "${labelOptions}" `

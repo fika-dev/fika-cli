@@ -25,7 +25,7 @@ export class GitPlatformService implements IGitPlatformService {
   private _gitPlatform: GitPlatform;
   constructor(
     @inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService,
-    @inject(PARAMETER_IDENTIFIER.GitRepoPath) gitRepoPath: string
+    @inject(PARAMETER_IDENTIFIER.ExcutedPath) gitRepoPath: string
   ) {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
@@ -137,7 +137,7 @@ export class GitPlatformService implements IGitPlatformService {
     return branchesText.split("\n").map(branch => branch.trim().replace("'", "").replace("'", ""));
   }
   async getLatestBranchByCommitDate(): Promise<string> {
-    const localConfig = this.configService.getLocalConfig();
+    const localConfig = await this.configService.getLocalConfig();
     const template = localConfig.branchNames.issueBranchTemplate;
     const branches = await this.getSortedBranchesByCommitDate();
     const filteredList = branches.filter(branch => this.isItAFeatureBranch(branch, template));
@@ -308,7 +308,7 @@ export class GitPlatformService implements IGitPlatformService {
     if (this._gitPlatform) {
       let baseBranchName: string;
       if (!baseBranch) {
-        baseBranchName = this.configService.getBaseBranch();
+        baseBranchName = await this.configService.getBaseBranch();
       } else {
         baseBranchName = baseBranch;
       }

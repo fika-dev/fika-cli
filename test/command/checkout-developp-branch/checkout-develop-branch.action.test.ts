@@ -55,13 +55,15 @@ it("2.test checkout-develop-branch if develop branch is an empty string", async 
     const localConfig = defaultLocalConfig;
     localConfig.branchNames.develop = "";
   const spy = jest.spyOn(messageService, 'showWarning').mockImplementation(()=>{});
+  jest.spyOn(configService, 'getLocalConfig').mockImplementation(()=>Promise.resolve(localConfig));
   await checkoutDevelopBranchAction();
   expect(spy).toBeCalledWith("Could not complete the action because your Fika config file does not contain any value for the develop branch.");
   });
 
 it("3.test checkout-develop-branch if develop branch is undefined", async () => {
-    const localConfig = defaultLocalConfig;
-    localConfig.branchNames.develop = undefined;
+  const localConfig = defaultLocalConfig;
+  localConfig.branchNames.develop = undefined;
+  jest.spyOn(configService, 'getLocalConfig').mockImplementation(()=>Promise.resolve(localConfig));
   const spy = jest.spyOn(messageService, 'showWarning').mockImplementation(()=>{});
   await checkoutDevelopBranchAction();
   expect(spy).toBeCalledWith("Could not complete the action because your Fika config file does not contain any value for the develop branch.");

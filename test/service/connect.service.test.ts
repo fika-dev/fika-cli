@@ -84,7 +84,7 @@ describe("2. test issue record", () => {
   const gitRepoUrl = TEST_HTTPS_GITHUB_REPO.replace('.git','');
   const issueNumber = 510;
   it("2.1. test createIssueRecord", async () => {
-    const branchName = configService.getIssueBranch(issueNumber);
+    const branchName = await configService.getIssueBranch(issueNumber);
     const issue = {...TEST_START_ISSUE, gitIssueUrl: `${gitRepoUrl}/issues/${issueNumber}`, branchName};
     await connectService.createIssueRecord(issue);
     const issueRecord = await connectService.getIssueRecord(Issue.parseNumberFromUrl(issue.gitIssueUrl), TEST_HTTPS_GITHUB_REPO.replace('.git',''));

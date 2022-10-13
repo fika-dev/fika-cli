@@ -25,7 +25,7 @@ export const startAction = async (documentUrl: string) => {
     messageService.showSuccess(`Checkout to branch: ${existingIssue.branchName!}`);
   } else {
     const currentBranch = await getCurrentBranch(commanderService.executeGitCommand)();
-    const localConfig = configService.getLocalConfig();
+    const localConfig = await configService.getLocalConfig();
     const isOKToProceed = await validateStartBranch(localConfig, currentBranch);
     if (!isOKToProceed) return;
     if (localConfig.start.pullBeforeAlways) {

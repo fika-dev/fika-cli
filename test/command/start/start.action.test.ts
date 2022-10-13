@@ -4,7 +4,7 @@ import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import { MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES } from "@/config/constants/messages";
 import container from "@/config/ioc_config";
 import { GitCommand } from "@/domain/git-command/command.types";
-import { checkoutCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getRemoteBranchesCmd, pullFromCmd, statusCmd } from "@/domain/git-command/git-command.values";
+import { checkoutCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getGitRepoPathCmd, getRemoteBranchesCmd, pullFromCmd, statusCmd } from "@/domain/git-command/git-command.values";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";
@@ -42,6 +42,8 @@ const defaultMock = (additionalMock)=> (cmd: GitCommand) => {
       return T.of(TEST_REMOTE_BRANCHES);
     }if (cmd.command === fetchCmd.command){
       return T.of('');
+    }if (cmd.command === getGitRepoPathCmd.command){
+      return T.of(process.env.TESTING_REPO_PATH);
     }
     throw cmd;
   }

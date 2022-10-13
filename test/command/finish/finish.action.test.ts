@@ -1,7 +1,7 @@
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
 import { GitCommand } from "@/domain/git-command/command.types";
-import { checkoutCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getRemoteBranchesCmd, getRemoteOriginCmd, pullFromCmd, pushBranchCmd, statusCmd } from "@/domain/git-command/git-command.values";
+import { checkoutCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getGitRepoPathCmd, getRemoteBranchesCmd, getRemoteOriginCmd, pullFromCmd, pushBranchCmd, statusCmd } from "@/domain/git-command/git-command.values";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
@@ -46,6 +46,8 @@ const defaultMock = (additionalMock)=> (cmd: GitCommand) => {
       return T.of(TEST_HTTPS_GITHUB_REPO);
     }if (cmd.command === pushBranchCmd.command){
       return T.of(TEST_GIT_PUSH_OUTPUT);
+    }if (cmd.command === getGitRepoPathCmd.command){
+      return T.of(process.env.TESTING_REPO_PATH);
     }
     throw cmd;
   }

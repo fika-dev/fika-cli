@@ -28,7 +28,7 @@ export const createPR = async (): Promise<void> => {
   const workspaceId = configService.getWorkspaceId();
   const workspaceType = configService.getWorkspaceType();
   await connectService.updateWorkspaceIssue(updatedIssue, workspaceId, workspaceType);
-  const issueNumber = configService.parseIssueNumber(branchName);
+  const issueNumber = await configService.parseIssueNumber(branchName);
   const prNumber = Issue.parseNumberFromUrl(updatedIssue.gitPrUrl);
   // [TODO] if base branch
   await connectService.createPullRequestRecord(gitRepoUrl, issue.issueUrl, issueNumber, prNumber);
