@@ -50,7 +50,6 @@ export class ConfigService implements IConfigService {
       return this.localConfig;
     } else {
       const copiedLocalConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
-      this.createLocalConfig(copiedLocalConfig);
       return copiedLocalConfig;
     }
   }
