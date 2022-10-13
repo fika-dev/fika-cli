@@ -70,6 +70,7 @@ test('2. get main, develop and release branch after initialiase', async () => {
   const commitSpy =  jest.spyOn(gitPlatformService, 'commitWithMessage').mockImplementation(()=>undefined);
   const pushSpy =  jest.spyOn(gitPlatformService, 'pushBranchWithUpstream').mockImplementation(()=>undefined);
   jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
+  jest.spyOn(configService, 'createLocalConfig').mockImplementation(async () => undefined);
   jest.spyOn(promptly, 'prompt').mockImplementation(async (data) => {
     if (data.includes("develop")) {
       return 'test_develop'
