@@ -1,8 +1,8 @@
 {
   "branchNames": {
-    "develop": "develop",
-    "main": "master",
-    "release": "release",
+    "develop": "main",
+    "main": "main",
+    "release": "main",
     "issueBranchTemplate": "feature/iss/#<ISSUE_NUMBER>"
   },
   "start": {
