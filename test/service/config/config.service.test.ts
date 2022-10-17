@@ -1,13 +1,17 @@
-import { defaultConfig } from "@/config/constants/default_config";
+import { defaultConfig, defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
+import { LOCAL_CONFIG_NAME } from "@/config/constants/path";
+import { getGitRepoPathCmd } from "@/domain/git-command/git-command.values";
 import { IConfigService } from "@/domain/service/i_config.service";
 import BaseException from "@/domain/value_object/exceptions/base_exception";
+import * as T from "fp-ts/Task";
 import fs from "fs";
+import path from "path";
 import container from "src/config/ioc_config";
-import { OLD_TEST_CONFIG, TEST_NOTION_WORKSPACE_ID, TEST_USER_CONFIG } from "test/test-constants";
+import { OLD_TEST_CONFIG, TEST_GIT_REPO_PATH, TEST_NOTION_WORKSPACE_ID, TEST_USER_CONFIG } from "test/test-constants";
+import { spyWithMock } from "test/test-utils";
 
-
-
+const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
 beforeAll(()=>{
   jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
 });
@@ -22,7 +26,6 @@ afterEach(()=>{
 
 
 test('1. when there is old workspace', async () => {
-  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   jest.spyOn(fs, "readFileSync").mockImplementation((_)=>{
     return OLD_TEST_CONFIG;
   });
@@ -39,7 +42,6 @@ test('1. when there is old workspace', async () => {
 });
 
 test('2. when it is new workspace', async () => {
-  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   jest.spyOn(fs, "readFileSync").mockImplementation((_)=>{
     return JSON.stringify(TEST_USER_CONFIG);
   });
@@ -58,7 +60,6 @@ test('3. when there was no config file', async () => {
   jest.spyOn(fs, "readFileSync").mockImplementation((_)=>{
     return JSON.stringify(defaultConfig);
   });
-  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
   let errorName;
   let workspaceId;
   configService.readConfig();
@@ -71,3 +72,45 @@ test('3. when there was no config file', async () => {
   expect(errorName).toEqual("WORKSPACE_NOT_CONNECTED");
   
 });
+
+test('4. git repo path', async () => {
+  jest.resetAllMocks();
+  spyWithMock((cmd)=>{
+    if (cmd.command === getGitRepoPathCmd.command){
+      return T.of(TEST_GIT_REPO_PATH);
+    }
+    throw Error("not implemented");;
+  })
+  jest.spyOn(fs, "existsSync").mockImplementation((_)=>{
+    return true;
+  });
+  jest.spyOn(fs, "mkdirSync").mockImplementation((_)=>{
+    return undefined;  
+  });
+  const spy = jest.spyOn(fs, "readFileSync").mockImplementation((_)=>{
+    return JSON.stringify(defaultLocalConfig);
+  });
+  jest.spyOn(fs, "writeFileSync").mockImplementation((_, data)=>undefined);
+  jest.spyOn(configService, "readConfig").mockImplementation(()=>defaultConfig);
+  await configService.getLocalConfig();
+  expect(spy).toBeCalledWith(path.join(TEST_GIT_REPO_PATH,LOCAL_CONFIG_NAME), "utf-8");
+});
+
+
+// test('5. create local config file', async () => {
+//   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
+//   await configService.createLocalConfig({ branchNames: { ...defaultLocalConfig.branchNames } });
+//   const config = readLocalConfig(process.env.TESTING_REPO_PATH);
+//   expect(config.branchNames.develop).toBe(defaultLocalConfig.branchNames.develop);
+// });
+
+// test('6. get local config after creation', async () => { 
+//   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
+//   await configService.createLocalConfig({branchNames: {
+//     develop: 'dev',
+//     main: 'master',
+//     release: 'release',
+//   }});
+//   const config = await configService.getLocalConfig();
+//   expect(config.branchNames.develop).toBe('dev');
+// });

@@ -2,12 +2,13 @@ import { initAction } from "@/command/init/init.action";
 import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
-import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import promptly from "promptly";
-import { clearLocalConfig, clearTestFikaPath, readLocalConfig, restoreGitRepo } from "test/test-utils";
+import { clearLocalConfig, clearTestFikaPath, restoreGitRepo } from "test/test-utils";
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
+const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
 // jest.spyOn(process.stdout, 'write').mockImplementation(()=>true)
 
 afterEach(()=>{
@@ -68,6 +69,8 @@ test('2. get main, develop and release branch after initialiase', async () => {
   const stageSpy = jest.spyOn(gitPlatformService, 'stageAllChanges').mockImplementation(()=>undefined);
   const commitSpy =  jest.spyOn(gitPlatformService, 'commitWithMessage').mockImplementation(()=>undefined);
   const pushSpy =  jest.spyOn(gitPlatformService, 'pushBranchWithUpstream').mockImplementation(()=>undefined);
+  jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
+  jest.spyOn(configService, 'createLocalConfig').mockImplementation(async () => undefined);
   jest.spyOn(promptly, 'prompt').mockImplementation(async (data) => {
     if (data.includes("develop")) {
       return 'test_develop'
@@ -114,33 +117,10 @@ test('3. test prompt askBranchName', async () => {
   expect(correctMessage).toEqual(true);
 });
 
-test('4. get local config before create', async () => { 
-  clearLocalConfig(process.env.TESTING_REPO_PATH);
-  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  const config = configService.getLocalConfig();
-  expect(config.branchNames.develop).toBe('develop');
-});
-
-test('5. create local config file', async () => { 
-  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  configService.createLocalConfig({ branchNames: { ...defaultLocalConfig.branchNames } });
-  const config = readLocalConfig(process.env.TESTING_REPO_PATH);
-  expect(config.branchNames.develop).toBe(defaultLocalConfig.branchNames.develop);
-});
-
-test('6. get local config after creation', async () => { 
-  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  configService.createLocalConfig({branchNames: {
-    develop: 'dev',
-    main: 'master',
-    release: 'release',
-  }});
-  const config = configService.getLocalConfig();
-  expect(config.branchNames.develop).toBe('dev');
-});
 
 test('7. test isThereRemoteUrl return false', async () => { 
   //const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
+  jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
   const gitPlatformService = container.get<IGitPlatformService>(
     SERVICE_IDENTIFIER.GitPlatformService
   );

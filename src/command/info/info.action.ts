@@ -14,7 +14,7 @@ export const infoAction = async () => {
   //const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  const localConfig = configService.getLocalConfig();
+  const localConfig = await configService.getLocalConfig();
   const repoUrl = await gitPlatformService.getGitRepoUrl();
   const currentBranch = await gitPlatformService.getBranchName();
   if (
@@ -22,7 +22,7 @@ export const infoAction = async () => {
     currentBranch !== localConfig.branchNames.release &&
     currentBranch !== localConfig.branchNames.main
   ) {
-    const branchNumber = configService.parseIssueNumber(currentBranch);
+    const branchNumber = await configService.parseIssueNumber(currentBranch);
     const issue = await connectService.getIssueRecord(branchNumber, repoUrl);
     if (issue) {
       messageService.showSuccess(

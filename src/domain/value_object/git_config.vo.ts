@@ -1,3 +1,5 @@
+import { issueNumberTag } from "@/config/constants/default_config";
+
 export class GitConfig {
   baseBranch: string;
   issueBranchTemplate: string;
@@ -7,5 +9,5 @@ export class GitConfig {
   static getIssueBranch = (issueNumber: string, issueBranchTemplate: string) => {
     return issueBranchTemplate.replace(GitConfig.issueNumberTag, issueNumber);
   };
-  static issueNumberTag: string = "<ISSUE_NUMBER>";
+  static issueNumberTag: string = issueNumberTag;
 }

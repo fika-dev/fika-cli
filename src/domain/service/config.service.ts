@@ -1,8 +1,13 @@
 import { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
+import container, { GitRepoPathProvider } from "@/config/ioc_config";
 import fs from "fs";
 import { inject, injectable } from "inversify";
 import path from "path";
-import { defaultConfig, defaultLocalConfig } from "src/config/constants/default_config";
+import {
+  defaultConfig,
+  defaultLocalConfig,
+  issueNumberTag,
+} from "src/config/constants/default_config";
 import { CONFIG_FILE_NAME, LOCAL_CONFIG_NAME } from "src/config/constants/path";
 import { version } from "../../../package.json";
 import { AddOnType } from "../entity/add_on/add_on.entity";
@@ -21,14 +26,9 @@ export class ConfigService implements IConfigService {
   private localConfig: LocalConfig;
   private fikaConfigFilePath?: string;
   private fikaPath: string;
-  private localPath: string;
 
-  constructor(
-    @inject(PARAMETER_IDENTIFIER.FikaPath) fikaPath: string,
-    @inject(PARAMETER_IDENTIFIER.GitRepoPath) localPath: string
-  ) {
+  constructor(@inject(PARAMETER_IDENTIFIER.FikaPath) fikaPath: string) {
     this.fikaPath = fikaPath;
-    this.localPath = localPath;
     this.readConfig();
   }
   getWorkspaceType(): WorkspaceType {
@@ -39,41 +39,46 @@ export class ConfigService implements IConfigService {
       throw new WorkspaceNotConnected("WORKSPACE_NOT_CONNECTED");
     }
   }
-  getLocalConfig(): LocalConfig {
-    const localConfigFilePath = path.join(this.localPath, LOCAL_CONFIG_NAME);
+  async getLocalConfig(): Promise<LocalConfig> {
+    const gitRepoPath = await container.get<GitRepoPathProvider>(
+      PARAMETER_IDENTIFIER.GitRepoPath
+    )();
+    const localConfigFilePath = path.join(gitRepoPath, LOCAL_CONFIG_NAME);
     if (fs.existsSync(localConfigFilePath)) {
       const configString = fs.readFileSync(localConfigFilePath, "utf-8");
       this.localConfig = JSON.parse(configString) as LocalConfig;
       return this.localConfig;
     } else {
       const copiedLocalConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
-      this.createLocalConfig({ branchNames: copiedLocalConfig.branchNames });
       return copiedLocalConfig;
     }
   }
-  createLocalConfig(initialConfigInput: InitialConfigInput): void {
+  async createLocalConfig(initialConfigInput: InitialConfigInput): Promise<void> {
+    const gitRepoPath = await container.get<GitRepoPathProvider>(
+      PARAMETER_IDENTIFIER.GitRepoPath
+    )();
     const localConfig: LocalConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
     localConfig.branchNames = {
       ...initialConfigInput.branchNames,
       issueBranchTemplate: localConfig.branchNames.issueBranchTemplate,
     };
-    this._createConfig(this.localPath, LOCAL_CONFIG_NAME, localConfig);
+    this._createConfig(gitRepoPath, LOCAL_CONFIG_NAME, localConfig);
     this.localConfig = localConfig;
   }
   filterFromCandidates(filterIn: string[], candidates: string[]) {
     return filterIn.filter(item => candidates.includes(item));
   }
-  getIssueBranchPattern(): string {
+  async getIssueBranchPattern(): Promise<string> {
     if (!this.localConfig) {
-      this.localConfig = this.getLocalConfig();
+      this.localConfig = await this.getLocalConfig();
     }
     return this.localConfig.branchNames.issueBranchTemplate;
   }
-  parseIssueNumber(branch: string): number {
+  async parseIssueNumber(branch: string): Promise<number> {
     if (!this.localConfig) {
-      this.localConfig = this.getLocalConfig();
+      this.localConfig = await this.getLocalConfig();
     }
-    const fragments = this.localConfig.branchNames.issueBranchTemplate.split("<ISSUE_NUMBER>");
+    const fragments = this.localConfig.branchNames.issueBranchTemplate.split(issueNumberTag);
     if (fragments.length == 1) {
       return parseInt(branch.replace(fragments[0], ""));
     } else {
@@ -83,15 +88,15 @@ export class ConfigService implements IConfigService {
   getFikaVersion(): string {
     return version;
   }
-  getBaseBranch(): string {
+  async getBaseBranch(): Promise<string> {
     if (!this.localConfig) {
-      this.localConfig = this.getLocalConfig();
+      this.localConfig = await this.getLocalConfig();
     }
     return this.localConfig.branchNames.develop;
   }
-  getIssueBranch(issueNumber: number): string {
+  async getIssueBranch(issueNumber: number): Promise<string> {
     if (!this.localConfig) {
-      this.localConfig = this.getLocalConfig();
+      this.localConfig = await this.getLocalConfig();
     }
     const branchTemplate = this.localConfig.branchNames.issueBranchTemplate;
     const isValidTemplate = GitConfig.validateIssueBranch(branchTemplate);

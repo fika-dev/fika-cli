@@ -7,9 +7,18 @@ import { IConnectService } from "@/domain/service/i_connect.service";
 export const getFikaIssue = async (gitRepoUrl: string, branchName: string): Promise<Issue> => {
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  const issue = await connectService.getIssueRecord(
-    configService.parseIssueNumber(branchName),
-    gitRepoUrl
-  );
-  return issue;
+  const issueNumber = await configService.parseIssueNumber(branchName);
+  const issue = await connectService.getIssueRecord(issueNumber, gitRepoUrl);
+  if (issue) {
+    return issue;
+  } else {
+    throw {
+      type: "BackendError",
+      subType: "IssueRecordNotFound",
+      value: {
+        issueNumber: issueNumber,
+        gitRepoUrl: gitRepoUrl,
+      },
+    };
+  }
 };

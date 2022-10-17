@@ -2,13 +2,13 @@ import { checkoutDevelopBranchAction } from "@/command/checkout-develop/checkout
 import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
-import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import { Uuid } from "@/domain/value_object/uuid.vo";
 import { TEST_CPR_BRANCH_NAME } from "test/test-constants";
-import { checkAndCloneRepo, createTestConfig, restoreGitRepo, setUseToken } from "test/test-utils";
+import { restoreGitRepo } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
@@ -16,9 +16,9 @@ const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigSer
 const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
 
 beforeAll(async () => {
-  await checkAndCloneRepo();
-  createTestConfig(process.env.TESTING_PATH + "/.fika");
-  setUseToken(process.env.TESTING_USER_TOKEN);
+  // await checkAndCloneRepo();
+  // createTestConfig(process.env.TESTING_PATH + "/.fika");
+  // setUseToken(process.env.TESTING_USER_TOKEN);
 });
 
 beforeEach(async()=>{
@@ -42,12 +42,10 @@ afterAll(() => {
 });
 
 it("1.test checkout-develop-branch if develop was set", async () => {
-  
-    const localConfig = defaultLocalConfig;
-  localConfig.branchNames.develop = "develop";
+  jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
   await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
-    await checkoutDevelopBranchAction();
-    const currentBranch = await gitPlatformService.getBranchName();
+  await checkoutDevelopBranchAction();
+  const currentBranch = await gitPlatformService.getBranchName();
   expect(currentBranch).toBe("develop");
 });
 
@@ -55,13 +53,15 @@ it("2.test checkout-develop-branch if develop branch is an empty string", async 
     const localConfig = defaultLocalConfig;
     localConfig.branchNames.develop = "";
   const spy = jest.spyOn(messageService, 'showWarning').mockImplementation(()=>{});
+  jest.spyOn(configService, 'getLocalConfig').mockImplementation(()=>Promise.resolve(localConfig));
   await checkoutDevelopBranchAction();
   expect(spy).toBeCalledWith("Could not complete the action because your Fika config file does not contain any value for the develop branch.");
   });
 
 it("3.test checkout-develop-branch if develop branch is undefined", async () => {
-    const localConfig = defaultLocalConfig;
-    localConfig.branchNames.develop = undefined;
+  const localConfig = defaultLocalConfig;
+  localConfig.branchNames.develop = undefined;
+  jest.spyOn(configService, 'getLocalConfig').mockImplementation(()=>Promise.resolve(localConfig));
   const spy = jest.spyOn(messageService, 'showWarning').mockImplementation(()=>{});
   await checkoutDevelopBranchAction();
   expect(spy).toBeCalledWith("Could not complete the action because your Fika config file does not contain any value for the develop branch.");

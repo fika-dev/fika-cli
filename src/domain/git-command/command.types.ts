@@ -7,9 +7,12 @@ export interface Command {
   command: MainCommand;
   windowsCommand?: MainCommand;
   argument?: string;
+  requiredArgument?: boolean;
 }
 
 export interface GitCommand extends Command {}
+
+export type GitCommandWithArguments = (cmd: GitCommand) => (...params: string[]) => GitCommand;
 
 export type CommandOutput = string;
 export type GitCommandOutput = CommandOutput;

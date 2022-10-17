@@ -46,7 +46,7 @@ export const initAction = async () => {
     release: releaseBranchName,
     issueBranchTemplate: initialConfig.branchNames.issueBranchTemplate,
   };
-  configService.createLocalConfig(initialConfig);
+  await configService.createLocalConfig(initialConfig);
   await gitPlatformService.stageAllChanges();
   await gitPlatformService.commitWithMessage("Add .fikarc for fika configuration");
   await initFixedBranch(mainBranchName);

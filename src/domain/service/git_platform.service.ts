@@ -14,6 +14,7 @@ import { NothingToCommit } from "../value_object/exceptions/nothing_to_commit";
 import { NoRemoteBranch } from "../value_object/exceptions/no_remote_branch";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
+import { issueNumberTag } from "@/config/constants/default_config";
 
 export type GitStatus = "UPDATED" | "REMOTE_CONFLICT" | "NO_CHANGE" | "NO_REMOTE_BRANCH";
 
@@ -24,7 +25,7 @@ export class GitPlatformService implements IGitPlatformService {
   private _gitPlatform: GitPlatform;
   constructor(
     @inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService,
-    @inject(PARAMETER_IDENTIFIER.GitRepoPath) gitRepoPath: string
+    @inject(PARAMETER_IDENTIFIER.ExcutedPath) gitRepoPath: string
   ) {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
@@ -136,7 +137,7 @@ export class GitPlatformService implements IGitPlatformService {
     return branchesText.split("\n").map(branch => branch.trim().replace("'", "").replace("'", ""));
   }
   async getLatestBranchByCommitDate(): Promise<string> {
-    const localConfig = this.configService.getLocalConfig();
+    const localConfig = await this.configService.getLocalConfig();
     const template = localConfig.branchNames.issueBranchTemplate;
     const branches = await this.getSortedBranchesByCommitDate();
     const filteredList = branches.filter(branch => this.isItAFeatureBranch(branch, template));
@@ -307,7 +308,7 @@ export class GitPlatformService implements IGitPlatformService {
     if (this._gitPlatform) {
       let baseBranchName: string;
       if (!baseBranch) {
-        baseBranchName = this.configService.getBaseBranch();
+        baseBranchName = await this.configService.getBaseBranch();
       } else {
         baseBranchName = baseBranch;
       }
@@ -318,7 +319,7 @@ export class GitPlatformService implements IGitPlatformService {
   }
 
   private parseMergedLog(log: string, issueBranchPattern: string) {
-    const pt1 = issueBranchPattern.replace("<ISSUE_NUMBER>", "(\\d{1,6})");
+    const pt1 = issueBranchPattern.replace(issueNumberTag, "(\\d{1,6})");
     const re = new RegExp("/", "g");
     const pt2 = pt1.replace(re, "\\/");
     const pt3 = "Merge pull request #(\\d{1,6}) from .*" + pt2;
@@ -349,7 +350,7 @@ export class GitPlatformService implements IGitPlatformService {
   }
 
   private isItAFeatureBranch(log: string, issueBranchPattern: string) {
-    const pt = issueBranchPattern.replace("<ISSUE_NUMBER>", "(\\d{1,6})");
+    const pt = issueBranchPattern.replace(issueNumberTag, "(\\d{1,6})");
     const re = new RegExp(pt);
     return re.test(log);
   }

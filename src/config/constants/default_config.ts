@@ -3,6 +3,8 @@ import { AddOnType } from "@/domain/entity/add_on/add_on.entity";
 import { Config } from "src/domain/entity/config.entity";
 import { ObjectType } from "src/domain/entity/dev_object.entity";
 
+export const issueNumberTag = "<ISSUE_NUMBER>";
+
 export const defaultConfig: Config = {
   workspace: "NOT_CONNECTED",
   fikaToken: "UN_AUTHENTICATED",
@@ -37,7 +39,7 @@ export const defaultLocalConfig: LocalConfig = {
     develop: "develop",
     main: "master",
     release: "release",
-    issueBranchTemplate: "feature/iss/#<ISSUE_NUMBER>",
+    issueBranchTemplate: `feature/iss/#${issueNumberTag}`,
   },
   start: {
     fromDevelopOnly: true,

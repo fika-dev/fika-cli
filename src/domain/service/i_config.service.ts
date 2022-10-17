@@ -35,8 +35,8 @@ export interface IConfigService {
   createConfig(): void;
   readConfig(): void;
 
-  getBaseBranch(): string;
-  getIssueBranch(issueNumber: number): string;
+  getBaseBranch(): Promise<string>;
+  getIssueBranch(issueNumber: number): Promise<string>;
   getAnalyzerConfigs(): AddOnConfig[];
   getMorpherConfig(): AddOnConfig;
   getGitPlatformConfig(): AddOnConfig;
@@ -47,10 +47,10 @@ export interface IConfigService {
   updateWorkspace(workspace: Workspace): void;
   updateFikaToken(token: string): void;
 
-  parseIssueNumber(branch: string): number;
-  getIssueBranchPattern(): string;
+  parseIssueNumber(branch: string): Promise<number>;
+  getIssueBranchPattern(): Promise<string>;
 
   filterFromCandidates(filterIn: string[], candidates: string[]);
-  createLocalConfig(initialConfigInput: InitialConfigInput): void;
-  getLocalConfig(): LocalConfig;
+  createLocalConfig(initialConfigInput: InitialConfigInput): Promise<void>;
+  getLocalConfig(): Promise<LocalConfig>;
 }

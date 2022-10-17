@@ -1,12 +1,13 @@
 import { Context } from "@/domain/context/context.types";
+import { DomainError } from "@/domain/general/general.types";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/Option";
-import { ValidationError, Validate } from "./validation-rule.types";
+import { Validate } from "./validation-rule.types";
 
 export const validateNumber: Validate<number> = (value: number) => {
   if (isNaN(value)) {
-    return E.left({ type: "NotNumberError", value });
+    return E.left({ type: "ValidationError", subType: "NotNumberError", value });
   } else {
     return E.right(value);
   }
@@ -14,14 +15,17 @@ export const validateNumber: Validate<number> = (value: number) => {
 
 export const validateIssueNumber: Validate<number> = (
   issueNumber: number
-): E.Either<ValidationError, number> => {
+): E.Either<DomainError, number> => {
   return pipe(
     issueNumber,
-    O.fromNullable,
-    O.foldW(
-      () => E.left({ type: "NotIssueNumberError", value: undefined } as ValidationError),
-      number => validateNumber(number)
-    )
+    validateNumber,
+    E.mapLeft(e => {
+      return {
+        type: "ValidationError",
+        subType: "NotIssueNumberError",
+        value: issueNumber,
+      } as DomainError;
+    })
   );
 };
 
@@ -29,7 +33,11 @@ export const validateHttpAddress: Validate<string> = (unvalidatedAddress: string
   if (unvalidatedAddress.startsWith("http")) {
     return E.right(unvalidatedAddress);
   } else {
-    return E.left({ type: "NotHttpAddress", value: unvalidatedAddress } as ValidationError);
+    return E.left({
+      type: "ValidationError",
+      subType: "NotHttpAddress",
+      value: unvalidatedAddress,
+    } as DomainError);
   }
 };
 
@@ -38,7 +46,11 @@ export const validateIncludeString = (pattern: string) => (unvalidatedString: st
   if (matched) {
     return E.right(unvalidatedString);
   } else {
-    return E.left({ type: "NotIncludingPattern", value: unvalidatedString } as ValidationError);
+    return E.left({
+      type: "ValidationError",
+      subType: "NotIncludingPattern",
+      value: unvalidatedString,
+    } as DomainError);
   }
 };
 
@@ -48,7 +60,11 @@ export const validateBranchName: Validate<string> = (unvalidatedBranchName: stri
   if (matched) {
     return E.right(unvalidatedBranchName);
   } else {
-    return E.left({ type: "NotBranchName", value: unvalidatedBranchName } as ValidationError);
+    return E.left({
+      type: "ValidationError",
+      subType: "NotBranchName",
+      value: unvalidatedBranchName,
+    } as DomainError);
   }
 };
 
@@ -58,7 +74,11 @@ export const validateHttpsGithubAddress: Validate<string> = (unvalidatedAddress:
   if (matched) {
     return E.right(unvalidatedAddress);
   } else {
-    return E.left({ type: "NotHttpsGithubAddress", value: unvalidatedAddress } as ValidationError);
+    return E.left({
+      type: "ValidationError",
+      subType: "NotHttpsGithubAddress",
+      value: unvalidatedAddress,
+    } as DomainError);
   }
 };
 
@@ -68,6 +88,10 @@ export const validateSshGithubAddress: Validate<string> = (unvalidatedAddress: s
   if (matched) {
     return E.right(unvalidatedAddress);
   } else {
-    return E.left({ type: "NotSshGithubAddress", value: unvalidatedAddress } as ValidationError);
+    return E.left({
+      type: "ValidationError",
+      ubType: "NotSshGithubAddress",
+      value: unvalidatedAddress,
+    } as DomainError);
   }
 };

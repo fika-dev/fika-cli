@@ -33,13 +33,8 @@ export class ConnectService implements IConnectService {
   private token: string | undefined;
   private domain: string;
   private axiosInstance: AxiosInstance;
-  private configService: IConfigService;
-  constructor(
-    @inject(PARAMETER_IDENTIFIER.Domain) domain: string,
-    @inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService
-  ) {
+  constructor(@inject(PARAMETER_IDENTIFIER.Domain) domain: string) {
     this.domain = domain;
-    this.configService = configService;
     this.axiosInstance = axios.create({
       baseURL: this.domain,
       timeout: 10000,
@@ -68,7 +63,7 @@ export class ConnectService implements IConnectService {
       throw new Error("couldnt get hash");
     }
   }
-  async deleteIssue(gitRepoUrl: string, issueNumber: number): Promise<void> {
+  async deleteIssueRecord(gitRepoUrl: string, issueNumber: number): Promise<void> {
     try {
       const response = await this.axiosInstance.delete("/git/issue", {
         headers: {
@@ -121,7 +116,7 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async createPullRequest(
+  async createPullRequestRecord(
     gitRepoUrl: string,
     notionPageUrl: string,
     issueNumber: number,
@@ -150,7 +145,7 @@ export class ConnectService implements IConnectService {
       throw new Error(axiosError.message);
     }
   }
-  async createRelease(
+  async createReleaseRecord(
     gitRepoUrl: string,
     tag: VersionTag,
     issuesWithPRList: IssueWithPR[]
@@ -225,9 +220,15 @@ export class ConnectService implements IConnectService {
     }
   }
   async getIssueRecord(issueNumber: number, gitRepoUrl: string): Promise<Issue> {
+    let cleanGitRepoUrl: string;
+    if (gitRepoUrl.endsWith(".git")) {
+      cleanGitRepoUrl = gitRepoUrl.slice(undefined, gitRepoUrl.length - 4);
+    } else {
+      cleanGitRepoUrl = gitRepoUrl;
+    }
     try {
       const response = await this.axiosInstance.get(
-        `/git/issue?gitRepoUrl=${gitRepoUrl}&issueNumber=${issueNumber}`,
+        `/git/issue?gitRepoUrl=${cleanGitRepoUrl}&issueNumber=${issueNumber}`,
         {
           headers: {
             "content-type": "application/json",
@@ -336,7 +337,7 @@ export class ConnectService implements IConnectService {
     }
   }
 
-  async getIssue(
+  async getWorkspaceIssue(
     documentUrl: string,
     workpaceId: Uuid,
     workspaceType: WorkspaceType
@@ -360,7 +361,7 @@ export class ConnectService implements IConnectService {
         console.log(
           "🧪",
           " in ConnnectService: ",
-          " in getIssue: ",
+          " in getWorkspaceIssue: ",
           "error code: ",
           axiosError.code
         );
@@ -397,15 +398,6 @@ export class ConnectService implements IConnectService {
       );
       throw new Error(axiosError.message);
     }
-  }
-  create(devObj: DevObject): Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-  update(devObj: DevObject): Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-  remove(devObj: DevObject): Promise<string> {
-    throw new Error("Method not implemented.");
   }
 
   async requestWorkspace(workspaceType: WorkspaceType, workspaceId: Uuid): Promise<Workspace> {

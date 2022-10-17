@@ -12,6 +12,10 @@ import fs from "fs";
 import path from "path";
 import { TEST_USER_CONFIG } from "test/test-constants";
 import { promisify } from 'util';
+import { ExecuteGitCommand } from "@/domain/git-command/command.types";
+import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
+
+const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
 
 export const clearTestFikaPath = (currentPath: string)=>{
   const fikaPath = currentPath + '/.fika';
@@ -52,40 +56,6 @@ export const setUseToken = (token)=> {
   connectionService.useToken(token);
 }
 
-
-
-export const readTestFikaConfig = (currentPath: string): Config=>{
-  const fikaConfigFilePath = currentPath + '/.fika/fika.config.json';
-  if (fikaConfigFilePath){
-    const configString = fs.readFileSync(fikaConfigFilePath, 'utf-8');
-    const config = JSON.parse(configString) as Config;
-    return config;
-  }else{
-    throw new Error("Fika config file path is not set");
-  }
-}
-
-export const readLocalConfig = (currentPath: string): LocalConfig=>{
-  const fikaConfigFilePath = path.join(currentPath, LOCAL_CONFIG_NAME);
-  if (fikaConfigFilePath){
-    const configString = fs.readFileSync(fikaConfigFilePath, 'utf-8');
-    const config = JSON.parse(configString) as LocalConfig;
-    return config;
-  }else{
-    throw new Error("Fika config file path is not set");
-  }
-}
-
-export const readTestSnapshot = (currentPath: string): SyncedSnapshot=>{
-  const fikaSnapshotFilePath = path.join(currentPath, FIKA_PATH, SNAPSHOT_FILE_NAME );
-  if (fikaSnapshotFilePath){
-    const snapshotString = fs.readFileSync(fikaSnapshotFilePath, 'utf-8');
-    const snapshot = JSON.parse(snapshotString) as SyncedSnapshot;
-    return snapshot;
-  }else{
-    throw new Error("Fika snapshot file path is not set");
-  }
-}
 
 export const restoreGitRepo = async (repoPath: string) =>{
   const execP =promisify(exec);
@@ -143,7 +113,7 @@ export const checkAndDeleteIssue = async (documentUrl: string)=> {
   const urlWithoutGit = process.env.TESTING_REPO_GIT_URL.replace('.git', '');
   const issue = await connectService.getIssueRecordByPage(documentUrl, urlWithoutGit);
   if (issue){
-    await connectService.deleteIssue(urlWithoutGit, Issue.parseNumberFromUrl(issue.gitIssueUrl));
+    await connectService.deleteIssueRecord(urlWithoutGit, Issue.parseNumberFromUrl(issue.gitIssueUrl));
   }
 }
 
@@ -164,3 +134,5 @@ export const sendPromptData = (line: string, delay = 0)=> {
       setTimeout(() => process.stdin.emit('data', `${line}\n`), delay);
   }
 }
+
+export const spyWithMock = (fn: ExecuteGitCommand) => jest.spyOn(commanderService, 'executeGitCommand').mockImplementation(fn);
