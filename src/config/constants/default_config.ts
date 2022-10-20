@@ -36,9 +36,9 @@ export const defaultConfig: Config = {
 
 export const defaultLocalConfig: LocalConfig = {
   branchNames: {
-    develop: "develop",
-    main: "master",
-    release: "release",
+    develop: "main",
+    main: "main",
+    release: "main",
     issueBranchTemplate: `feature/iss/#${issueNumberTag}`,
   },
   start: {
@@ -52,8 +52,8 @@ export const defaultLocalConfig: LocalConfig = {
   },
 };
 
-export const developBranchCandidates: string[] = ["develop", "dev"];
+export const developBranchCandidates: string[] = ["develop", "dev", "main", "master"];
 
 export const mainBranchCandidates: string[] = ["main", "master", "production"];
 
-export const releaseBranchCandidates: string[] = ["release", "test", "staging"];
+export const releaseBranchCandidates: string[] = ["release", "test", "staging", "main", "master"];

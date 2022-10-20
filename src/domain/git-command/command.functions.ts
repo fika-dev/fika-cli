@@ -219,6 +219,24 @@ export const getRemoteOrigin = (execute: ExecuteGitCommand) => async (): Promise
   }
 };
 
+export const checkCurrentRemoteBranch =
+  (execute: ExecuteGitCommand) => async (): Promise<string | undefined> => {
+    const currentBranch = await getCurrentBranch(execute)();
+    await _fetch(execute)();
+    const remoteBranches = (await checkContext(execute)({
+      domain: "git",
+      field: "remoteBranches",
+    })()) as string[];
+    const currentBranchExistedInRemoteBranches = remoteBranches.find(
+      branch => `origin/${currentBranch}` === branch
+    );
+    if (currentBranchExistedInRemoteBranches) {
+      return currentBranch as string;
+    } else {
+      return undefined;
+    }
+  };
+
 export const pushBranch = (execute: ExecuteGitCommand) => async (branchName: string) => {
   const createTackingBranchCmd = getGitCommandWithArgument(pushBranchCmd)("origin", branchName);
   return await executeAndParseGitCommand(execute)({

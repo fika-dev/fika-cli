@@ -173,5 +173,5 @@ export const checkNoErrorAndReturnOutput: CmdOutputParser = result => {
         subType: "ErrorMessageFound",
         value: result,
       } as DomainError)
-    : result;
+    : result.trim();
 };
