@@ -29,7 +29,7 @@ const defaultMock = (additionalMock)=> (cmd: GitCommand) => {
     if(cmd.command === pullFromCmd.command){
       return T.of(TEST_GIT_PULL_UPDATED_OUTPUT);
     }if (cmd.command === getCurrentBranchCmd.command){
-      return T.of('develop');
+      return T.of('main');
     }if (cmd.command === statusCmd.command){
       return T.of(TEST_GIT_CLEAN_STATUS);
     }if (cmd.command === checkoutCmd.command){
@@ -128,7 +128,7 @@ test('6. start from the feature branch', async () => {
     }
   }));
   await startAction(TEST_START_DOC_URL);
-  expect(spy).toHaveBeenCalledWith('(current branch is feature/iss/#2) develop is the only allowed branch to start')
+  expect(spy).toHaveBeenCalledWith(`(current branch is feature/iss/#2) ${defaultLocalConfig.branchNames.develop} is the only allowed branch to start`)
 });
 
 test('7. start an issue uncommitted changes from develop branch', async () => {

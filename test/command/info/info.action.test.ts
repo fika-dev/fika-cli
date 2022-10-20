@@ -15,6 +15,15 @@ const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
 const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
 const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
+const copiedLocalConfig = {
+    ...defaultLocalConfig,
+    branchNames: {
+        develop: "develop",
+        main: "main",
+        release: "release",
+        issueBranchTemplate: 'feature/iss/#<ISSUE_NUMBER>',
+    }
+};
 
 beforeAll(async () => {
   jest.restoreAllMocks();
@@ -54,7 +63,7 @@ afterAll(() => {
 it("1.test info on a issue branch", async () => {
     jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => 'https://github.com/tuxshido/repo');
     jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => 'feature/issue/133');
-    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => copiedLocalConfig);
     jest.spyOn(connectService, 'getIssueRecord').mockImplementation(async () => {
         return {
             gitIssueUrl: 'https://some.thing',
@@ -70,7 +79,7 @@ it("1.test info on a issue branch", async () => {
 });
 
 it("2.test info message for the develop branch", async () => {
-    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => copiedLocalConfig);
     jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => Promise.resolve('https://github.com/tuxshido/repo'));
     jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => Promise.resolve('develop'));
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
@@ -79,6 +88,7 @@ it("2.test info message for the develop branch", async () => {
 });
 
 it("3.test info message for the release branch", async () => {
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => copiedLocalConfig);
     jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => Promise.resolve('https://github.com/tuxshido/repo'));
     jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => Promise.resolve('release'));
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
@@ -87,9 +97,9 @@ it("3.test info message for the release branch", async () => {
 });
 
 it("4.test info message for the main branch", async () => {
-    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => copiedLocalConfig);
     jest.spyOn(gitPlatformService, 'getGitRepoUrl').mockImplementation(async () => Promise.resolve('https://github.com/tuxshido/repo'));
-    jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => Promise.resolve('master'));
+    jest.spyOn(gitPlatformService, 'getBranchName').mockImplementation(async () => Promise.resolve(defaultLocalConfig.branchNames.main));
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
     await infoAction();
     expect(spy).toBeCalledWith('You are on the main branch, you can start a new branch with "fika start <issue url>"', undefined);
@@ -106,7 +116,7 @@ it("5.test info message for a non-valid", async () => {
 });
 
 it("6.test info with testing server", async () => {
-    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => defaultLocalConfig);
+    jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => copiedLocalConfig);
     const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
     await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
     await infoAction();

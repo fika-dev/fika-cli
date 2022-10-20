@@ -52,8 +52,8 @@ export const defaultLocalConfig: LocalConfig = {
   },
 };
 
-export const developBranchCandidates: string[] = ["develop", "dev"];
+export const developBranchCandidates: string[] = ["develop", "dev", "main", "master"];
 
 export const mainBranchCandidates: string[] = ["main", "master", "production"];
 
-export const releaseBranchCandidates: string[] = ["release", "test", "staging"];
+export const releaseBranchCandidates: string[] = ["release", "test", "staging", "main", "master"];
