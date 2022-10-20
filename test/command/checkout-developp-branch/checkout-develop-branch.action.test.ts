@@ -46,7 +46,7 @@ it("1.test checkout-develop-branch if develop was set", async () => {
   await gitPlatformService.checkoutToBranchWithoutReset(TEST_CPR_BRANCH_NAME);
   await checkoutDevelopBranchAction();
   const currentBranch = await gitPlatformService.getBranchName();
-  expect(currentBranch).toBe("develop");
+  expect(currentBranch).toBe(defaultLocalConfig.branchNames.develop);
 });
 
 it("2.test checkout-develop-branch if develop branch is an empty string", async () => {
