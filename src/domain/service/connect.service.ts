@@ -23,6 +23,7 @@ import { Uuid } from "../value_object/uuid.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
 import { IConnectService, UserWithToken } from "./i_connect.service";
+import { CreateIssueRecord } from "@/infrastructure/dto/create_issue_record.dto";
 
 interface errorDataType {
   message: string;

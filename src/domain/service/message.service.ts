@@ -49,12 +49,16 @@ export class MessageService implements IMessageService {
   }
 
   showWaiting(message: string): void {
-    const waitingFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+    // const waitingFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+    const waitingFrames = [".", "..", "...", "...."];
     var i: number = 0;
+    const messageWithEmoji = `🧘 ${message} `;
+    const messageLength = messageWithEmoji.length;
+    process.stdout.write(messageWithEmoji);
     this.timer = setInterval(() => {
-      readline.clearLine(process.stdout, 0, () => {
-        readline.cursorTo(process.stdout, 0, undefined, () => {
-          process.stdout.write(`🧘 ${waitingFrames[i % 10]}${message} ${".".repeat(i % 6)}`);
+      readline.clearLine(process.stdout, 1, () => {
+        readline.cursorTo(process.stdout, messageLength, undefined, () => {
+          process.stdout.write(`${waitingFrames[i % waitingFrames.length]}`);
         });
       });
       i += 1;
