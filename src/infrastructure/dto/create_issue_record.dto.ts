@@ -1,4 +1,4 @@
-interface CreateIssueRecord {
+export interface CreateIssueRecord {
   gitRepoUrl: string;
   notionPageUrl: string;
   title: string;
