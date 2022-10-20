@@ -17,6 +17,8 @@ export const gitPullAction = async (branchName: string): Promise<GitOutputStatus
     messageService.showSuccess(`Synced from origin ${branchName}`);
   } else if (gitStatus === "NO_CHANGE") {
     messageService.showSuccess(`nothing to update from origin ${branchName}`);
+  } else if (gitStatus === "MERGED") {
+    messageService.showSuccess(`Synced from origin ${branchName}`);
   } else if (gitStatus === "NO_REMOTE_REF") {
     throw {
       type: "GitError",
