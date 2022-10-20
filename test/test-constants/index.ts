@@ -100,6 +100,8 @@ To https://github.com/fika-dev/fika-cli.git
 export const TEST_GIT_GET_CURRENT_BRANCH_OUTPUT = `feature/iss/#440
 `;
 
+export const TEST_CURRENT_BRANCH_WITH_REMOTE = 'feature/iss/#412'
+
 export const TEST_GIT_REPO_PATH = "/Users/testuser/Fika/fika-cli";
 
 export const TEST_GIT_ABORT_MERGE_FAILED_OUTPUT = 'fatal: There is no merge to abort (MERGE_HEAD missing).';
