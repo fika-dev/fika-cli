@@ -6,7 +6,7 @@ import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
-import { TEST_BRANCH_LIST, TEST_CPR_DOC_ID, TEST_GIT_CLEAN_STATUS, TEST_GIT_PULL_CONFLICT_OUTPUT, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_PUSH_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_HTTPS_GITHUB_REPO, TEST_REMOTE_BRANCHES } from "test/test-constants";
+import { TEST_BRANCH_LIST, TEST_CPR_BRANCH_NAME, TEST_CPR_DOC_ID, TEST_GIT_CLEAN_STATUS, TEST_GIT_GET_CURRENT_BRANCH_OUTPUT, TEST_GIT_PULL_CONFLICT_OUTPUT, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_PUSH_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_HTTPS_GITHUB_REPO, TEST_REMOTE_BRANCHES } from "test/test-constants";
 import { checkAndCloneRepo, createTestConfig, setUseToken, spyWithMock } from "test/test-utils";
 import * as T from "fp-ts/Task";
 import { finishAction } from "@/command/finish/finish.action";
@@ -157,7 +157,8 @@ test("7. Sean finish and everything works as expected", async ()=>{
   const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
   spyWithMock(defaultMock((_: GitCommand) => undefined));
   await finishAction();
-  expect(spy).toHaveBeenNthCalledWith(1, `Synced from origin ${defaultLocalConfig.branchNames.develop}`);
-  expect(spy).toHaveBeenNthCalledWith(2, "Pull Request Created", undefined, "https://github.com/fika-dev/fika-cli-test-samples/pull/3");
-  expect(spy).toHaveBeenNthCalledWith(3, "Notion Issue Updated", undefined, "https://www.notion.so/test-fika-start-doc-4af459df4efb448483fe3e2b703d50fd");
+  expect(spy).toHaveBeenNthCalledWith(1, `Synced from origin ${TEST_CPR_BRANCH_NAME}`);
+  expect(spy).toHaveBeenNthCalledWith(2, `Synced from origin ${defaultLocalConfig.branchNames.develop}`);
+  expect(spy).toHaveBeenNthCalledWith(3, "Pull Request Created", undefined, "https://github.com/fika-dev/fika-cli-test-samples/pull/3");
+  expect(spy).toHaveBeenNthCalledWith(4, "Notion Issue Updated", undefined, "https://www.notion.so/test-fika-start-doc-4af459df4efb448483fe3e2b703d50fd");
 })
