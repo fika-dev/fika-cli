@@ -1,19 +1,13 @@
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
-import { getCurrentBranch, pullFrom } from "@/domain/git-command/command.functions";
+import { pullFrom } from "@/domain/git-command/command.functions";
 import { GitOutputStatus } from "@/domain/git-command/parser/parser.type";
 import { IMessageService } from "@/domain/service/i_message.service";
 import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
 
-export const gitPullAction = async (nullableBranchName?: string): Promise<GitOutputStatus> => {
+export const gitPullAction = async (branchName: string): Promise<GitOutputStatus> => {
   const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  let branchName: string;
-  if (nullableBranchName) {
-    branchName = nullableBranchName;
-  } else {
-    branchName = await getCurrentBranch(commanderService.executeGitCommand)();
-  }
   messageService.showWaiting(`Pulling ${branchName} from remote`);
   const gitStatus = (await pullFrom(commanderService.executeGitCommand)(
     branchName

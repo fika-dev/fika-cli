@@ -1,6 +1,7 @@
 import { checkoutDependingOnConfig } from "@/actions/complex/checkout-depending-on-config.action";
 import { createPR } from "@/actions/complex/create-PR.action";
 import { askToContinueWithUncommitedChanges } from "@/actions/git/ask-to-continue-with-uncommited-changes.action";
+import { getCurrentRemoteBranch } from "@/actions/git/get-current-remote-branch.action";
 import { gitPullAction } from "@/actions/git/git-pull.action";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
@@ -12,7 +13,10 @@ export const finishAction = async (baseBranch?: string) => {
   const developBranch = baseBranch ? baseBranch : localConfig.branchNames.develop;
   await askToContinueWithUncommitedChanges();
   if (localConfig.finish.checkMergeConflict) {
-    await gitPullAction(); // pull from current branch;
+    const currentRemoteBranch = await getCurrentRemoteBranch();
+    if (currentRemoteBranch) {
+      await gitPullAction(currentRemoteBranch); // pull from current branch;
+    }
     await gitPullAction(developBranch);
   }
   await createPR();
