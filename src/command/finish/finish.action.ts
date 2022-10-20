@@ -12,6 +12,7 @@ export const finishAction = async (baseBranch?: string) => {
   const developBranch = baseBranch ? baseBranch : localConfig.branchNames.develop;
   await askToContinueWithUncommitedChanges();
   if (localConfig.finish.checkMergeConflict) {
+    await gitPullAction(); // pull from current branch;
     await gitPullAction(developBranch);
   }
   await createPR();
