@@ -1,12 +1,12 @@
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
-import { checkoutToIssue, checkoutWithChanges, getCurrentBranch, getGitRepoPath, getLatestBranchByCommit, getRemoteOrigin, pullFrom } from "@/domain/git-command/command.functions";
+import { checkCurrentRemoteBranch, checkoutToIssue, checkoutWithChanges, getCurrentBranch, getGitRepoPath, getLatestBranchByCommit, getRemoteOrigin, pullFrom } from "@/domain/git-command/command.functions";
 import { ExecuteGitCommand } from "@/domain/git-command/command.types";
 import { applyStashCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getGitRepoPathCmd, getRemoteBranchesCmd, getRemoteUrlCmd, pullFromCmd, stashCmd } from "@/domain/git-command/git-command.values";
 import { GitOutputStatus } from "@/domain/git-command/parser/parser.type";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import * as T from 'fp-ts/Task';
 import container from "src/config/ioc_config";
-import { TEST_BRANCH_SORTED, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_GIT_GET_CURRENT_BRANCH_OUTPUT, TEST_GIT_NO_REMOTE, TEST_GIT_PULL_CONFLICT_OUTPUT, TEST_GIT_PULL_NO_CHANGE_OUTPUT, TEST_GIT_PULL_NO_REMOTE_REF_OUTPUT, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_REPO_PATH, TEST_GIT_STASH_APPLY_ERR, TEST_GIT_STASH_APPLY_NORMAL_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_HTTPS_GITHUB_REPO, TEST_ISSUE_BRANCH_TEMPLATE, TEST_NOT_LOCAL_BRANCH, TEST_NOT_LOCAL_BUT_REMOTE_BRANCH, TEST_REMOTE_BRANCHES, TEST_SSH_GITHUB_REPO } from "test/test-constants";
+import { TEST_BRANCH_SORTED, TEST_CPR_BRANCH_NAME, TEST_CURRENT_BRANCH_WITH_REMOTE, TEST_GIT_CLEAN_STATUS, TEST_GIT_GET_CURRENT_BRANCH_OUTPUT, TEST_GIT_NO_REMOTE, TEST_GIT_PULL_CONFLICT_OUTPUT, TEST_GIT_PULL_NO_CHANGE_OUTPUT, TEST_GIT_PULL_NO_REMOTE_REF_OUTPUT, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_REPO_PATH, TEST_GIT_STASH_APPLY_ERR, TEST_GIT_STASH_APPLY_NORMAL_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_HTTPS_GITHUB_REPO, TEST_ISSUE_BRANCH_TEMPLATE, TEST_NOT_LOCAL_BRANCH, TEST_NOT_LOCAL_BUT_REMOTE_BRANCH, TEST_REMOTE_BRANCHES, TEST_SSH_GITHUB_REPO } from "test/test-constants";
 
 beforeAll(()=>{
   // jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
@@ -348,4 +348,32 @@ test('7.1 getGitRepoPath', async () => {
   }
   const path = await getGitRepoPath(mock)();
   expect(path).toBe(TEST_GIT_REPO_PATH.trim());
+});
+
+test('8.1 checkCurrentRemoteBranch with existing remote', async () => {
+  const mock: ExecuteGitCommand = (gitCommand) => {
+    if (gitCommand.command === fetchCmd.command){
+      return T.of('');
+    }if(gitCommand.command === getRemoteBranchesCmd.command){
+      return T.of(TEST_REMOTE_BRANCHES);
+    }if (gitCommand.command === getCurrentBranchCmd.command){
+      return T.of(TEST_CURRENT_BRANCH_WITH_REMOTE);
+    }
+  }
+  const branch = await checkCurrentRemoteBranch(mock)();
+  expect(branch).toBe(TEST_CURRENT_BRANCH_WITH_REMOTE.trim());
+});
+
+test('8.2 checkCurrentRemoteBranch with not existing remote', async () => {
+  const mock: ExecuteGitCommand = (gitCommand) => {
+    if (gitCommand.command === fetchCmd.command){
+      return T.of('');
+    }if(gitCommand.command === getRemoteBranchesCmd.command){
+      return T.of(TEST_REMOTE_BRANCHES);
+    }if (gitCommand.command === getCurrentBranchCmd.command){
+      return T.of(TEST_GIT_GET_CURRENT_BRANCH_OUTPUT);
+    }
+  }
+  const branch = await checkCurrentRemoteBranch(mock)();
+  expect(branch).toBeUndefined();
 });

@@ -231,7 +231,7 @@ export const checkCurrentRemoteBranch =
       branch => `origin/${currentBranch}` === branch
     );
     if (currentBranchExistedInRemoteBranches) {
-      return currentBranchExistedInRemoteBranches as string;
+      return currentBranch as string;
     } else {
       return undefined;
     }
