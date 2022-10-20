@@ -60,7 +60,7 @@
   "scripts": {
     "test": "FIKA_ENV=test jest --config=./jest.config.js  --runInBand",
     "env-windows": "set FIKA_ENV=test",
-    "test-windows": "jest --config=./jest.config.js  --runInBand",
+    "test-windows": "jest --config=./jest.config.js  --runInBand test/domain/git/**/*.test.ts",
     "exec:index": "FIKA_ENV=test ts-node -r tsconfig-paths/register ./src/index.ts",
     "exec": "FIKA_ENV=development ts-node -r tsconfig-paths/register",
     "build": "FIKA_ENV=production tsc && tsc-alias && rm -rf dist/test",
