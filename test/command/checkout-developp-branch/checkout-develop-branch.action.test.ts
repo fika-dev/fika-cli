@@ -26,7 +26,7 @@ beforeEach(async()=>{
 });
 
 afterEach(async ()=>{
-  messageService.endWaiting();
+  await messageService.endWaiting();
 
 })
 
