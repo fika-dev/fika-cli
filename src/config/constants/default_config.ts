@@ -50,6 +50,9 @@ export const defaultLocalConfig: LocalConfig = {
     checkOutToDevelop: false,
     checkMergeConflict: true,
   },
+  git: {
+    remoteAlias: "origin",
+  },
 };
 
 export const developBranchCandidates: string[] = ["develop", "dev", "main", "master"];

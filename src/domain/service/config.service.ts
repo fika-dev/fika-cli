@@ -16,20 +16,27 @@ import { Config } from "../entity/config.entity";
 import { Workspace } from "../entity/workspace.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { WorkspaceNotConnected } from "../value_object/exceptions/workspace_not_connected";
-import { GitConfig } from "../value_object/git_config.vo";
 import { Uuid } from "../value_object/uuid.vo";
 import { IConfigService, InitialConfigInput, LocalConfig } from "./i_config.service";
 
 @injectable()
 export class ConfigService implements IConfigService {
   private config: Config = JSON.parse(JSON.stringify(defaultConfig));
-  private localConfig: LocalConfig;
   private fikaConfigFilePath?: string;
   private fikaPath: string;
 
   constructor(@inject(PARAMETER_IDENTIFIER.FikaPath) fikaPath: string) {
     this.fikaPath = fikaPath;
     this.readConfig();
+  }
+  async getGitRemoteAlias(): Promise<string> {
+    const localConfig = await this.getLocalConfig();
+    if (localConfig.git?.remoteAlias) {
+      return localConfig.git.remoteAlias;
+    } else {
+      const copiedLocalConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
+      return copiedLocalConfig.git.remoteAlias;
+    }
   }
   getWorkspaceType(): WorkspaceType {
     if (this.config.workspace !== "NOT_CONNECTED") {
@@ -46,8 +53,8 @@ export class ConfigService implements IConfigService {
     const localConfigFilePath = path.join(gitRepoPath, LOCAL_CONFIG_NAME);
     if (fs.existsSync(localConfigFilePath)) {
       const configString = fs.readFileSync(localConfigFilePath, "utf-8");
-      this.localConfig = JSON.parse(configString) as LocalConfig;
-      return this.localConfig;
+      const localConfig = JSON.parse(configString) as LocalConfig;
+      return localConfig;
     } else {
       const copiedLocalConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
       return copiedLocalConfig;
@@ -63,22 +70,22 @@ export class ConfigService implements IConfigService {
       issueBranchTemplate: localConfig.branchNames.issueBranchTemplate,
     };
     this._createConfig(gitRepoPath, LOCAL_CONFIG_NAME, localConfig);
-    this.localConfig = localConfig;
   }
   filterFromCandidates(filterIn: string[], candidates: string[]) {
     return filterIn.filter(item => candidates.includes(item));
   }
   async getIssueBranchPattern(): Promise<string> {
-    if (!this.localConfig) {
-      this.localConfig = await this.getLocalConfig();
+    const localConfig = await this.getLocalConfig();
+    if (localConfig.branchNames.issueBranchTemplate) {
+      return localConfig.branchNames.issueBranchTemplate;
+    } else {
+      const copiedLocalConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
+      return copiedLocalConfig.branchNames.issueBranchTemplate;
     }
-    return this.localConfig.branchNames.issueBranchTemplate;
   }
   async parseIssueNumber(branch: string): Promise<number> {
-    if (!this.localConfig) {
-      this.localConfig = await this.getLocalConfig();
-    }
-    const fragments = this.localConfig.branchNames.issueBranchTemplate.split(issueNumberTag);
+    const issueBranchTemplate = await this.getIssueBranchPattern();
+    const fragments = issueBranchTemplate.split(issueNumberTag);
     if (fragments.length == 1) {
       return parseInt(branch.replace(fragments[0], ""));
     } else {
@@ -89,21 +96,28 @@ export class ConfigService implements IConfigService {
     return version;
   }
   async getBaseBranch(): Promise<string> {
-    if (!this.localConfig) {
-      this.localConfig = await this.getLocalConfig();
+    const localConfig = await this.getLocalConfig();
+    if (localConfig.branchNames.develop) {
+      return localConfig.branchNames.develop;
+    } else {
+      const copiedLocalConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
+      return copiedLocalConfig.branchNames.develop;
     }
-    return this.localConfig.branchNames.develop;
   }
   async getIssueBranch(issueNumber: number): Promise<string> {
-    if (!this.localConfig) {
-      this.localConfig = await this.getLocalConfig();
+    let branchTemplate: string;
+    const localConfig = await this.getLocalConfig();
+    if (localConfig.branchNames.issueBranchTemplate) {
+      branchTemplate = localConfig.branchNames.issueBranchTemplate;
+    } else {
+      const copiedLocalConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
+      branchTemplate = copiedLocalConfig.branchNames.issueBranchTemplate;
     }
-    const branchTemplate = this.localConfig.branchNames.issueBranchTemplate;
-    const isValidTemplate = GitConfig.validateIssueBranch(branchTemplate);
+    const isValidTemplate = branchTemplate.includes(issueNumberTag);
     if (!isValidTemplate) {
       throw Error("Not Valid Issue Branch Template");
     }
-    return GitConfig.getIssueBranch(issueNumber.toString(), branchTemplate);
+    return branchTemplate.replace(issueNumberTag, `${issueNumber}`);
   }
 
   getFikaToken(): string | undefined {

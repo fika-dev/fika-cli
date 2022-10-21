@@ -28,6 +28,9 @@ export interface LocalConfig {
     checkOutToDevelop: boolean;
     checkMergeConflict: boolean;
   };
+  git?: {
+    remoteAlias?: string;
+  };
 }
 export interface IConfigService {
   getWorkspaceId(): Uuid;
@@ -49,6 +52,7 @@ export interface IConfigService {
 
   parseIssueNumber(branch: string): Promise<number>;
   getIssueBranchPattern(): Promise<string>;
+  getGitRemoteAlias(): Promise<string>;
 
   filterFromCandidates(filterIn: string[], candidates: string[]);
   createLocalConfig(initialConfigInput: InitialConfigInput): Promise<void>;
