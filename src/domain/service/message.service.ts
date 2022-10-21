@@ -66,8 +66,10 @@ export class MessageService implements IMessageService {
   endWaiting(): void {
     if (this.timer) {
       clearInterval(this.timer);
-      readline.clearLine(process.stdout, 0, () => {
-        readline.cursorTo(process.stdout, 0);
+      readline.moveCursor(process.stdout, 0, -1, () => {
+        readline.clearLine(process.stdout, 0, () => {
+          readline.cursorTo(process.stdout, 0);
+        });
       });
     }
   }
