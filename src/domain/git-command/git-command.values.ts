@@ -125,7 +125,7 @@ export const gitInitCmd: GitCommand = {
 //  pullFrom(branchName: string): Promise<GitStatus>;
 // need one argument branchName and post treatment with catching errors
 export const pullFromCmd: GitCommand = {
-  command: "pull --ff origin ",
+  command: "pull --ff ",
   requiredArgument: true,
 };
 
@@ -174,4 +174,6 @@ export const getGitRepoPathCmd: GitCommand = {
   command: "rev-parse --show-toplevel",
 };
 
-export const getRemoteOriginCmd: GitCommand = getGitCommandWithArgument(getRemoteUrlCmd)("origin");
+export const getRemoteCmd: GitCommand = {
+  command: "remote",
+};

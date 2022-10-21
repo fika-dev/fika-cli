@@ -26,7 +26,9 @@ export const releaseAction = async () => {
   );
   const gitRepoUrl = await gitPlatformService.getGitRepoUrl();
   const releaseId = await connectService.createReleaseRecord(gitRepoUrl, tag, issueWithPRList);
-  const commitId = await gitPlatformService.getLatestCommitId("origin/master");
+  const remoteAlias = await configService.getGitRemoteAlias();
+  const baseBranch = await configService.getBaseBranch();
+  const commitId = await gitPlatformService.getLatestCommitId(`${remoteAlias}/${baseBranch}`);
   const botId = configService.getWorkspaceId();
   const notionPageUrl = await connectService.createReleaseNotionPage(botId, commitId, releaseId);
   messageService.showNotionPage(notionPageUrl);

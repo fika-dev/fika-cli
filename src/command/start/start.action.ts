@@ -19,9 +19,10 @@ export const startAction = async (documentUrl: string) => {
   const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   const existingIssue = await getExistingIssue(documentUrl);
+  const remoteAlias = await configService.getGitRemoteAlias();
   await askToContinueWithUncommitedChanges();
   if (existingIssue) {
-    await checkoutToIssue(commanderService.executeGitCommand)(existingIssue);
+    await checkoutToIssue(commanderService.executeGitCommand)(existingIssue, remoteAlias);
     messageService.showSuccess(`Checkout to branch: ${existingIssue.branchName!}`);
   } else {
     const currentBranch = await getCurrentBranch(commanderService.executeGitCommand)();
@@ -37,7 +38,7 @@ export const startAction = async (documentUrl: string) => {
       currentBranch
     );
     if (localConfig.start.checkoutToFeature) {
-      await checkoutToIssue(commanderService.executeGitCommand)(updatedIssue);
+      await checkoutToIssue(commanderService.executeGitCommand)(updatedIssue, remoteAlias);
       messageService.showSuccess(`Checkout to branch: ${updatedIssue.branchName!}`);
     } else {
       messageService.showSuccess(

@@ -16,6 +16,7 @@ import {
   getCurrentBranchCmd,
   getGitCommandWithArgument,
   getGitRepoPathCmd,
+  getRemoteUrlCmd,
   pullFromCmd,
   pushBranchCmd,
   stashCmd,
@@ -24,8 +25,9 @@ import {
   checkNoError,
   checkNoErrorAndReturnOutput,
   isFeatureBranch,
-  parseBranches,
+  parseMultipleLines,
   parsePullOutput,
+  parseRemoteAddress,
 } from "@/domain/git-command/parser/parser.functions";
 import {
   existsLocalBranch,
@@ -47,16 +49,17 @@ export const executeAndParseGitCommand =
     );
   };
 
-const _createTrackingLocalBranch = (execute: ExecuteGitCommand) => async (branchName: string) => {
-  const createTackingBranchCmd = getGitCommandWithArgument(createBranchCmd)(
-    branchName,
-    `origin/${branchName}`
-  );
-  await executeAndParseGitCommand(execute)({
-    command: createTackingBranchCmd,
-    parser: checkNoError,
-  })();
-};
+const _createTrackingLocalBranch =
+  (execute: ExecuteGitCommand) => async (branchName: string, remoteAlias: string) => {
+    const createTackingBranchCmd = getGitCommandWithArgument(createBranchCmd)(
+      branchName,
+      `${remoteAlias}/${branchName}`
+    );
+    await executeAndParseGitCommand(execute)({
+      command: createTackingBranchCmd,
+      parser: checkNoError,
+    })();
+  };
 
 export const createLocalBranch =
   (execute: ExecuteGitCommand) => async (branchName: string, baseBranchName: string) => {
@@ -123,13 +126,15 @@ const _fetch = (execute: ExecuteGitCommand) => async () => {
 };
 
 const _createTrackingBranchIfNeeded =
-  (execute: ExecuteGitCommand) => async (branchName: string) => {
+  (execute: ExecuteGitCommand) => async (branchName: string, remoteAlias: string) => {
     const doesExistLocalBranch = await existsLocalBranch(execute)(branchName);
     if (!doesExistLocalBranch) {
       await _fetch(execute)();
-      const doesExistRemoteBranch = await existsRemoteBranch(execute)(`origin/${branchName}`);
+      const doesExistRemoteBranch = await existsRemoteBranch(execute)(
+        `${remoteAlias}/${branchName}`
+      );
       if (doesExistRemoteBranch) {
-        await _createTrackingLocalBranch(execute)(branchName);
+        await _createTrackingLocalBranch(execute)(branchName, remoteAlias);
       } else {
         throw {
           type: "GitError",
@@ -139,18 +144,19 @@ const _createTrackingBranchIfNeeded =
       }
     }
   };
-export const pullFrom = (execute: ExecuteGitCommand) => async (remoteBranch: string) => {
-  const pullFromBranchCmd = getGitCommandWithArgument(pullFromCmd)(remoteBranch);
-  return await executeAndParseGitCommand(execute)({
-    command: pullFromBranchCmd,
-    parser: parsePullOutput,
-  })();
-};
+export const pullFrom =
+  (execute: ExecuteGitCommand) => async (remoteBranch: string, remoteAlias: string) => {
+    const pullFromBranchCmd = getGitCommandWithArgument(pullFromCmd)(remoteAlias, remoteBranch);
+    return await executeAndParseGitCommand(execute)({
+      command: pullFromBranchCmd,
+      parser: parsePullOutput,
+    })();
+  };
 
 export const getCurrentBranch = (execute: ExecuteGitCommand) => async () => {
   const branches = (await executeAndParseGitCommand(execute)({
     command: getCurrentBranchCmd,
-    parser: parseBranches,
+    parser: parseMultipleLines,
   })()) as string[];
   if (branches.length > 0) {
     return branches[0];
@@ -168,7 +174,7 @@ export const getLatestBranchByCommit =
       getGitCommandWithArgument(getBranchesCmd)("--sort=-committerdate ");
     const branches = (await executeAndParseGitCommand(execute)({
       command: getSortedBranchesCmd,
-      parser: parseBranches,
+      parser: parseMultipleLines,
     })()) as string[];
     const isFeatureBranchWithPattern = isFeatureBranch(featureBranchPattern);
     const featureBranches = branches.filter(isFeatureBranchWithPattern);
@@ -192,35 +198,43 @@ export const checkoutWithChanges = (execute: ExecuteGitCommand) => async (branch
   }
 };
 
-export const checkoutToIssue = (execute: ExecuteGitCommand) => async (issue: Issue) => {
-  if (issue.branchName) {
-    await _createTrackingBranchIfNeeded(execute)(issue.branchName);
-    await checkoutWithChanges(execute)(issue.branchName);
-  } else {
-    throw {
-      type: "GitError",
-      subType: "NoBranchNameInIssueRecord",
-      value: issue.title,
-    } as DomainError;
-  }
-};
+export const checkoutToIssue =
+  (execute: ExecuteGitCommand) => async (issue: Issue, remoteAlias: string) => {
+    if (issue.branchName) {
+      await _createTrackingBranchIfNeeded(execute)(issue.branchName, remoteAlias);
+      await checkoutWithChanges(execute)(issue.branchName);
+    } else {
+      throw {
+        type: "GitError",
+        subType: "NoBranchNameInIssueRecord",
+        value: issue.title,
+      } as DomainError;
+    }
+  };
 
-export const checkoutToBranchName = (execute: ExecuteGitCommand) => async (branchName: string) => {
-  await _createTrackingBranchIfNeeded(execute)(branchName);
-  await checkoutWithChanges(execute)(branchName);
-};
+export const checkoutToBranchName =
+  (execute: ExecuteGitCommand) => async (branchName: string, remoteAlias: string) => {
+    await _createTrackingBranchIfNeeded(execute)(branchName, remoteAlias);
+    await checkoutWithChanges(execute)(branchName);
+  };
 
-export const getRemoteOrigin = (execute: ExecuteGitCommand) => async (): Promise<string> => {
-  const originOrError = await checkContext(execute)({ domain: "git", field: "remote" })();
-  if (typeof originOrError === "string") {
-    return originOrError as string;
-  } else {
-    throw originOrError;
-  }
-};
+export const getRemoteAddress =
+  (execute: ExecuteGitCommand) =>
+  async (remoteAlias: string): Promise<string> => {
+    const originOrError = await executeAndParseGitCommand(execute)({
+      command: getGitCommandWithArgument(getRemoteUrlCmd)(remoteAlias),
+      parser: parseRemoteAddress,
+    })();
+    if (typeof originOrError === "string") {
+      return originOrError as string;
+    } else {
+      throw originOrError;
+    }
+  };
 
 export const checkCurrentRemoteBranch =
-  (execute: ExecuteGitCommand) => async (): Promise<string | undefined> => {
+  (execute: ExecuteGitCommand) =>
+  async (remoteAlias: string): Promise<string | undefined> => {
     const currentBranch = await getCurrentBranch(execute)();
     await _fetch(execute)();
     const remoteBranches = (await checkContext(execute)({
@@ -228,7 +242,7 @@ export const checkCurrentRemoteBranch =
       field: "remoteBranches",
     })()) as string[];
     const currentBranchExistedInRemoteBranches = remoteBranches.find(
-      branch => `origin/${currentBranch}` === branch
+      branch => `${remoteAlias}/${currentBranch}` === branch
     );
     if (currentBranchExistedInRemoteBranches) {
       return currentBranch as string;
@@ -237,13 +251,17 @@ export const checkCurrentRemoteBranch =
     }
   };
 
-export const pushBranch = (execute: ExecuteGitCommand) => async (branchName: string) => {
-  const createTackingBranchCmd = getGitCommandWithArgument(pushBranchCmd)("origin", branchName);
-  return await executeAndParseGitCommand(execute)({
-    command: createTackingBranchCmd,
-    parser: checkNoError,
-  })();
-};
+export const pushBranch =
+  (execute: ExecuteGitCommand) => async (branchName: string, remoteAlias: string) => {
+    const createTackingBranchCmd = getGitCommandWithArgument(pushBranchCmd)(
+      remoteAlias,
+      branchName
+    );
+    return await executeAndParseGitCommand(execute)({
+      command: createTackingBranchCmd,
+      parser: checkNoError,
+    })();
+  };
 
 export const abortMerge = (execute: ExecuteGitCommand) => async () => {
   return await executeAndParseGitCommand(execute)({

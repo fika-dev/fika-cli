@@ -4,7 +4,7 @@ import {
   checkoutToIssue,
   checkoutWithChanges,
   getLatestBranchByCommit,
-  getRemoteOrigin,
+  getRemoteAddress,
 } from "@/domain/git-command/command.functions";
 import { validateIssueNumber } from "@/domain/rules/validation-rules/validate.functions";
 import { IConnectService } from "@/domain/service/i_connect.service";
@@ -64,10 +64,11 @@ const _checkoutFeatureBranchFunctional = async (issueNumber?: number) => {
         throw e;
       })
     );
-    const remoteOrigin = await getRemoteOrigin(execute)();
+    const remoteAlias = await configService.getGitRemoteAlias();
+    const remoteOrigin = await getRemoteAddress(execute)(remoteAlias);
     const issue = await connectService.getIssueRecord(validIssueNumber, remoteOrigin);
     const confirmedIssue = await _checkIssueBranch(configService.getIssueBranch)(issue);
-    await checkoutToIssue(execute)(confirmedIssue);
+    await checkoutToIssue(execute)(confirmedIssue, remoteAlias);
     messageService.showSuccess(`Checkout to branch: ${confirmedIssue.branchName}`);
   }
 };

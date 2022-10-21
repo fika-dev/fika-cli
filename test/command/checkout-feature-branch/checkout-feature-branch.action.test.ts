@@ -3,7 +3,6 @@ import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
 import { ExecuteGitCommand } from "@/domain/git-command/command.types";
 import { createBranchCmd, fetchCmd, getBranchesCmd, getGitRepoPathCmd, getRemoteBranchesCmd, getRemoteUrlCmd } from "@/domain/git-command/git-command.values";
-import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
@@ -12,7 +11,7 @@ import { Uuid } from "@/domain/value_object/uuid.vo";
 import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
 import * as T from 'fp-ts/Task';
 import { TEST_BRANCH_SORTED, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_GIT_REPO_PATH, TEST_HTTPS_GITHUB_REPO, TEST_REMOTE_BRANCHES } from "test/test-constants";
-import { checkAndCloneRepo, createTestConfig, restoreGitRepo, setUseToken } from "test/test-utils";
+import { restoreGitRepo, setUseToken } from "test/test-utils";
 
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
@@ -73,6 +72,9 @@ it("1.test when the branch number is a number", async () => {
     }
     if (gitCommand.command === getRemoteUrlCmd.command){
       return T.of(TEST_HTTPS_GITHUB_REPO);
+    }
+    if (gitCommand.command === getGitRepoPathCmd.command){
+      return T.of(TEST_GIT_REPO_PATH);
     }
   }
   const spy2 = jest.spyOn(commanderService, 'executeGitCommand').mockImplementation((cmd)=>mockExecuteWithChange(cmd));

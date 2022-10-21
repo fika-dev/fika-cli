@@ -3,7 +3,7 @@ import {
   getBranchesCmd,
   getCurrentBranchCmd,
   getRemoteBranchesCmd,
-  getRemoteOriginCmd,
+  getRemoteCmd,
   statusCmd,
 } from "../git-command/git-command.values";
 import {
@@ -12,11 +12,10 @@ import {
   checkGitVersion,
   checkHeadParser,
   checkMergeConflict,
-  checkRemoteOrigin,
   checkStagedChangesParser,
   checkUnstagedChangeParser,
   checkUntrackedFilesParser,
-  parseBranches,
+  parseMultipleLines,
 } from "../git-command/parser/parser.functions";
 import { HowToCheck } from "./context.types";
 
@@ -39,8 +38,8 @@ export const howToCheck: HowToCheck = {
       parser: checkStagedChangesParser,
     },
     remote: {
-      command: getRemoteOriginCmd,
-      parser: checkRemoteOrigin,
+      command: getRemoteCmd,
+      parser: parseMultipleLines,
     },
     currentBranch: {
       command: getCurrentBranchCmd,
@@ -48,11 +47,11 @@ export const howToCheck: HowToCheck = {
     },
     localBranches: {
       command: getBranchesCmd,
-      parser: parseBranches,
+      parser: parseMultipleLines,
     },
     remoteBranches: {
       command: getRemoteBranchesCmd,
-      parser: parseBranches,
+      parser: parseMultipleLines,
     },
     conflict: {
       command: statusCmd,

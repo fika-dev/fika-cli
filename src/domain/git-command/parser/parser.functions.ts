@@ -62,7 +62,7 @@ export const checkUntrackedFilesParser: CmdOutputParser = isPatternMatched(untra
 export const checkStagedChangesParser: CmdOutputParser = isPatternMatched(stagedChangesPattern);
 export const checkMergeConflict: CmdOutputParser = isPatternMatched(mergeConflictStatusPattern);
 
-export const checkRemoteOrigin: CmdOutputParser = result => {
+export const parseRemoteAddress: CmdOutputParser = result => {
   const preprocessed = pipe(result, trim);
   return pipe(
     preprocessed,
@@ -123,13 +123,13 @@ export const checkCurrentBranch: CmdOutputParser = result => {
   );
 };
 
-export const parseBranches: CmdOutputParser = result => {
+export const parseMultipleLines: CmdOutputParser = result => {
   return pipe(
     result,
     trim,
     splitToList("\n"),
     listMap(trim),
-    listFilter((branch: string) => branch.length > 0)
+    listFilter((line: string) => line.length > 0)
   );
 };
 

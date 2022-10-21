@@ -1,4 +1,4 @@
-import { checkCurrentBranch, checkGhCliVersion, checkGitVersion, checkHeadParser, checkMergeConflict, checkRemoteOrigin, checkStagedChangesParser, checkUnstagedChangeParser, checkUntrackedFilesParser, parseBranches } from "@/domain/git-command/parser/parser.functions";
+import { checkCurrentBranch, checkGhCliVersion, checkGitVersion, checkHeadParser, checkMergeConflict, parseRemoteAddress, checkStagedChangesParser, checkUnstagedChangeParser, checkUntrackedFilesParser, parseMultipleLines } from "@/domain/git-command/parser/parser.functions";
 import { TEST_BRANCH_LIST, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_GIT_MERGE_CONFLICT_STATUS, TEST_GIT_NO_REMOTE, TEST_GIT_STATUS_STRING, TEST_GIT_STATUS_WITH_STAGED, TEST_HEAD_NOT_DEFINED, TEST_HTTPS_GITHUB_REPO, TEST_NO_COMMIT_STATUS, TEST_SSH_GITHUB_REPO, TEST_GIT_VERSION_OUTPUT, TEST_GH_VERSION_OUTPUT, TEST_NOT_INSTALLED, TEST_GH_VERSION_ONE_LINE_OUPUT, TEST_CPR_COMMIT_MESSAGE } from "test/test-constants";
 
 beforeAll(()=>{
@@ -58,11 +58,11 @@ test('5. checkMergeConflict', async () => {
 });
 
 test('6. checkRemoteOrigin', async () => {
-  const shouldBeEmpty = checkRemoteOrigin(TEST_GIT_NO_REMOTE);
+  const shouldBeEmpty = parseRemoteAddress(TEST_GIT_NO_REMOTE);
   expect(shouldBeEmpty).toEqual("Empty");
-  const remoteRepo = checkRemoteOrigin(`${TEST_HTTPS_GITHUB_REPO}\n`);
+  const remoteRepo = parseRemoteAddress(`${TEST_HTTPS_GITHUB_REPO}\n`);
   expect(remoteRepo).toEqual(TEST_HTTPS_GITHUB_REPO);
-  const remoteRepo2 = checkRemoteOrigin('\n'+TEST_SSH_GITHUB_REPO);
+  const remoteRepo2 = parseRemoteAddress('\n'+TEST_SSH_GITHUB_REPO);
   expect(remoteRepo2).toEqual(TEST_SSH_GITHUB_REPO);
 });
 
@@ -76,9 +76,9 @@ test('7. checkCurrentBranch', async () => {
 });
 
 test('8. parseBranches', async () => {
-  const validBranches = parseBranches(TEST_BRANCH_LIST);
+  const validBranches = parseMultipleLines(TEST_BRANCH_LIST);
   expect(validBranches).toContain('develop');
-  const emptyBranches = parseBranches(`\n`);
+  const emptyBranches = parseMultipleLines(`\n`);
   expect(emptyBranches).toEqual([]);
   // const empty = parseBranches(TEST_HEAD_NOT_DEFINED);
   // expect(empty).toEqual("Empty");

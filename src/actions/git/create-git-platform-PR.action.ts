@@ -16,7 +16,8 @@ export const createGitPlatformPR = async (branchName: string, issue: Issue): Pro
   );
   const gitPlatformConfig = configService.getGitPlatformConfig();
   const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
-  await pushBranch(commanderService.executeGitCommand)(branchName);
+  const remoteAlias = await configService.getGitRemoteAlias();
+  await pushBranch(commanderService.executeGitCommand)(branchName, remoteAlias);
   gitPlatformService.configGitPlatform(gitPlatformConfig);
   try {
     const updatedIssue = await gitPlatformService.createPR(issue, branchName);

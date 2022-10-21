@@ -1,5 +1,5 @@
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
-import { checkCurrentRemoteBranch, checkoutToIssue, checkoutWithChanges, getCurrentBranch, getGitRepoPath, getLatestBranchByCommit, getRemoteOrigin, pullFrom } from "@/domain/git-command/command.functions";
+import { checkCurrentRemoteBranch, checkoutToIssue, checkoutWithChanges, getCurrentBranch, getGitRepoPath, getLatestBranchByCommit, getRemoteAddress, pullFrom } from "@/domain/git-command/command.functions";
 import { ExecuteGitCommand } from "@/domain/git-command/command.types";
 import { applyStashCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getGitRepoPathCmd, getRemoteBranchesCmd, getRemoteUrlCmd, pullFromCmd, stashCmd } from "@/domain/git-command/git-command.values";
 import { GitOutputStatus } from "@/domain/git-command/parser/parser.type";
@@ -164,7 +164,7 @@ test('3.1 getRemoteOrigin with url', async () => {
       return T.of(TEST_HTTPS_GITHUB_REPO);
     }
   }
-  const remoteOrigin = await getRemoteOrigin(mockExecuteWithChange)();
+  const remoteOrigin = await getRemoteAddress(mockExecuteWithChange)('origin');
   expect(remoteOrigin).toBe(TEST_HTTPS_GITHUB_REPO);
 });
 
@@ -174,7 +174,7 @@ test('3.2 getRemoteOrigin with empty', async () => {
       return T.of(TEST_GIT_NO_REMOTE);
     }
   }
-  const remoteOrigin = await getRemoteOrigin(mockExecuteWithChange)();
+  const remoteOrigin = await getRemoteAddress(mockExecuteWithChange)('origin');
   expect(remoteOrigin).toBe("Empty");
 });
 
@@ -205,7 +205,7 @@ test('4.1 checkoutToIssue without creating branch', async () => {
     title: '',
     labels: [],
     branchName: TEST_CPR_BRANCH_NAME,
-  });
+  }, 'origin');
   expect(checkoutBranch).toBe(TEST_CPR_BRANCH_NAME);
   expect(hasCreateBranchCalled).toBe(false);
 });
@@ -242,7 +242,7 @@ test('4.2 checkoutToIssue with creating local tracking branch', async () => {
     title: '',
     labels: [],
     branchName: TEST_NOT_LOCAL_BUT_REMOTE_BRANCH,
-  });
+  }, 'origin');
   expect(checkoutBranch).toBe(TEST_NOT_LOCAL_BUT_REMOTE_BRANCH);
   expect(gitFetchHasbeenCalled).toBe(true);
   expect(hasCreateBranchCalled).toBe(true);
@@ -279,7 +279,7 @@ test('4.3 checkoutToIssue with no local and remote error', async () => {
       title: '',
       labels: [],
       branchName: TEST_NOT_LOCAL_BRANCH,
-    });
+    }, 'origin');
   }catch(e){
     expect(e.subType).toBe("NotExistingBranch")
     expect(hasCreateBranchCalled).toBe(false);
@@ -292,7 +292,7 @@ test('5.1 pullFrom with updated', async () => {
       return T.of(TEST_GIT_PULL_UPDATED_OUTPUT);
     }
   }
-  const status = await pullFrom(mock)('develop') as GitOutputStatus;
+  const status = await pullFrom(mock)('develop', 'origin') as GitOutputStatus;
   expect(status).toEqual('FF_UPDATED');
 });
 
@@ -303,7 +303,7 @@ test('5.2 pullFrom with no remote', async () => {
       return T.of(TEST_GIT_PULL_NO_REMOTE_REF_OUTPUT);
     }
   }
-  const status = await pullFrom(mock)('develop') as GitOutputStatus;
+  const status = await pullFrom(mock)('develop', 'origin') as GitOutputStatus;
   expect(status).toEqual('NO_REMOTE_REF');
 });
 
@@ -313,7 +313,7 @@ test('5.3 pullFrom with conflict', async () => {
       return T.of(TEST_GIT_PULL_CONFLICT_OUTPUT);
     }
   }
-  const status = await pullFrom(mock)('develop') as GitOutputStatus;
+  const status = await pullFrom(mock)('develop', 'origin') as GitOutputStatus;
   expect(status).toEqual('MERGE_CONFLICT');
 });
 
@@ -323,7 +323,7 @@ test('5.4 pullFrom with no change', async () => {
       return T.of(TEST_GIT_PULL_NO_CHANGE_OUTPUT);
     }
   }
-  const status = await pullFrom(mock)('develop') as GitOutputStatus;
+  const status = await pullFrom(mock)('develop', 'origin') as GitOutputStatus;
   expect(status).toEqual('NO_CHANGE');
 });
   
@@ -360,7 +360,7 @@ test('8.1 checkCurrentRemoteBranch with existing remote', async () => {
       return T.of(TEST_CURRENT_BRANCH_WITH_REMOTE);
     }
   }
-  const branch = await checkCurrentRemoteBranch(mock)();
+  const branch = await checkCurrentRemoteBranch(mock)('origin');
   expect(branch).toBe(TEST_CURRENT_BRANCH_WITH_REMOTE.trim());
 });
 
@@ -374,6 +374,6 @@ test('8.2 checkCurrentRemoteBranch with not existing remote', async () => {
       return T.of(TEST_GIT_GET_CURRENT_BRANCH_OUTPUT);
     }
   }
-  const branch = await checkCurrentRemoteBranch(mock)();
+  const branch = await checkCurrentRemoteBranch(mock)('origin');
   expect(branch).toBeUndefined();
 });
