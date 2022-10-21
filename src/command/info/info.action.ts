@@ -1,22 +1,20 @@
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
-import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
-import { IPromptService } from "@/domain/service/i-prompt.service";
+import { getCurrentBranch, getRemoteAddress } from "@/domain/git-command/command.functions";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";
 import { IMessageService } from "@/domain/service/i_message.service";
+import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
 
 export const infoAction = async () => {
-  const gitPlatformService = container.get<IGitPlatformService>(
-    SERVICE_IDENTIFIER.GitPlatformService
-  );
+  const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
   const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-  //const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   const localConfig = await configService.getLocalConfig();
-  const repoUrl = await gitPlatformService.getGitRepoUrl();
-  const currentBranch = await gitPlatformService.getBranchName();
+  const remoteAlias = await configService.getGitRemoteAlias();
+  const repoUrl = await getRemoteAddress(commanderService.executeGitCommand)(remoteAlias);
+  const currentBranch = await getCurrentBranch(commanderService.executeGitCommand)();
   if (
     currentBranch !== localConfig.branchNames.develop &&
     currentBranch !== localConfig.branchNames.release &&

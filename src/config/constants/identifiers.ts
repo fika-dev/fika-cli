@@ -9,6 +9,7 @@ const SERVICE_IDENTIFIER = {
   ErrorHandlingService: Symbol.for("ErrorHandlingService"),
   PromptService: Symbol.for("PromptService"),
   CommanderService: Symbol.for("CommanderService"),
+  GitPlatform: Symbol.for("CommanderService"),
 };
 
 export const PARAMETER_IDENTIFIER = {

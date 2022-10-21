@@ -1,4 +1,3 @@
-import { askToContinueWithUncommitedChanges } from "@/actions/git/ask-to-continue-with-uncommited-changes.action";
 import { Issue } from "@/domain/entity/issue.entity";
 import {
   checkoutToIssue,
@@ -13,39 +12,12 @@ import * as E from "fp-ts/Either";
 import { pipe } from "fp-ts/lib/function";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
 import container from "src/config/ioc_config";
-import { IPromptService } from "src/domain/service/i-prompt.service";
 import { IConfigService } from "src/domain/service/i_config.service";
-import { IGitPlatformService } from "src/domain/service/i_git_platform.service";
 import { IMessageService } from "src/domain/service/i_message.service";
 
 // import { checkoutToIssueBuilder } from "@/domain/git-command/command.functions";
 
-const _checkoutFeatureBranchLegacy = async (issueNumber?: number) => {
-  const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  const gitPlatformService = container.get<IGitPlatformService>(
-    SERVICE_IDENTIFIER.GitPlatformService
-  );
-  const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
-
-  let featureBranch: string;
-  if (issueNumber && !isNaN(issueNumber)) {
-    featureBranch = await configService.getIssueBranch(issueNumber);
-  } else if (issueNumber && isNaN(issueNumber)) {
-    messageService.showWarning("Could not understand your request, please provide a valid number");
-    return;
-  } else {
-    featureBranch = await gitPlatformService.getLatestBranchByCommitDate();
-  }
-  await askToContinueWithUncommitedChanges();
-  if (featureBranch && featureBranch !== "") {
-    await gitPlatformService.checkoutToFeatureBranch(featureBranch);
-    messageService.showSuccess(`Checkout to branch: ${featureBranch}`);
-  } else {
-    messageService.showWarning("Could not find a feature branch that matches your request");
-  }
-};
-
-const _checkoutFeatureBranchFunctional = async (issueNumber?: number) => {
+export const checkoutFeatureBranchAction = async (issueNumber?: number) => {
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
   const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
   const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
@@ -87,5 +59,3 @@ const _checkIssueBranch =
       };
     }
   };
-
-export const checkoutFeatureBranchAction = _checkoutFeatureBranchFunctional;
