@@ -86,8 +86,8 @@ beforeEach(async()=>{
   
 });
 
-afterEach(async() => {
-  await messageService.endWaiting();
+afterEach(() => {
+  messageService.endWaiting();
 });
 
 

@@ -13,10 +13,10 @@ import { clearLocalConfig, clearTestFikaPath, spyWithMock } from "test/test-util
 const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
 
-afterEach(async ()=>{
+afterEach(()=>{
   jest.clearAllMocks();
   clearLocalConfig(process.env.TESTING_REPO_PATH);
-  await messageService.endWaiting();
+  messageService.endWaiting();
 });
 
 beforeEach(()=>{

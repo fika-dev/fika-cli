@@ -147,9 +147,9 @@ export class ErrorHandlingService implements IErrorHandlingService {
       code: exception.type,
     });
   }
-  async handle(exception: BaseException): Promise<void> {
+  handle(exception: BaseException): void {
     const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-    await messageService.endWaiting();
+    messageService.endWaiting();
     if (exception.name === "GH_CLI_NOT_LOGGEDIN") {
       messageService.showError({
         message: `github client 에 로그인이 되지 않았습니다.\n\n gh auth login\n\n 으로 login 을 해주세요.`,

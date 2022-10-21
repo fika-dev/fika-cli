@@ -30,7 +30,7 @@ beforeEach(async()=>{
 });
 
 afterEach(async ()=>{
-  await messageService.endWaiting();
+  messageService.endWaiting();
 
 })
 

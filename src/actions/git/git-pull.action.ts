@@ -17,7 +17,7 @@ export const gitPullAction = async (branchName: string): Promise<GitOutputStatus
     remoteAlias
   )) as GitOutputStatus;
   const gitRemoteAlias = await configService.getGitRemoteAlias();
-  await messageService.endWaiting();
+  messageService.endWaiting();
   if (gitStatus === "FF_UPDATED") {
     messageService.showSuccess(`Synced from ${gitRemoteAlias} ${branchName}`);
   } else if (gitStatus === "NO_CHANGE") {

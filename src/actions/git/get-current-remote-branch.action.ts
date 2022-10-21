@@ -14,6 +14,6 @@ export const getCurrentRemoteBranch = async (): Promise<string | undefined> => {
   const branchName = await checkCurrentRemoteBranch(commanderService.executeGitCommand)(
     remoteAlias
   );
-  await messageService.endWaiting();
+  messageService.endWaiting();
   return branchName;
 };
