@@ -11,7 +11,7 @@ import { IConnectService } from "@/domain/service/i_connect.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import { Uuid } from "@/domain/value_object/uuid.vo";
 import * as T from "fp-ts/Task";
-import { TEST_BRANCH_LIST, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_GIT_PULL_CONFLICT_OUTPUT, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_PUSH_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_HTTPS_GITHUB_REPO, TEST_REMOTE_BRANCHES } from "test/test-constants";
+import { TEST_BRANCH_LIST, TEST_CPR_BRANCH_NAME, TEST_GITHUB_URL, TEST_GIT_CLEAN_STATUS, TEST_GIT_PULL_CONFLICT_OUTPUT, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_PUSH_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_HTTPS_GITHUB_REPO, TEST_REMOTE_BRANCHES } from "test/test-constants";
 import { checkAndCloneRepo, createTestConfig, setUseToken, spyWithMock } from "test/test-utils";
 
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
@@ -62,7 +62,7 @@ beforeAll(async () => {
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   jest.spyOn(configService, 'getWorkspaceType').mockImplementation(()=>'notion');
   jest.spyOn(connectService, 'getIssueRecord').mockImplementation((issueNumber, gitRepoUrl)=>{
-    if (issueNumber === 2 && (gitRepoUrl == TEST_HTTPS_GITHUB_REPO.slice(0, -4))){
+    if (issueNumber === 2 && (gitRepoUrl == TEST_GITHUB_URL)){
       return Promise.resolve({
         id: 'a38a4d5d-1407-4fce-a7ec-192d8ab58495',
         title: 'test fika start doc',

@@ -78,7 +78,7 @@ container
     );
     return await getGitRepoPath(commanderService.executeGitCommand)();
   });
-container.bind<GitPlatform>(SERVICE_IDENTIFIER.GitPlatform).to(GitHub);
+container.bind<GitPlatform>(SERVICE_IDENTIFIER.GitPlatform).to(GitHub).inSingletonScope();
 
 if (!process.env.FIKA_ENV) {
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(fikaApiUrl);

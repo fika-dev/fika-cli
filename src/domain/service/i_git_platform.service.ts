@@ -10,9 +10,6 @@ export interface IssueWithPR {
 }
 
 export interface IGitPlatformService {
-  createIssue(issue: Issue): Promise<Issue>; // not Cmd
-  createPR(issue: Issue, branchName: string, baseBranch?: string): Promise<Issue>; // not cmd
-  configGitPlatform(config: AddOnConfig); // not Cmd
   pushBranch(branchName: string): Promise<void>; // need two arguments origin and branchName
   getBranchName(): Promise<string>; // redundant
   getGitRepoUrl(): Promise<string>; // need one argument and post treatment

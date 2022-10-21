@@ -1,5 +1,5 @@
-import { checkCurrentBranch, checkGhCliVersion, checkGitVersion, checkHeadParser, checkMergeConflict, parseRemoteAddress, checkStagedChangesParser, checkUnstagedChangeParser, checkUntrackedFilesParser, parseMultipleLines } from "@/domain/git-command/parser/parser.functions";
-import { TEST_BRANCH_LIST, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_GIT_MERGE_CONFLICT_STATUS, TEST_GIT_NO_REMOTE, TEST_GIT_STATUS_STRING, TEST_GIT_STATUS_WITH_STAGED, TEST_HEAD_NOT_DEFINED, TEST_HTTPS_GITHUB_REPO, TEST_NO_COMMIT_STATUS, TEST_SSH_GITHUB_REPO, TEST_GIT_VERSION_OUTPUT, TEST_GH_VERSION_OUTPUT, TEST_NOT_INSTALLED, TEST_GH_VERSION_ONE_LINE_OUPUT, TEST_CPR_COMMIT_MESSAGE } from "test/test-constants";
+import { checkCurrentBranch, checkGhCliVersion, checkGitVersion, checkHeadParser, checkMergeConflict, parseRemoteAddress, checkStagedChangesParser, checkUnstagedChangeParser, checkUntrackedFilesParser, parseMultipleLines, parseGithubUrl } from "@/domain/git-command/parser/parser.functions";
+import { TEST_BRANCH_LIST, TEST_CPR_BRANCH_NAME, TEST_GIT_CLEAN_STATUS, TEST_GIT_MERGE_CONFLICT_STATUS, TEST_GIT_NO_REMOTE, TEST_GIT_STATUS_STRING, TEST_GIT_STATUS_WITH_STAGED, TEST_HEAD_NOT_DEFINED, TEST_HTTPS_GITHUB_REPO, TEST_NO_COMMIT_STATUS, TEST_SSH_GITHUB_REPO, TEST_GIT_VERSION_OUTPUT, TEST_GH_VERSION_OUTPUT, TEST_NOT_INSTALLED, TEST_GH_VERSION_ONE_LINE_OUPUT, TEST_CPR_COMMIT_MESSAGE, TEST_GITHUB_URL } from "test/test-constants";
 
 beforeAll(()=>{
   jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
@@ -107,3 +107,15 @@ test("10. checkGhCliVersion", async () => {
   const emptyValue = checkGhCliVersion(' ');
   expect(emptyValue).toEqual( { type: 'ValidationError',subType: 'NotIncludingPattern', value: '' });
 });
+
+test('11.2 getGitRepoHttpUrl from https', async () => {
+  const githubUrl = parseGithubUrl(TEST_HTTPS_GITHUB_REPO);
+  expect(githubUrl).toEqual(TEST_GITHUB_URL);
+});
+
+
+test('11.1 getGitRepoHttpUrl from ssh', async () => {
+  const githubUrl = parseGithubUrl(TEST_SSH_GITHUB_REPO);
+  expect(githubUrl).toEqual(TEST_GITHUB_URL);
+});
+

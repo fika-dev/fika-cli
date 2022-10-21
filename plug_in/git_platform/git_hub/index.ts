@@ -26,14 +26,18 @@ import { GitPlatform } from "@/domain/entity/add_on/git_platform.entity";
 import { Issue } from "src/domain/entity/issue.entity";
 import { AddOnConfig } from "src/domain/value_object/add_on_config.vo";
 import { promisify } from "util";
+import { inject, injectable } from "inversify";
+import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 
-export class GitHub extends GitPlatform {
+@injectable()
+export class GitHub implements GitPlatform {
   private configService: IConfigService;
   private gitRepoPath: string;
 
-  constructor(config: AddOnConfig, configService: IConfigService, gitRepoPath: string) {
-    super(config);
-    this.addonType = AddOnType.GitPlatform;
+  constructor(
+    @inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService,
+    @inject(PARAMETER_IDENTIFIER.ExcutedPath) gitRepoPath: string
+  ) {
     this.configService = configService;
     this.gitRepoPath = gitRepoPath;
   }

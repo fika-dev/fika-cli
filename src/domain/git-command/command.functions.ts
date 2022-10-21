@@ -16,7 +16,7 @@ import {
   getCurrentBranchCmd,
   getGitCommandWithArgument,
   getGitRepoPathCmd,
-  getRemoteUrlCmd as getRemoteAddressCmd,
+  getRemoteUrlCmd,
   pullFromCmd,
   pushBranchCmd,
   stashCmd,
@@ -25,9 +25,9 @@ import {
   checkNoError,
   checkNoErrorAndReturnOutput,
   isFeatureBranch,
+  parseGithubUrl,
   parseMultipleLines,
   parsePullOutput,
-  parseRemoteAddress,
 } from "@/domain/git-command/parser/parser.functions";
 import {
   existsLocalBranch,
@@ -222,8 +222,8 @@ export const getRemoteAddress =
   (execute: ExecuteGitCommand) =>
   async (remoteAlias: string): Promise<string> => {
     const addressOrError = await executeAndParseGitCommand(execute)({
-      command: getGitCommandWithArgument(getRemoteAddressCmd)(remoteAlias),
-      parser: parseRemoteAddress,
+      command: getGitCommandWithArgument(getRemoteUrlCmd)(remoteAlias),
+      parser: parseGithubUrl,
     })();
     if (typeof addressOrError === "string") {
       return addressOrError as string;

@@ -34,6 +34,8 @@ export const TEST_CPR_BRANCH_NAME = 'feature/iss/#2';
 
 export const TEST_HTTPS_GITHUB_REPO = 'https://github.com/fika-dev/fika-cli-test-samples.git';
 
+export const TEST_GITHUB_URL = 'https://github.com/fika-dev/fika-cli-test-samples';
+
 export const TEST_SSH_GITHUB_REPO = 'git@github.com:fika-dev/fika-cli-test-samples.git';
 
 export const TEST_UNVALID_BRANCH_NAME = 'feature is not';
