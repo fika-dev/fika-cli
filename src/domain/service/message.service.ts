@@ -76,28 +76,38 @@ export class MessageService implements IMessageService {
     }
   }
   showSuccess(message: string, subMessage?: string, link?: string): void {
-    readline.cursorTo(process.stdout, 0);
-    process.stdout.write(`${this.withGreenBoldChalk(`✅ ${message}`)}\n`);
-    if (subMessage) {
-      process.stdout.write(`${this.withWhiteBoldChalk(` ${subMessage}`)}\n`);
-    }
-    if (link) {
-      process.stdout.write(` link: ${this.withYellowUnderlineChalk(`${link}`)}\n`);
-    }
+    this._clearLine(() => {
+      process.stdout.write(`${this.withGreenBoldChalk(`✅ ${message}`)}\n`);
+      if (subMessage) {
+        process.stdout.write(`${this.withWhiteBoldChalk(` ${subMessage}`)}\n`);
+      }
+      if (link) {
+        process.stdout.write(` link: ${this.withYellowUnderlineChalk(`${link}`)}\n`);
+      }
+    });
   }
   showWarning(message: string): void {
-    readline.cursorTo(process.stdout, 0);
-    process.stdout.write(this.withYellowBoldChalk(`Warning: ${message}\n`));
+    this._clearLine(() => {
+      process.stdout.write(this.withYellowBoldChalk(`Warning: ${message}\n`));
+    });
   }
   showError(message: ErrorMessage): void {
-    readline.cursorTo(process.stdout, 0);
-    process.stdout.write(`🚨 ${this.withRedBoldChalk(`Error: ${message.code}`)}\n`);
-    process.stdout.write(this.withRedBoldChalk(`${message.message}\n`));
-    if (message.guideUrl) {
-      process.stdout.write(`🟢 아래 url 에서 더 많은 정보를 확인해 보세요\n`);
-      process.stdout.write(`${message.guideUrl}\n`);
-    }
+    this._clearLine(() => {
+      process.stdout.write(`🚨 ${this.withRedBoldChalk(`Error: ${message.code}`)}\n`);
+      process.stdout.write(this.withRedBoldChalk(`${message.message}\n`));
+      if (message.guideUrl) {
+        process.stdout.write(`🟢 아래 url 에서 더 많은 정보를 확인해 보세요\n`);
+        process.stdout.write(`${message.guideUrl}\n`);
+      }
+    });
   }
+
+  _clearLine(callback: () => void): void {
+    readline.cursorTo(process.stdout, 0, undefined, () => {
+      readline.clearLine(process.stdout, 0, callback);
+    });
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   showCheckoutToExistingIssue(issue: Issue, branchName: string): void {
