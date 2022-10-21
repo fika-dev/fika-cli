@@ -24,5 +24,5 @@ export interface IMessageService {
   showNeedUpdate(version: string): void;
   showRecommendUpdate(version: string): void;
   showWaiting(message: string): void;
-  endWaiting(): void;
+  endWaiting(): Promise<void>;
 }
