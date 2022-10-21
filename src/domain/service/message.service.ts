@@ -4,7 +4,7 @@ import { ErrorMessage, IMessageService } from "./i_message.service";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import { IConfigService } from "./i_config.service";
 import * as readline from "readline";
-
+import { promisify } from "util";
 interface TerminalColor {
   x: number;
   y: number;
@@ -49,27 +49,30 @@ export class MessageService implements IMessageService {
   }
 
   showWaiting(message: string): void {
-    // const waitingFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
-    const waitingFrames = [".", "..", "...", "...."];
+    const waitingFrames = [".    ", "..  ", "... ", "...."];
     var i: number = 0;
     const messageWithEmoji = `🧘 ${message} `;
     const messageLength = messageWithEmoji.length;
-    process.stdout.write(messageWithEmoji);
+    process.stdout.write(messageWithEmoji + waitingFrames[i % waitingFrames.length] + "\n");
     this.timer = setInterval(() => {
-      readline.clearLine(process.stdout, 1, () => {
+      readline.moveCursor(process.stdout, 0, -1, () => {
         readline.cursorTo(process.stdout, messageLength, undefined, () => {
-          process.stdout.write(`${waitingFrames[i % waitingFrames.length]}`);
+          process.stdout.write(waitingFrames[i % waitingFrames.length] + "\n");
         });
       });
       i += 1;
     }, 300);
   }
-  endWaiting(): void {
-    if (this.timer) {
+  async endWaiting(): Promise<void> {
+    const moveCursor = promisify(readline.moveCursor);
+    const clearLine = promisify(readline.clearLine);
+    const cursorTo = promisify(readline.cursorTo);
+    if (this.timer !== undefined) {
       clearInterval(this.timer);
-      readline.clearLine(process.stdout, 0, () => {
-        readline.cursorTo(process.stdout, 0);
-      });
+      this.timer = undefined;
+      await moveCursor(process.stdout, 0, -1);
+      await clearLine(process.stdout, 0);
+      await cursorTo(process.stdout, 0, undefined);
     }
   }
   showSuccess(message: string, subMessage?: string, link?: string): void {

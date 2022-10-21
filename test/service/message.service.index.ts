@@ -25,7 +25,10 @@ function testWrite() {
     messageService.showWaiting("Creating issue in Github2");
   }, 7010);
   setTimeout(() => {
-    messageService.endWaiting();
+    process.stdout.write(`Enter passphrase for key '/Users/wonmojung/.ssh/id_rsa':`)
   }, 9010);
+  setTimeout(() => {
+    messageService.endWaiting();
+  }, 12010);
 }
 testWrite();

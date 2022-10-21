@@ -24,8 +24,12 @@ export const createGitPlatformPR = async (branchName: string, issue: Issue): Pro
   } catch (e) {
     const exception = e as BaseException;
     if (exception.name === "GhPrAlreadyExists") {
-      messageService.endWaiting();
+      await messageService.endWaiting();
       messageService.showSuccess("PR link", undefined, issue.gitPrUrl);
+      // setTimeout(() => {
+      //   messageService.showSuccess("PR link", undefined, issue.gitPrUrl);
+      // }, 100);
+
       throw exception;
     } else {
       throw exception;
