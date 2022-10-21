@@ -16,7 +16,7 @@ import {
   getCurrentBranchCmd,
   getGitCommandWithArgument,
   getGitRepoPathCmd,
-  getRemoteUrlCmd,
+  getRemoteUrlCmd as getRemoteAddressCmd,
   pullFromCmd,
   pushBranchCmd,
   stashCmd,
@@ -221,14 +221,14 @@ export const checkoutToBranchName =
 export const getRemoteAddress =
   (execute: ExecuteGitCommand) =>
   async (remoteAlias: string): Promise<string> => {
-    const originOrError = await executeAndParseGitCommand(execute)({
-      command: getGitCommandWithArgument(getRemoteUrlCmd)(remoteAlias),
+    const addressOrError = await executeAndParseGitCommand(execute)({
+      command: getGitCommandWithArgument(getRemoteAddressCmd)(remoteAlias),
       parser: parseRemoteAddress,
     })();
-    if (typeof originOrError === "string") {
-      return originOrError as string;
+    if (typeof addressOrError === "string") {
+      return addressOrError as string;
     } else {
-      throw originOrError;
+      throw addressOrError;
     }
   };
 
