@@ -1,4 +1,4 @@
-import { validateBranchName, validateHttpAddress, validateHttpsGithubAddress, validateIncludeString, validateIssueNumber, validateNumber, validateSshGithubAddress } from "@/domain/rules/validation-rules/validate.functions";
+import { validateBranchName, validateHttpsGithubAddress, validateIncludeString, validateIssueNumber, validateNumber, validateSshGithubAddress } from "@/domain/rules/validation-rules/validate.functions";
 import container from "src/config/ioc_config";
 import * as E from 'fp-ts/Either';
 import * as assert from 'assert';
@@ -41,13 +41,13 @@ test('2. validateIssueNumber', async () => {
   }))
 });
 
-test('3. validateHttpAddress', async () => {
-  const validHttpAddress = validateHttpAddress("https://github.com");
-  expect(E.isRight(validHttpAddress)).toBe(true);
-  assert.deepEqual(validHttpAddress, E.right("https://github.com"))
-  const unvalidHttpAddress = validateHttpAddress("www.github.com");
-  expect(E.isRight(unvalidHttpAddress)).toBe(false);
-});
+// test('3. validateHttpAddress', async () => {
+//   const validHttpAddress = validateHttpAddress("https://github.com");
+//   expect(E.isRight(validHttpAddress)).toBe(true);
+//   assert.deepEqual(validHttpAddress, E.right("https://github.com"))
+//   const unvalidHttpAddress = validateHttpAddress("www.github.com");
+//   expect(E.isRight(unvalidHttpAddress)).toBe(false);
+// });
 
 test('4. validateIncludeString', async () => {
   const validIncluded = validateIncludeString(unstagedChangePattern)(TEST_GIT_STATUS_STRING);
@@ -81,6 +81,8 @@ test('7. validateSshGithubAddress', async () => {
   const unvalidRepo = validateSshGithubAddress(TEST_HTTPS_GITHUB_REPO);
   expect(E.isRight(unvalidRepo)).toBe(false);
 });
+
+
 
 
 

@@ -1,8 +1,7 @@
-import { Context } from "@/domain/context/context.types";
+import { ContextValue } from "@/domain/context/context.types";
 import { DomainError } from "@/domain/general/general.types";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
-import * as O from "fp-ts/Option";
 import { Validate } from "./validation-rule.types";
 
 export const validateNumber: Validate<number> = (value: number) => {
@@ -29,30 +28,32 @@ export const validateIssueNumber: Validate<number> = (
   );
 };
 
-export const validateHttpAddress: Validate<string> = (unvalidatedAddress: string) => {
-  if (unvalidatedAddress.startsWith("http")) {
-    return E.right(unvalidatedAddress);
-  } else {
-    return E.left({
-      type: "ValidationError",
-      subType: "NotHttpAddress",
-      value: unvalidatedAddress,
-    } as DomainError);
-  }
-};
+// export const validateHttpAddress: Validate<string> = (unvalidatedAddress: string) => {
+//   if (unvalidatedAddress.startsWith("http")) {
+//     return E.right(unvalidatedAddress);
+//   } else {
+//     return E.left({
+//       type: "ValidationError",
+//       subType: "NotHttpAddress",
+//       value: unvalidatedAddress,
+//     } as DomainError);
+//   }
+// };
 
-export const validateIncludeString = (pattern: string) => (unvalidatedString: string) => {
-  const matched = unvalidatedString.includes(pattern);
-  if (matched) {
-    return E.right(unvalidatedString);
-  } else {
-    return E.left({
-      type: "ValidationError",
-      subType: "NotIncludingPattern",
-      value: unvalidatedString,
-    } as DomainError);
-  }
-};
+export const validateIncludeString =
+  (pattern: string) =>
+  (unvalidatedString: string): E.Either<DomainError, ContextValue> => {
+    const matched = unvalidatedString.includes(pattern);
+    if (matched) {
+      return E.right(unvalidatedString);
+    } else {
+      return E.left({
+        type: "ValidationError",
+        subType: "NotIncludingPattern",
+        value: unvalidatedString,
+      } as DomainError);
+    }
+  };
 
 export const validateBranchName: Validate<string> = (unvalidatedBranchName: string) => {
   const branchNamePattern: RegExp = /^[A-Za-z0-9\.\/\#\_\@-]+$/g;

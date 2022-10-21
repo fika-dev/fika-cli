@@ -1,7 +1,7 @@
 import { Issue } from "../issue.entity";
 import { AddOn } from "./add_on.entity";
 
-export abstract class GitPlatform extends AddOn {
-  abstract createIssue(issue: Issue): Promise<Issue>;
-  abstract createPR(issue: Issue, branchName: string, baseBranchName: string): Promise<Issue>;
+export interface GitPlatform {
+  createIssue(issue: Issue): Promise<Issue>;
+  createPR(issue: Issue, branchName: string, baseBranchName: string): Promise<Issue>;
 }

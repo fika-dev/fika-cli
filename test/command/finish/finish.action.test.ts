@@ -1,25 +1,24 @@
+import { finishAction } from "@/command/finish/finish.action";
+import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import container from "@/config/ioc_config";
+import { GitPlatform } from "@/domain/entity/add_on/git_platform.entity";
 import { GitCommand } from "@/domain/git-command/command.types";
-import { checkoutCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getGitRepoPathCmd, getRemoteBranchesCmd, getRemoteOriginCmd, pullFromCmd, pushBranchCmd, statusCmd } from "@/domain/git-command/git-command.values";
+import { checkoutCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getGitRepoPathCmd, getRemoteBranchesCmd, getRemoteUrlCmd, pullFromCmd, pushBranchCmd, statusCmd } from "@/domain/git-command/git-command.values";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
-import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
-import { IMessageService } from "@/domain/service/i_message.service";
-import { TEST_BRANCH_LIST, TEST_CPR_BRANCH_NAME, TEST_CPR_DOC_ID, TEST_GIT_CLEAN_STATUS, TEST_GIT_GET_CURRENT_BRANCH_OUTPUT, TEST_GIT_PULL_CONFLICT_OUTPUT, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_PUSH_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_HTTPS_GITHUB_REPO, TEST_REMOTE_BRANCHES } from "test/test-constants";
-import { checkAndCloneRepo, createTestConfig, setUseToken, spyWithMock } from "test/test-utils";
-import * as T from "fp-ts/Task";
-import { finishAction } from "@/command/finish/finish.action";
 import { IConnectService } from "@/domain/service/i_connect.service";
+import { IMessageService } from "@/domain/service/i_message.service";
 import { Uuid } from "@/domain/value_object/uuid.vo";
-import { defaultLocalConfig } from "@/config/constants/default_config";
-import { json } from "stream/consumers";
+import * as T from "fp-ts/Task";
+import { TEST_BRANCH_LIST, TEST_CPR_BRANCH_NAME, TEST_GITHUB_URL, TEST_GIT_CLEAN_STATUS, TEST_GIT_PULL_CONFLICT_OUTPUT, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_PUSH_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_HTTPS_GITHUB_REPO, TEST_REMOTE_BRANCHES } from "test/test-constants";
+import { checkAndCloneRepo, createTestConfig, setUseToken, spyWithMock } from "test/test-utils";
 
-const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
 const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
 const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
 const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
+const gitPlatform = container.get<GitPlatform>(SERVICE_IDENTIFIER.GitPlatform);
 
 const defaultMock = (additionalMock)=> (cmd: GitCommand) => {
   const t = additionalMock(cmd);
@@ -42,7 +41,7 @@ const defaultMock = (additionalMock)=> (cmd: GitCommand) => {
       return T.of(TEST_REMOTE_BRANCHES);
     }if (cmd.command === fetchCmd.command){
       return T.of('');
-    }if (cmd.command === getRemoteOriginCmd.command){
+    }if (cmd.command === getRemoteUrlCmd.command){
       return T.of(TEST_HTTPS_GITHUB_REPO);
     }if (cmd.command === pushBranchCmd.command){
       return T.of(TEST_GIT_PUSH_OUTPUT);
@@ -63,7 +62,7 @@ beforeAll(async () => {
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   jest.spyOn(configService, 'getWorkspaceType').mockImplementation(()=>'notion');
   jest.spyOn(connectService, 'getIssueRecord').mockImplementation((issueNumber, gitRepoUrl)=>{
-    if (issueNumber === 2 && (gitRepoUrl == TEST_HTTPS_GITHUB_REPO.slice(0, -4))){
+    if (issueNumber === 2 && (gitRepoUrl == TEST_GITHUB_URL)){
       return Promise.resolve({
         id: 'a38a4d5d-1407-4fce-a7ec-192d8ab58495',
         title: 'test fika start doc',
@@ -80,7 +79,7 @@ beforeAll(async () => {
     return Promise.resolve(issue);
   });
   jest.spyOn(connectService, 'createIssueRecord').mockImplementation((issue)=>Promise.resolve(undefined));
-  jest.spyOn(gitPlatformService, 'createPR').mockImplementation((issue)=>{
+  jest.spyOn(gitPlatform, 'createPR').mockImplementation((issue)=>{
     const updated = {
       ...issue,
       gitPrUrl: "https://github.com/fika-dev/fika-cli-test-samples/pull/3"

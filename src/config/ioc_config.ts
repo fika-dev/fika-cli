@@ -25,6 +25,8 @@ import { SnapshotService } from "src/domain/service/snapshot.service";
 import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "./constants/identifiers";
 import { FIKA_PATH } from "./constants/path";
 import { fikaApiUrl } from "./constants/uri";
+import { GitPlatform } from "@/domain/entity/add_on/git_platform.entity";
+import { GitHub } from "plug_in/git_platform/git_hub";
 
 dotenv.config();
 let container = new Container();
@@ -76,6 +78,7 @@ container
     );
     return await getGitRepoPath(commanderService.executeGitCommand)();
   });
+container.bind<GitPlatform>(SERVICE_IDENTIFIER.GitPlatform).to(GitHub).inSingletonScope();
 
 if (!process.env.FIKA_ENV) {
   container.bind<string>(PARAMETER_IDENTIFIER.Domain).toConstantValue(fikaApiUrl);

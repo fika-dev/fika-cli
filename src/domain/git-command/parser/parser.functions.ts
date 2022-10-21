@@ -8,8 +8,8 @@ import {
 } from "@/domain/rules/validation-rules/validate.functions";
 import * as E from "fp-ts/Either";
 import { flow, pipe } from "fp-ts/function";
-import { ContextValueOrError, CmdOutputParser } from "../../context/git-context/git-context.types";
-import { OutputPattern, OutputPatterns } from "./parser.type";
+import { CmdOutputParser, ContextValueOrError } from "../../context/git-context/git-context.types";
+import { OutputPattern } from "./parser.type";
 import {
   commandNotFound,
   errorPattern,
@@ -50,6 +50,26 @@ const listFilter = f => (inputList: any[]) => inputList.filter(f);
 const listFind = f => (inputList: any[]) => inputList.find(f);
 const keepOnlyTheFirstLine = (result: string) => result.split("\n")[0];
 
+const httpsGithubAddressPattern: RegExp = /https\:\/\/github\.com\/(.+)\/(.+)\.git/g;
+const sshGithubAddressPattern: RegExp = /git\@github.com\:(.+)\/(.+)\.git/g;
+const parseGithubUrlUsingRegex = (re: RegExp) => (result: string) => {
+  re.lastIndex = 0;
+  const matched = re.exec(result);
+  if (matched) {
+    const [, owner, repo] = matched;
+    return E.right(`https://github.com/${owner}/${repo}`);
+  } else {
+    return E.left({
+      type: "ValidationError",
+      subType: "NotHttpAddress",
+      value: result,
+    } as DomainError);
+  }
+};
+
+const parseGithubUrlFromHttps = parseGithubUrlUsingRegex(httpsGithubAddressPattern);
+const parseGithubUrlFromSsh = parseGithubUrlUsingRegex(sshGithubAddressPattern);
+
 export const isFeatureBranch = (issueBranchPattern: string) => (log: string) => {
   const pt = issueBranchPattern.replace(issueNumberTag, "(\\d{1,6})");
   const re = new RegExp(pt);
@@ -62,7 +82,7 @@ export const checkUntrackedFilesParser: CmdOutputParser = isPatternMatched(untra
 export const checkStagedChangesParser: CmdOutputParser = isPatternMatched(stagedChangesPattern);
 export const checkMergeConflict: CmdOutputParser = isPatternMatched(mergeConflictStatusPattern);
 
-export const checkRemoteOrigin: CmdOutputParser = result => {
+export const parseRemoteAddress: CmdOutputParser = result => {
   const preprocessed = pipe(result, trim);
   return pipe(
     preprocessed,
@@ -123,13 +143,13 @@ export const checkCurrentBranch: CmdOutputParser = result => {
   );
 };
 
-export const parseBranches: CmdOutputParser = result => {
+export const parseMultipleLines: CmdOutputParser = result => {
   return pipe(
     result,
     trim,
     splitToList("\n"),
     listMap(trim),
-    listFilter((branch: string) => branch.length > 0)
+    listFilter((line: string) => line.length > 0)
   );
 };
 
@@ -174,4 +194,16 @@ export const checkNoErrorAndReturnOutput: CmdOutputParser = result => {
         value: result,
       } as DomainError)
     : result.trim();
+};
+
+export const parseGithubUrl: CmdOutputParser = result => {
+  const preprocessed = pipe(result, trim);
+  return pipe(
+    preprocessed,
+    parseGithubUrlFromHttps,
+    E.alt(() => parseGithubUrlFromSsh(preprocessed)),
+    E.getOrElse((e: DomainError) => {
+      return e as ContextValueOrError;
+    })
+  );
 };

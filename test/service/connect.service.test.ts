@@ -4,12 +4,10 @@ import container from "@/config/ioc_config";
 import { Issue } from "@/domain/entity/issue.entity";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";
-import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { Uuid } from "@/domain/value_object/uuid.vo";
-import { TEST_HTTPS_GITHUB_REPO, TEST_JIRA_WORKSPACE_ID, TEST_NOTION_WORKSPACE_ID, TEST_START_DOC_URL, TEST_START_DOC_JIRA_URL, TEST_START_ISSUE } from "test/test-constants";
+import { TEST_HTTPS_GITHUB_REPO, TEST_JIRA_WORKSPACE_ID, TEST_NOTION_WORKSPACE_ID, TEST_START_DOC_JIRA_URL, TEST_START_DOC_URL, TEST_START_ISSUE } from "test/test-constants";
 import { checkAndCloneRepo, createTestConfig, restoreGitRepo, setUseToken } from "test/test-utils";
 
-const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
 const connectService = container.get<IConnectService>(SERVICE_IDENTIFIER.ConnectService);
 
@@ -23,7 +21,6 @@ beforeAll(async () => {
 beforeEach(async()=>{
   jest.restoreAllMocks();
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid(TEST_NOTION_WORKSPACE_ID));
-  await gitPlatformService.checkoutToBranchWithoutReset('develop');
   await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });
 

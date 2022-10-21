@@ -1,20 +1,15 @@
+import { issueNumberTag } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER, { PARAMETER_IDENTIFIER } from "@/config/constants/identifiers";
 import { exec } from "child_process";
 import fs from "fs";
 import { inject, injectable } from "inversify";
-import { GitHub } from "plug_in/git_platform/git_hub";
 import { promisify } from "util";
-import { AddOnType } from "../entity/add_on/add_on.entity";
-import { GitPlatform } from "../entity/add_on/git_platform.entity";
-import { Issue } from "../entity/issue.entity";
-import { IGitPlatformService, IssueWithPR } from "./i_git_platform.service";
-import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { GitError } from "../value_object/exceptions/git_error";
 import { NothingToCommit } from "../value_object/exceptions/nothing_to_commit";
 import { NoRemoteBranch } from "../value_object/exceptions/no_remote_branch";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IConfigService } from "./i_config.service";
-import { issueNumberTag } from "@/config/constants/default_config";
+import { IGitPlatformService, IssueWithPR } from "./i_git_platform.service";
 
 export type GitStatus = "UPDATED" | "REMOTE_CONFLICT" | "NO_CHANGE" | "NO_REMOTE_BRANCH";
 
@@ -22,7 +17,6 @@ export type GitStatus = "UPDATED" | "REMOTE_CONFLICT" | "NO_CHANGE" | "NO_REMOTE
 export class GitPlatformService implements IGitPlatformService {
   private configService: IConfigService;
   private gitRepoPath: string;
-  private _gitPlatform: GitPlatform;
   constructor(
     @inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService,
     @inject(PARAMETER_IDENTIFIER.ExcutedPath) gitRepoPath: string
@@ -287,35 +281,6 @@ export class GitPlatformService implements IGitPlatformService {
     const { stdout: pushOut, stderr: pushErr } = await this.execP(
       `git push -u origin ${branchName}`
     );
-  }
-
-  async createIssue(issue: Issue): Promise<Issue> {
-    if (this._gitPlatform) {
-      return await this._gitPlatform.createIssue(issue);
-    } else {
-      throw new Error("Git Platform is not defined, need to config first");
-    }
-  }
-  configGitPlatform(config: AddOnConfig) {
-    if (config.type === AddOnType.GitPlatform) {
-      if (config.name === "Github.GitPlatform") {
-        this._gitPlatform = new GitHub(config, this.configService, this.gitRepoPath);
-      }
-    }
-  }
-
-  async createPR(issue: Issue, branchName: string, baseBranch?: string): Promise<Issue> {
-    if (this._gitPlatform) {
-      let baseBranchName: string;
-      if (!baseBranch) {
-        baseBranchName = await this.configService.getBaseBranch();
-      } else {
-        baseBranchName = baseBranch;
-      }
-      return await this._gitPlatform.createPR(issue, branchName, baseBranchName);
-    } else {
-      throw new Error("Git Platform is not defined, need to config first");
-    }
   }
 
   private parseMergedLog(log: string, issueBranchPattern: string) {

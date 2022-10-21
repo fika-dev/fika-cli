@@ -28,7 +28,7 @@ export const checkoutCmd: GitCommand = {
 };
 
 // checkRemoteBranchExist(branchName: string): Promise<boolean>;
-// need one argument origin/branchName
+// need one argument remoteAlias /branchName
 export const checkRemoteBranchExistCmd: GitCommand = {
   command: "show-branch remotes/",
   requiredArgument: true,
@@ -96,7 +96,7 @@ export const getRemoteBranchesCmd: GitCommand = {
   command: "branch -r",
 };
 
-// need one argument origin
+// need one argument remoteAlias
 export const getRemoteUrlCmd: GitCommand = {
   command: "remote get-url",
   requiredArgument: true,
@@ -125,19 +125,19 @@ export const gitInitCmd: GitCommand = {
 //  pullFrom(branchName: string): Promise<GitStatus>;
 // need one argument branchName and post treatment with catching errors
 export const pullFromCmd: GitCommand = {
-  command: "pull --ff origin ",
+  command: "pull --ff ",
   requiredArgument: true,
 };
 
 // pushBranch(branchName: string): Promise<void>;
-// need 2 arguments origin and BranchName
+// need 2 arguments remoteAlias and BranchName
 export const pushBranchCmd: GitCommand = {
   command: "push",
   requiredArgument: true,
 };
 
 // removeRemoteUrl(): Promise<void>;
-// need one argument origin
+// need one argument remoteAlias
 export const removeRemotsUrlCmd: GitCommand = {
   command: "remote remove ",
   requiredArgument: true,
@@ -174,4 +174,6 @@ export const getGitRepoPathCmd: GitCommand = {
   command: "rev-parse --show-toplevel",
 };
 
-export const getRemoteOriginCmd: GitCommand = getGitCommandWithArgument(getRemoteUrlCmd)("origin");
+export const getRemoteCmd: GitCommand = {
+  command: "remote",
+};

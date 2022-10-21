@@ -1,6 +1,5 @@
 import { Issue } from "@/domain/entity/issue.entity";
-import { getCurrentBranch, getRemoteOrigin } from "@/domain/git-command/command.functions";
-import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
+import { getCurrentBranch, getRemoteAddress } from "@/domain/git-command/command.functions";
 import { IMessageService } from "@/domain/service/i_message.service";
 import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
 import SERVICE_IDENTIFIER from "src/config/constants/identifiers";
@@ -17,9 +16,8 @@ export const createPR = async (): Promise<void> => {
   const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
 
   const branchName = await getCurrentBranch(commanderService.executeGitCommand)();
-  const gitRepoUrl = await (
-    await getRemoteOrigin(commanderService.executeGitCommand)()
-  ).slice(0, -4);
+  const remoteAlias = await configService.getGitRemoteAlias();
+  const gitRepoUrl = await getRemoteAddress(commanderService.executeGitCommand)(remoteAlias);
   const issue = await getFikaIssue(gitRepoUrl, branchName);
   messageService.showWaiting("Creating Pull Request");
   const updatedIssue = await createGitPlatformPR(branchName, issue);

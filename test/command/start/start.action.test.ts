@@ -3,20 +3,20 @@ import { defaultLocalConfig } from "@/config/constants/default_config";
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import { MESSAGE_TO_CONTINUE_WITH_UNCOMMITED_CHANGES } from "@/config/constants/messages";
 import container from "@/config/ioc_config";
+import { GitPlatform } from "@/domain/entity/add_on/git_platform.entity";
 import { GitCommand } from "@/domain/git-command/command.types";
-import { checkoutCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getGitRepoPathCmd, getRemoteBranchesCmd, pullFromCmd, statusCmd } from "@/domain/git-command/git-command.values";
+import { checkoutCmd, createBranchCmd, fetchCmd, getBranchesCmd, getCurrentBranchCmd, getGitRepoPathCmd, getRemoteBranchesCmd,  getRemoteUrlCmd, pullFromCmd, statusCmd } from "@/domain/git-command/git-command.values";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";
-import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
 import { IMessageService } from "@/domain/service/i_message.service";
 import { WorkspaceNotConnected } from "@/domain/value_object/exceptions/workspace_not_connected";
 import { Uuid } from "@/domain/value_object/uuid.vo";
 import * as T from 'fp-ts/Task';
-import { TEST_BRANCH_LIST, TEST_GIT_CLEAN_STATUS, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_REMOTE_BRANCHES, TEST_STARTED_DOC_URL, TEST_START_DOC_URL } from "test/test-constants";
+import { TEST_BRANCH_LIST, TEST_GIT_CLEAN_STATUS, TEST_GIT_PULL_UPDATED_OUTPUT, TEST_GIT_STATUS_WITH_STAGED, TEST_HTTPS_GITHUB_REPO, TEST_REMOTE_BRANCHES, TEST_SSH_GITHUB_REPO, TEST_STARTED_DOC_URL, TEST_START_DOC_URL } from "test/test-constants";
 import { setUseToken, spyWithMock } from "test/test-utils";
 
-const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
+const gitPlatform = container.get<GitPlatform>(SERVICE_IDENTIFIER.GitPlatform);
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
 const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
 const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
@@ -44,6 +44,8 @@ const defaultMock = (additionalMock)=> (cmd: GitCommand) => {
       return T.of('');
     }if (cmd.command === getGitRepoPathCmd.command){
       return T.of(process.env.TESTING_REPO_PATH);
+    }if (cmd.command === getRemoteUrlCmd.command){
+      return T.of(TEST_SSH_GITHUB_REPO);
     }
     throw cmd;
   }
@@ -71,7 +73,7 @@ beforeAll(async () => {
     }
   });
   jest.spyOn(connectService, 'createIssueRecord').mockImplementation((issue)=>Promise.resolve(undefined));
-  jest.spyOn(gitPlatformService, 'createIssue').mockImplementation((issue)=>{
+  jest.spyOn(gitPlatform, 'createIssue').mockImplementation((issue)=>{
     const updated = {
       ...issue,
       gitIssueUrl: 'https://github.com/fika-dev/fika-cli-test-samples/issues/1507'
@@ -159,7 +161,6 @@ test('8. start from develop with git clean status', async () => {
   }));
   await startAction(TEST_START_DOC_URL);
   expect(messageService.showSuccess).toHaveBeenNthCalledWith(4, 'Checkout to branch: feature/iss/#1507');
-
   
 });
 

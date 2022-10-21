@@ -36,7 +36,7 @@ const stagedChangesNotExist: DefinedRule = isContextRule(
   { domain: "git", field: "stagedChanges" },
   false
 );
-const isRemoteNotEmpty: DefinedRule = isNotContextRule({ domain: "git", field: "remote" }, "Empty");
+const isRemoteNotEmpty: DefinedRule = isNotContextRule({ domain: "git", field: "remote" }, []);
 
 const isGitInstalled: DefinedRule = isNotContextRule(
   { domain: "cmd", field: "gitVersion" },

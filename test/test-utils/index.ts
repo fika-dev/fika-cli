@@ -1,19 +1,17 @@
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
-import { CONFIG_FILE_NAME, FIKA_PATH, LOCAL_CONFIG_NAME, SNAPSHOT_FILE_NAME } from "@/config/constants/path";
+import { CONFIG_FILE_NAME, LOCAL_CONFIG_NAME } from "@/config/constants/path";
 import container from "@/config/ioc_config";
-import { Config } from "@/domain/entity/config.entity";
 import { Issue } from "@/domain/entity/issue.entity";
-import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
-import { SyncedSnapshot } from "@/domain/entity/synced_snapshot.entity";
-import { IConfigService, LocalConfig } from "@/domain/service/i_config.service";
+import { ExecuteGitCommand } from "@/domain/git-command/command.types";
+import { IConfigService } from "@/domain/service/i_config.service";
 import { IConnectService } from "@/domain/service/i_connect.service";
+import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
+import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
 import { exec } from 'child_process';
 import fs from "fs";
 import path from "path";
 import { TEST_USER_CONFIG } from "test/test-constants";
 import { promisify } from 'util';
-import { ExecuteGitCommand } from "@/domain/git-command/command.types";
-import { ICommanderService } from "@/infrastructure/services/interface/i_commander.service";
 
 const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
 

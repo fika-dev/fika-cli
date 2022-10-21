@@ -2,6 +2,7 @@ import { defaultConfig, defaultLocalConfig } from "@/config/constants/default_co
 import SERVICE_IDENTIFIER from "@/config/constants/identifiers";
 import { LOCAL_CONFIG_NAME } from "@/config/constants/path";
 import { getGitRepoPathCmd } from "@/domain/git-command/git-command.values";
+import { ConfigService } from "@/domain/service/config.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import BaseException from "@/domain/value_object/exceptions/base_exception";
 import * as T from "fp-ts/Task";
@@ -94,6 +95,64 @@ test('4. git repo path', async () => {
   jest.spyOn(configService, "readConfig").mockImplementation(()=>defaultConfig);
   await configService.getLocalConfig();
   expect(spy).toBeCalledWith(path.join(TEST_GIT_REPO_PATH,LOCAL_CONFIG_NAME), "utf-8");
+});
+
+test('5. getGitRemoteAlias with old fikarc', async () => {
+  jest.resetAllMocks();
+  spyWithMock((cmd)=>{
+    if (cmd.command === getGitRepoPathCmd.command){
+      return T.of(TEST_GIT_REPO_PATH);
+    }
+    throw Error("not implemented");;
+  })
+  jest.spyOn(fs, "existsSync").mockImplementation((_)=>{
+    return true;
+  });
+  jest.spyOn(fs, "mkdirSync").mockImplementation((_)=>{
+    return undefined;  
+  });
+  const {
+    git,
+    ...localConfigWithoutGit
+  } = defaultLocalConfig;
+  jest.spyOn(fs, "readFileSync").mockImplementation((_)=>{
+    return JSON.stringify({
+      localConfigWithoutGit
+    });
+  });
+  jest.spyOn(fs, "writeFileSync").mockImplementation((_, __)=>undefined);
+  jest.spyOn(configService, "readConfig").mockImplementation(()=>defaultConfig);
+  const remoteAlias = await configService.getGitRemoteAlias();
+  expect(remoteAlias).toEqual("origin");
+});
+
+
+test('6. getGitRemoteAlias with other fikarc', async () => {
+  jest.resetAllMocks();
+  spyWithMock((cmd)=>{
+    if (cmd.command === getGitRepoPathCmd.command){
+      return T.of(TEST_GIT_REPO_PATH);
+    }
+    throw Error("not implemented");;
+  })
+  jest.spyOn(fs, "existsSync").mockImplementation((_)=>{
+    return true;
+  });
+  jest.spyOn(fs, "mkdirSync").mockImplementation((_)=>{
+    return undefined;  
+  });
+  const spy = jest.spyOn(fs, "readFileSync").mockImplementation((_)=>{
+    return JSON.stringify({
+      ...defaultLocalConfig,
+      git: {
+        remoteAlias: "upstream"
+      }
+    });
+  });
+  jest.spyOn(fs, "writeFileSync").mockImplementation((_, __)=>undefined);
+  const remoteAlias = await configService.getGitRemoteAlias();
+  expect(spy).toBeCalledWith(path.join(TEST_GIT_REPO_PATH,LOCAL_CONFIG_NAME), "utf-8");
+  expect(remoteAlias).toEqual("upstream");
 });
 
 
