@@ -5,10 +5,12 @@ import container from "@/config/ioc_config";
 import { IPromptService } from "@/domain/service/i-prompt.service";
 import { IConfigService } from "@/domain/service/i_config.service";
 import { IGitPlatformService } from "@/domain/service/i_git_platform.service";
+import { IMessageService } from "@/domain/service/i_message.service";
 import promptly from "promptly";
 import { clearLocalConfig, clearTestFikaPath, restoreGitRepo } from "test/test-utils";
 const gitPlatformService = container.get<IGitPlatformService>(SERVICE_IDENTIFIER.GitPlatformService);
 const configService = container.get<IConfigService>(SERVICE_IDENTIFIER.ConfigService);
+const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
 // jest.spyOn(process.stdout, 'write').mockImplementation(()=>true)
 
 afterEach(()=>{
@@ -25,6 +27,12 @@ beforeEach(()=>{
 beforeAll(() => {
   clearTestFikaPath(process.env.TESTING_PATH);
   clearLocalConfig(process.env.TESTING_REPO_PATH);
+  jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'showError').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'showWarning').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'showWaiting').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'endWaiting').mockImplementation(()=>undefined);
+
 });
 
 afterAll(async () => {

@@ -55,7 +55,7 @@ beforeEach(async()=>{
   jest.restoreAllMocks();
   jest.spyOn(process.stdout, "write").mockImplementation(()=>true);
   jest.spyOn(console, "log").mockImplementation(()=>true);
-  jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
+  jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });
@@ -86,7 +86,7 @@ it("1.test info on a issue branch", async () => {
             title: 'test is the best',
             labels: [],
             gitPrUrl: 'https://ts.4.8'} as Issue} );
-    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
     await infoAction();
     expect(spy).toBeCalledWith(`The current branch is ${TEST_CPR_BRANCH_NAME}, test is the best`, "The Git issue URL is ", "https://some.thing");
     expect(spy).toBeCalledWith("For more Information, please take a look at the page linked below:", undefined, "https://other.thing");
@@ -101,7 +101,7 @@ it("2.test info message for the develop branch", async () => {
         return undefined;
       }));
     jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => copiedLocalConfig);
-    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
     await infoAction();
     expect(spy).toBeCalledWith('You are on the develop branch, you can start a new branch with "fika start <issue url>"', undefined);
 });
@@ -114,7 +114,7 @@ it("3.test info message for the release branch", async () => {
         }
         return undefined;
       }));
-    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
     await infoAction();
     expect(spy).toBeCalledWith('You are on the release branch, you can start a new branch with "fika start <issue url>"', undefined);
 });
@@ -127,7 +127,7 @@ it("4.test info message for the main branch", async () => {
         }
         return undefined;
       }));
-    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
     await infoAction();
     expect(spy).toBeCalledWith('You are on the main branch, you can start a new branch with "fika start <issue url>"', undefined);
 });
@@ -141,14 +141,14 @@ it("5.test info message for a not parserble branch", async () => {
       }));
     jest.spyOn(connectService, 'getIssueRecord').mockImplementation(async () => {
         return null as Issue} );
-    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
     await infoAction();
     expect(spy).toBeCalledWith("We failed to retrive some information on your branch, please again later");
 });
 
 it("6.test info with testing server", async () => {
     jest.spyOn(configService, 'getLocalConfig').mockImplementation(async () => copiedLocalConfig);
-    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+    const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
     spyWithMock(defaultMock((cmd)=>{
         if (cmd.command === getCurrentBranchCmd.command){
             return T.of(TEST_CPR_BRANCH_NAME);

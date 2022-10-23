@@ -17,7 +17,7 @@ export const setAction = async (workspaceTypeAndId: string) => {
     workspaceId
   );
   configService.updateWorkspace(workspace);
-  messageService.showSuccess(
+  await messageService.showSuccess(
     "Notion is connected successfully",
     "Fika Quick Start Documentation",
     "https://blog.fikadev.com/posts/start-fika"

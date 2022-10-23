@@ -44,6 +44,9 @@ const white: TerminalColor = {
 export class MessageService implements IMessageService {
   private configService: IConfigService;
   private timer: NodeJS.Timer | undefined = undefined;
+  private moveCursor = promisify(readline.moveCursor);
+  private clearLine = promisify(readline.clearLine);
+  private cursorTo = promisify(readline.cursorTo);
   constructor(@inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService) {
     this.configService = configService;
   }
@@ -64,27 +67,27 @@ export class MessageService implements IMessageService {
     }, 300);
   }
   async endWaiting(): Promise<void> {
-    const moveCursor = promisify(readline.moveCursor);
-    const clearLine = promisify(readline.clearLine);
-    const cursorTo = promisify(readline.cursorTo);
     if (this.timer !== undefined) {
       clearInterval(this.timer);
       this.timer = undefined;
-      await moveCursor(process.stdout, 0, -1);
-      await clearLine(process.stdout, 0);
-      await cursorTo(process.stdout, 0, undefined);
+      await this.moveCursor(process.stdout, 0, -1);
+      await this.clearLine(process.stdout, 0);
+      await this.cursorTo(process.stdout, 0, undefined);
+      return;
+    } else {
+      return;
     }
   }
-  showSuccess(message: string, subMessage?: string, link?: string): void {
-    this._clearLine(() => {
-      process.stdout.write(`${this.withGreenBoldChalk(`✅ ${message}`)}\n`);
-      if (subMessage) {
-        process.stdout.write(`${this.withWhiteBoldChalk(` ${subMessage}`)}\n`);
-      }
-      if (link) {
-        process.stdout.write(` link: ${this.withYellowUnderlineChalk(`${link}`)}\n`);
-      }
-    });
+  async showSuccess(message: string, subMessage?: string, link?: string): Promise<void> {
+    await this.cursorTo(process.stdout, 0, undefined);
+    await this.clearLine(process.stdout, 0);
+    process.stdout.write(`${this.withGreenBoldChalk(`✅ ${message}`)}\n`);
+    if (subMessage) {
+      process.stdout.write(`${this.withWhiteBoldChalk(` ${subMessage}`)}\n`);
+    }
+    if (link) {
+      process.stdout.write(` link: ${this.withYellowUnderlineChalk(`${link}`)}\n`);
+    }
   }
   showWarning(message: string): void {
     this._clearLine(() => {

@@ -6,7 +6,7 @@ export interface ErrorMessage {
   guideUrl?: string;
 }
 export interface IMessageService {
-  showSuccess(message: string, subMessage?: string, link?: string): void;
+  showSuccess(message: string, subMessage?: string, link?: string): Promise<void>;
   showError(message: ErrorMessage): void;
   showWarning(message: string): void;
   showNotionPage(url: string): void;

@@ -24,6 +24,11 @@ beforeEach(()=>{
 });
 
 beforeAll(() => {
+  jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'showError').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'showWarning').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'showWaiting').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'endWaiting').mockImplementation(()=>undefined);
   clearTestFikaPath(process.env.TESTING_PATH);
   clearLocalConfig(process.env.TESTING_REPO_PATH);
 });
@@ -47,7 +52,7 @@ test('1.test pullAction when successfuly merged', async () => {
     }
   });
   
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
   await pullAction();
   expect(spy).toBeCalledWith('Synced from origin develop');
 });
@@ -65,7 +70,7 @@ test('2.test pullAction something wrong', async () => {
     }
   });
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
   try{
     await pullAction();
     expect(true).toEqual(false);
@@ -87,7 +92,7 @@ test('2.test pullAction merge conflict', async () => {
     }
   });
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
   try{
     await pullAction();
     expect(true).toEqual(false);
@@ -108,7 +113,7 @@ test('3.test pullAction something wrong unknown reason', async () => {
     }
   });
   const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() => { });
+  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
   try{
     await pullAction();
     expect(true).toEqual(false);

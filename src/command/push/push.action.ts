@@ -26,5 +26,5 @@ export const pushAction = async (analyzedSnapshot: Snapshot, homePath: string) =
   // );
   //[TODO] toBeUpdated, toBeRemoved
   snapshotService.saveSyncedSnapshot(new Snapshot(difference.toBeCreated));
-  messageService.showSuccess(PUSH_SUCCESS_MESSAGE);
+  await messageService.showSuccess(PUSH_SUCCESS_MESSAGE);
 };

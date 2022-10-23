@@ -58,7 +58,11 @@ beforeAll(async () => {
   createTestConfig(process.env.TESTING_PATH + "/.fika");
   setUseToken(process.env.TESTING_USER_TOKEN);
   jest.restoreAllMocks();
-  jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
+  jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'showError').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'showWarning').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'showWaiting').mockImplementation(()=>undefined);
+  jest.spyOn(messageService, 'endWaiting').mockImplementation(()=>undefined);
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   jest.spyOn(configService, 'getWorkspaceType').mockImplementation(()=>'notion');
   jest.spyOn(connectService, 'getIssueRecord').mockImplementation((issueNumber, gitRepoUrl)=>{
@@ -153,7 +157,7 @@ test("3. finish but there is a conflict after pulling", async ()=>{
 // test("6. finish with wrong remote url", async ()=>{})
 
 test("7. Sean finish and everything works as expected", async ()=>{
-  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
+  const spy = jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
   spyWithMock(defaultMock((_: GitCommand) => undefined));
   await finishAction();
   expect(spy).toHaveBeenNthCalledWith(1, `Synced from origin ${TEST_CPR_BRANCH_NAME}`);

@@ -59,9 +59,11 @@ export class ErrorHandlingService implements IErrorHandlingService {
             SERVICE_IDENTIFIER.CommanderService
           );
           await abortMerge(commanderService.executeGitCommand)();
-          messageService.showSuccess("We canceled the merge process.");
+          await messageService.showSuccess("We canceled the merge process.");
         } else {
-          messageService.showSuccess("Please resolve the conflict and run the command again.");
+          await messageService.showSuccess(
+            "Please resolve the conflict and run the command again."
+          );
         }
         return;
       }
@@ -117,7 +119,7 @@ export class ErrorHandlingService implements IErrorHandlingService {
     }
     if (exception.type === "UserError") {
       if (exception.subType === "UserCancel") {
-        messageService.showSuccess("User canceled the process.");
+        await messageService.showSuccess("User canceled the process.");
         return;
       }
     }

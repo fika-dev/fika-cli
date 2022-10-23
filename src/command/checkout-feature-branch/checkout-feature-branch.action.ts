@@ -41,7 +41,7 @@ export const checkoutFeatureBranchAction = async (issueNumber?: number) => {
     const issue = await connectService.getIssueRecord(validIssueNumber, remoteOrigin);
     const confirmedIssue = await _checkIssueBranch(configService.getIssueBranch)(issue);
     await checkoutToIssue(execute)(confirmedIssue, remoteAlias);
-    messageService.showSuccess(`Checkout to branch: ${confirmedIssue.branchName}`);
+    await messageService.showSuccess(`Checkout to branch: ${confirmedIssue.branchName}`);
   }
 };
 

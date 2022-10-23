@@ -17,13 +17,13 @@ export const gitPullAction = async (branchName: string): Promise<GitOutputStatus
     remoteAlias
   )) as GitOutputStatus;
   const gitRemoteAlias = await configService.getGitRemoteAlias();
-  messageService.endWaiting();
+  await messageService.endWaiting();
   if (gitStatus === "FF_UPDATED") {
-    messageService.showSuccess(`Synced from ${gitRemoteAlias} ${branchName}`);
+    await messageService.showSuccess(`Synced from ${gitRemoteAlias} ${branchName}`);
   } else if (gitStatus === "NO_CHANGE") {
-    messageService.showSuccess(`nothing to update from ${gitRemoteAlias} ${branchName}`);
+    await messageService.showSuccess(`nothing to update from ${gitRemoteAlias} ${branchName}`);
   } else if (gitStatus === "MERGED") {
-    messageService.showSuccess(`Synced from ${gitRemoteAlias} ${branchName}`);
+    await messageService.showSuccess(`Synced from ${gitRemoteAlias} ${branchName}`);
   } else if (gitStatus === "NO_REMOTE_REF") {
     throw {
       type: "GitError",
