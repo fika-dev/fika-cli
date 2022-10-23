@@ -18,7 +18,7 @@ export const checkoutDependingOnConfig =
     } else {
       const proceed = await promptService.confirmAction(MESSAGE_TO_STAY_FEATURE_BRANCH);
       if (proceed === true) {
-        messageService.showSuccess(MESSAGE_OF_STAYING_FEATURE_BRANCH);
+        await messageService.showSuccess(MESSAGE_OF_STAYING_FEATURE_BRANCH);
       } else {
         await checkoutBaseBranch(baseBranch);
       }

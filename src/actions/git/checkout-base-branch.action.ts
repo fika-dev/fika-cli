@@ -11,5 +11,5 @@ export const checkoutBaseBranch = async (baseBranch: string): Promise<void> => {
   const commanderService = container.get<ICommanderService>(SERVICE_IDENTIFIER.CommanderService);
   const remoteAlias = await configService.getGitRemoteAlias();
   await checkoutToBranchName(commanderService.executeGitCommand)(baseBranch, remoteAlias);
-  messageService.showSuccess(`Checkout to branch: ${baseBranch}`);
+  await messageService.showSuccess(`Checkout to branch: ${baseBranch}`);
 };

@@ -23,45 +23,45 @@ export const infoAction = async () => {
     const branchNumber = await configService.parseIssueNumber(currentBranch);
     const issue = await connectService.getIssueRecord(branchNumber, repoUrl);
     if (issue) {
-      messageService.showSuccess(
+      await messageService.showSuccess(
         `The current branch is ${currentBranch}, ${issue.title}`,
         `The Git issue URL is `,
         issue.gitIssueUrl
       );
-      messageService.showSuccess(
+      await messageService.showSuccess(
         `For more Information, please take a look at the page linked below:`,
         undefined,
         issue.issueUrl
       );
       if (issue.gitPrUrl) {
-        messageService.showSuccess(
+        await messageService.showSuccess(
           `And finally, you can take a look at the PR with the link below`,
           undefined,
           issue.gitPrUrl
         );
       }
     } else {
-      messageService.showSuccess(
+      await messageService.showSuccess(
         "We failed to retrive some information on your branch, please again later"
       );
     }
   } else if (currentBranch === localConfig.branchNames.develop) {
-    messageService.showSuccess(
+    await messageService.showSuccess(
       'You are on the develop branch, you can start a new branch with "fika start <issue url>"',
       undefined
     );
   } else if (currentBranch === localConfig.branchNames.release) {
-    messageService.showSuccess(
+    await messageService.showSuccess(
       'You are on the release branch, you can start a new branch with "fika start <issue url>"',
       undefined
     );
   } else if (currentBranch === localConfig.branchNames.main) {
-    messageService.showSuccess(
+    await messageService.showSuccess(
       'You are on the main branch, you can start a new branch with "fika start <issue url>"',
       undefined
     );
   } else {
-    messageService.showSuccess(
+    await messageService.showSuccess(
       "We failed to retrive some information on your branch, please again later"
     );
   }

@@ -6,29 +6,21 @@ const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.Message
 
 async function testWrite() { 
   messageService.showWaiting("Creating issue in Github");
-  setTimeout(async () => {
-    await messageService.endWaiting();
-  }, 3000);
-  setTimeout(() => {
-    messageService.showWarning('Something went wrong');
-  }, 3010);
-  setTimeout(() => {
-    messageService.showError({
-      code: "CODE",
-      message: "There is an error"
-    });
-  }, 5010);
-  setTimeout(() => {
-    messageService.showSuccess("Issue created", undefined,"https://fikdadev.com");
-  }, 6010);
-  setTimeout(() => {
-    messageService.showWaiting("Creating issue in Github2");
-  }, 7010);
-  setTimeout(() => {
-    process.stdout.write(`Enter passphrase for key '/Users/wonmojung/.ssh/id_rsa':`)
-  }, 9010);
-  setTimeout(async () => {
-    await messageService.endWaiting();
-  }, 12010);
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  await messageService.endWaiting();
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  messageService.showWarning('Something went wrong');
+  messageService.showError({
+    code: "CODE",
+    message: "There is an error"
+  });
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  await messageService.showSuccess("Issue created", undefined,"https://fikdadev.com");
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  messageService.showWaiting("Creating issue in Github2");
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  process.stdout.write(`Enter passphrase for key '/Users/wonmojung/.ssh/id_rsa':`)
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  await messageService.endWaiting();
 }
 testWrite();

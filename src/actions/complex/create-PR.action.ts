@@ -31,6 +31,6 @@ export const createPR = async (): Promise<void> => {
   // [TODO] if base branch
   await connectService.createPullRequestRecord(gitRepoUrl, issue.issueUrl, issueNumber, prNumber);
   await messageService.endWaiting();
-  messageService.showSuccess("Pull Request Created", undefined, updatedIssue.gitPrUrl);
-  messageService.showSuccess("Notion Issue Updated", undefined, updatedIssue.issueUrl);
+  await messageService.showSuccess("Pull Request Created", undefined, updatedIssue.gitPrUrl);
+  await messageService.showSuccess("Notion Issue Updated", undefined, updatedIssue.issueUrl);
 };

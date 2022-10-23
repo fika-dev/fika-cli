@@ -23,7 +23,7 @@ export const startAction = async (documentUrl: string) => {
   await askToContinueWithUncommitedChanges();
   if (existingIssue) {
     await checkoutToIssue(commanderService.executeGitCommand)(existingIssue, remoteAlias);
-    messageService.showSuccess(`Checkout to branch: ${existingIssue.branchName!}`);
+    await messageService.showSuccess(`Checkout to branch: ${existingIssue.branchName!}`);
   } else {
     const currentBranch = await getCurrentBranch(commanderService.executeGitCommand)();
     const localConfig = await configService.getLocalConfig();
@@ -39,9 +39,9 @@ export const startAction = async (documentUrl: string) => {
     );
     if (localConfig.start.checkoutToFeature) {
       await checkoutToIssue(commanderService.executeGitCommand)(updatedIssue, remoteAlias);
-      messageService.showSuccess(`Checkout to branch: ${updatedIssue.branchName!}`);
+      await messageService.showSuccess(`Checkout to branch: ${updatedIssue.branchName!}`);
     } else {
-      messageService.showSuccess(
+      await messageService.showSuccess(
         "Please checkout using below command",
         `git checkout -b ${updatedIssue.branchName!}`
       );
