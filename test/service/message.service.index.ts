@@ -4,10 +4,10 @@ import { IMessageService } from "@/domain/service/i_message.service";
 
 const messageService = container.get<IMessageService>(SERVICE_IDENTIFIER.MessageService);
 
-function testWrite() { 
+async function testWrite() { 
   messageService.showWaiting("Creating issue in Github");
-  setTimeout(() => {
-    messageService.endWaiting();
+  setTimeout(async () => {
+    await messageService.endWaiting();
   }, 3000);
   setTimeout(() => {
     messageService.showWarning('Something went wrong');
@@ -27,8 +27,8 @@ function testWrite() {
   setTimeout(() => {
     process.stdout.write(`Enter passphrase for key '/Users/wonmojung/.ssh/id_rsa':`)
   }, 9010);
-  setTimeout(() => {
-    messageService.endWaiting();
+  setTimeout(async () => {
+    await messageService.endWaiting();
   }, 12010);
 }
 testWrite();

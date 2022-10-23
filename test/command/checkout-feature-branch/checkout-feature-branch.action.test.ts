@@ -24,7 +24,7 @@ beforeAll(async () => {
 
 beforeEach(async()=>{
   jest.restoreAllMocks();
-  jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
+  jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   await restoreGitRepo(process.env.TESTING_REPO_PATH);
 });

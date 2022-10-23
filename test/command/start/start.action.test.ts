@@ -55,7 +55,11 @@ beforeAll(async () => {
   // createTestConfig(process.env.TESTING_PATH + "/.fika");
   setUseToken(process.env.TESTING_USER_TOKEN);
   jest.restoreAllMocks();
-  jest.spyOn(messageService, 'showSuccess').mockImplementation(()=>{});
+
+  jest.spyOn(messageService, 'showSuccess').mockImplementation(() =>undefined);
+  jest.spyOn(messageService, 'showWaiting').mockImplementation(()=>{});
+  jest.spyOn(messageService, 'endWaiting').mockImplementation(()=>undefined);
+
   jest.spyOn(configService, 'getWorkspaceId').mockImplementation(()=>new Uuid('d3224eba-6e67-4730-9b6f-a9ef1dc7e4ac'));
   jest.spyOn(configService, 'getWorkspaceType').mockImplementation(()=>'notion');
   jest.spyOn(connectService, 'getIssueRecordByPage').mockImplementation((docUrl, _)=>{
@@ -87,8 +91,11 @@ beforeEach(async()=>{
 });
 
 afterEach(() => {
-  messageService.endWaiting();
 });
+
+afterAll(async ()=>{
+  messageService.endWaiting();
+})
 
 
 
