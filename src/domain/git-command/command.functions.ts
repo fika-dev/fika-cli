@@ -107,7 +107,12 @@ const _stashUnstagedChange = (execute: ExecuteGitCommand) => async () => {
 
 const _checkoutToBranchWithStash = (execute: ExecuteGitCommand) => async (branchName: string) => {
   await _stashUnstagedChange(execute)();
-  await _checkoutToBranch(execute)(branchName);
+  try {
+    await _checkoutToBranch(execute)(branchName);
+  } catch (e) {
+    await _stashApply(execute)();
+    throw e;
+  }
   await _stashApply(execute)();
 };
 
