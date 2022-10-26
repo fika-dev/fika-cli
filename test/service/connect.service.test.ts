@@ -91,7 +91,7 @@ describe("2. test issue record", () => {
     expect(issueRecord.issueUrl).toEqual(issue.issueUrl);
     expect(issueRecord.branchName).toEqual(issue.branchName);
     expect(issueRecord.gitIssueUrl).toBeDefined();
-    expect(issueRecord2).toEqual(issueRecord);
+    expect(issueRecord2.issueUrl).toEqual(issueRecord.issueUrl);
     await connectService.createIssueRecord({...issue, branchName: 'new-branch'});
     const issueRecord3 = await connectService.getIssueRecordByPage(issue.issueUrl, TEST_HTTPS_GITHUB_REPO.replace('.git',''));
     expect(issueRecord3.branchName).toEqual('new-branch');
@@ -107,6 +107,8 @@ describe("2. test issue record", () => {
       expect(e.message).toBe('Request failed with status code 404');
     }
   });
+
+
 });
 
 
@@ -120,3 +122,19 @@ describe("3. test auth related API", () => {
 });
 
 
+describe("4. test workspace PR related API", () => {
+  const gitRepoUrl = TEST_HTTPS_GITHUB_REPO.replace('.git','');
+  const issueNumber = 510;
+  const prNumber1 = 511;
+  const prNumber2 = 512;
+  it("4.1. test createPullRequestRecord", async () => {
+    const issue = {...TEST_START_ISSUE, gitIssueUrl: `${gitRepoUrl}/issues/${issueNumber}`, branchName: 'test-branch'};
+    await connectService.createIssueRecord(issue);
+    await connectService.createPullRequestRecord(gitRepoUrl, TEST_START_DOC_URL, issueNumber, prNumber1);
+    const issueRecord = await connectService.getIssueRecord(issueNumber, gitRepoUrl);
+    expect(issueRecord.gitPrUrl).toEqual(`${gitRepoUrl}/pull/${prNumber1}`);
+    await connectService.createPullRequestRecord(gitRepoUrl, TEST_START_DOC_URL, issueNumber, prNumber2);
+    const issueRecord2 = await connectService.getIssueRecord(issueNumber, gitRepoUrl);
+    expect(issueRecord2.gitPrUrl).toEqual(`${gitRepoUrl}/pull/${prNumber2}`);
+  });
+});
