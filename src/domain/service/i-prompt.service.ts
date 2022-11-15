@@ -11,4 +11,5 @@ export interface IPromptService {
   askBranchName(message: string, defaultName: string, candidates: string[]): Promise<string>;
   askRemoteUrl(): Promise<string>;
   confirmAction(message: string): Promise<boolean>;
+  setAcceptsAllPromptsAsYes(): void;
 }

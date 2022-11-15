@@ -40,7 +40,16 @@ const white: TerminalColor = {
 
 @injectable()
 export class PromptService implements IPromptService {
+  private acceptsAllPromptsAsYes: boolean = false;
+
+  public setAcceptsAllPromptsAsYes() {
+    this.acceptsAllPromptsAsYes = true;
+  }
+
   async confirmAction(message: string): Promise<boolean> {
+    if (this.acceptsAllPromptsAsYes) {
+      return true;
+    }
     const answer = await promptly.confirm(`${this.bold(this.colorize(green, "?"))} ${message}: `);
     return answer;
   }
