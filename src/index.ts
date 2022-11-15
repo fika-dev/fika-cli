@@ -14,6 +14,7 @@ import { setCommand } from "./command/set";
 import { startCommand } from "./command/start";
 import SERVICE_IDENTIFIER from "./config/constants/identifiers";
 import container from "./config/ioc_config";
+import { IPromptService } from "./domain/service/i-prompt.service";
 import { IErrorHandlingService } from "./domain/service/i_error_handling.service";
 import BaseException from "./domain/value_object/exceptions/base_exception";
 import { UnknownError } from "./domain/value_object/exceptions/unknown_error";
@@ -21,6 +22,7 @@ import { UnknownError } from "./domain/value_object/exceptions/unknown_error";
 try {
   dotenv.config();
   program.name("fika").description("CLI for advanced your workflow").version(version);
+  program.option("-y, --yes", "accepting all the prompts as yes");
   program.addCommand(startCommand);
   program.addCommand(finishCommand);
   program.addCommand(connectCommand);
@@ -32,6 +34,12 @@ try {
   program.addCommand(checkoutDevelopCommand);
   program.addCommand(pullCommand);
   program.parse(process.argv);
+
+  const option = program.opts();
+  if (option.yes) {
+    const promptService = container.get<IPromptService>(SERVICE_IDENTIFIER.PromptService);
+    promptService.setAcceptsAllPromptsAsYes();
+  }
 } catch (e) {
   const errorHandlingService = container.get<IErrorHandlingService>(
     SERVICE_IDENTIFIER.ErrorHandlingService
