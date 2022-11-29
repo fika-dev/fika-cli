@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import promptly from "promptly";
 import { VersionTag } from "../value_object/version_tag.vo";
 import { IPromptService } from "./i-prompt.service";
-const prompts = require("prompts");
+import prompts from "prompts";
 import { Workspace } from "../entity/workspace.entity";
 interface TerminalColor {
   x: number;
