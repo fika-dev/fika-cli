@@ -406,6 +406,7 @@ export class ConnectService implements IConnectService {
       const response = await this.axiosInstance.get(
         `/workspace/${workspaceType}/${workspaceId.asString()}`
       );
+      //console.log(response);
       const dto = new CreateWorkspaceDto(response.data as CreateWorkspaceDtoType);
       return dto.toEntity();
     } catch (e) {

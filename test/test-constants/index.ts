@@ -230,12 +230,13 @@ origin/feature/iss/#412
 `
 
 export const TEST_USER_CONFIG: Config = {
-  workspace: {
+  workspaces:[{
     "id": TEST_NOTION_WORKSPACE_ID,
     "workspaceName": "원모's Notion",
     "workspaceType": "notion",
     "workspaceIcon": "https://s3-us-west-2.amazonaws.com/public.notion-static.com/11ee3c37-db45-447b-855a-6df75df2bf32/notion_fika_logo.png",
-  },
+  },],
+  currentWorkspaceId: TEST_NOTION_WORKSPACE_ID,
   fikaToken: {
     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAdGVzdC5jb20iLCJzdWIiOiIwMGZlMzFmMC1lZmE2LTRiZDMtYjU4MS1mNGVmZWMwOTA3ZTkiLCJpYXQiOjE2NTcwNzMwMjR9.6KWxLb87PDbnbB0cI9QZXaJ51Xuf8j1uKnuoWuEhxhc"
   },
