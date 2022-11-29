@@ -1,6 +1,7 @@
 import { Morpher } from "../entity/add_on/morpher.entity";
 import { AddOnConfig } from "../value_object/add_on_config.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
+import { Workspace } from "../entity/workspace.entity";
 
 export interface IPromptService {
   askAlreadySignedUp(): Promise<boolean>;
@@ -12,4 +13,5 @@ export interface IPromptService {
   askRemoteUrl(): Promise<string>;
   confirmAction(message: string): Promise<boolean>;
   setAcceptsAllPromptsAsYes(): void;
+  askChooseWorkspace(workspaceList: Workspace[]): Promise<string>;
 }
