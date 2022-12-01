@@ -6,8 +6,8 @@
     "issueBranchTemplate": "feature/iss/#<ISSUE_NUMBER>"
   },
   "start": {
-    "fromDevelopOnly": true,
-    "pullBeforeAlways": true,
+    "fromDevelopOnly": false,
+    "pullBeforeAlways": false,
     "checkoutToFeature": true
   },
   "finish": {
