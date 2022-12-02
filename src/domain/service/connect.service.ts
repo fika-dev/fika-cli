@@ -11,13 +11,14 @@ import { DevObject } from "../entity/dev_object.entity";
 import { Issue } from "../entity/issue.entity";
 import { IssueWithPR } from "./i_git_platform.service";
 import { Workspace } from "../entity/workspace.entity";
-import { NotionPageNotFound } from "../value_object/exceptions/notion_page_not_found";
+import { WorkspaceIssueNotFound } from "../value_object/exceptions/workspace_issue_not_found";
 import {
   ERROR_CODE_STRING,
   NotOnline,
   SYS_CALL_STRING,
 } from "../value_object/exceptions/not_online";
 import { WrongPropertyTitleName } from "../value_object/exceptions/wrong_property_title_name";
+import { WorkspaceDoesNotMatch } from "../value_object/exceptions/workspace_does_not_match";
 import { UpdateInfo } from "../value_object/update-info.vo";
 import { Uuid } from "../value_object/uuid.vo";
 import { VersionTag } from "../value_object/version_tag.vo";
@@ -34,12 +35,17 @@ export class ConnectService implements IConnectService {
   private token: string | undefined;
   private domain: string;
   private axiosInstance: AxiosInstance;
-  constructor(@inject(PARAMETER_IDENTIFIER.Domain) domain: string) {
+  private configService: IConfigService;
+  constructor(
+    @inject(PARAMETER_IDENTIFIER.Domain) domain: string,
+    @inject(SERVICE_IDENTIFIER.ConfigService) configService: IConfigService
+  ) {
     this.domain = domain;
     this.axiosInstance = axios.create({
       baseURL: this.domain,
       timeout: 10000,
     });
+    this.configService = configService;
     this.axiosInstance.interceptors.response.use(
       response => response,
       (error: any) => {
@@ -85,8 +91,9 @@ export class ConnectService implements IConnectService {
   }
   async getIssueRecordByPage(issueUrl: string, gitRepoUrl: string): Promise<Issue> {
     try {
+      const workspaceId = this.configService.getWorkspaceId();
       const response = await this.axiosInstance.get(
-        `/git/issue?gitRepoUrl=${gitRepoUrl}&notionPageUrl=${issueUrl}`,
+        `/git/issue?gitRepoUrl=${gitRepoUrl}&issuePageUrl=${issueUrl}&workspace=${workspaceId}`,
         {
           headers: {
             "content-type": "application/json",
@@ -96,7 +103,7 @@ export class ConnectService implements IConnectService {
       );
       if (response.data) {
         return {
-          issueUrl: response.data.notionPageUrl,
+          issueUrl: response.data.workspaceIssueUrl,
           title: response.data.title,
           gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
           branchName: response.data.branchName,
@@ -107,14 +114,32 @@ export class ConnectService implements IConnectService {
       }
     } catch (e) {
       const axiosError = e as AxiosError;
-      console.log(
-        "🧪",
-        " in ConnnectService: ",
-        " in getIssueRecordByPage: ",
-        "error code: ",
-        axiosError.code
-      );
-      throw new Error(axiosError.message);
+      if (axiosError?.response?.data) {
+        const errorData = axiosError.response.data as errorDataType;
+        if (errorData.message === "WORKSPACE_DOES_NOT_MATCH") {
+          throw new WorkspaceDoesNotMatch("WORKSPACE_DOES_NOT_MATCH");
+        }
+        if (errorData.message === "NotFoundBlock") {
+          throw new WorkspaceIssueNotFound("WorkspaceIssueNotFound");
+        }
+        console.log(
+          "🧪",
+          " in ConnnectService: ",
+          " in UpdateIssue: ",
+          "error code: ",
+          axiosError.code
+        );
+        throw new Error(axiosError.message);
+      } else {
+        console.log(
+          "🧪",
+          " in ConnnectService: ",
+          " in getIssueRecordByPage: ",
+          "error code: ",
+          axiosError.code
+        );
+        throw new Error(axiosError.message);
+      }
     }
   }
   async createPullRequestRecord(
@@ -221,6 +246,7 @@ export class ConnectService implements IConnectService {
     }
   }
   async getIssueRecord(issueNumber: number, gitRepoUrl: string): Promise<Issue> {
+    const workspaceId = this.configService.getWorkspaceId();
     let cleanGitRepoUrl: string;
     if (gitRepoUrl.endsWith(".git")) {
       cleanGitRepoUrl = gitRepoUrl.slice(undefined, gitRepoUrl.length - 4);
@@ -229,7 +255,7 @@ export class ConnectService implements IConnectService {
     }
     try {
       const response = await this.axiosInstance.get(
-        `/git/issue?gitRepoUrl=${cleanGitRepoUrl}&issueNumber=${issueNumber}`,
+        `/git/issue?gitRepoUrl=${cleanGitRepoUrl}&issueNumber=${issueNumber}&WorkspaceId=${workspaceId}`,
         {
           headers: {
             "content-type": "application/json",
@@ -238,7 +264,7 @@ export class ConnectService implements IConnectService {
         }
       );
       return {
-        issueUrl: response.data.notionPageUrl,
+        issueUrl: response.data.workspaceIssueUrl,
         title: response.data.title,
         gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
         labels: [],
@@ -357,7 +383,7 @@ export class ConnectService implements IConnectService {
           throw new WrongPropertyTitleName("WRONG_PROPERTY_TITLE_NAME");
         }
         if (errorData.message === "NotFoundBlock") {
-          throw new NotionPageNotFound("NotionPageNotFound");
+          throw new WorkspaceIssueNotFound("WorkspaceIssueNotFound");
         }
         console.log(
           "🧪",
@@ -390,14 +416,32 @@ export class ConnectService implements IConnectService {
       return updatedIssue;
     } catch (e) {
       const axiosError = e as AxiosError;
-      console.log(
-        "🧪",
-        " in ConnnectService: ",
-        " in updateIssue:",
-        "error code: ",
-        axiosError.code
-      );
-      throw new Error(axiosError.message);
+      if (axiosError?.response?.data) {
+        const errorData = axiosError.response.data as errorDataType;
+        if (errorData.message === "WORKSPACE_DOES_NOT_MATCH") {
+          throw new WorkspaceDoesNotMatch("WORKSPACE_DOES_NOT_MATCH");
+        }
+        if (errorData.message === "NotFoundBlock") {
+          throw new WorkspaceIssueNotFound("WorkspaceIssueNotFound");
+        }
+        console.log(
+          "🧪",
+          " in ConnnectService: ",
+          " in UpdateIssue: ",
+          "error code: ",
+          axiosError.code
+        );
+        throw new Error(axiosError.message);
+      } else {
+        console.log(
+          "🧪",
+          " in ConnnectService: ",
+          " in updateIssue:",
+          "error code: ",
+          axiosError.code
+        );
+        throw new Error(axiosError.message);
+      }
     }
   }
 

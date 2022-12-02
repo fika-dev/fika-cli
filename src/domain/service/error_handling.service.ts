@@ -228,9 +228,14 @@ export class ErrorHandlingService implements IErrorHandlingService {
         message: `\n\nNo base branch is found \nPlease check base branch is well configured (e.g. develop branch) \n\n`,
         code: exception.name,
       });
-    } else if (exception.name === "NotionPageNotFound") {
+    } else if (exception.name === "WorkspaceIssueNotFound") {
       messageService.showError({
-        message: `\nCould not find Notion Page with given URL\n`,
+        message: `\nCould not find the issue with given URL in your current workspace\n`,
+        code: exception.name,
+      });
+    } else if (exception.name === "WorkspaceDoesNotMatch") {
+      messageService.showError({
+        message: `\nThe issue URL and your current workspace do not match.\n Maybe you can switch to a different workspace ( > fika set ) or double-check your issue URL\n`,
         code: exception.name,
       });
     } else if (exception.name === "NothingToCommit") {
