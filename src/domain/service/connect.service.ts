@@ -103,7 +103,7 @@ export class ConnectService implements IConnectService {
       );
       if (response.data) {
         return {
-          issueUrl: response.data.workspaceIssueUrl,
+          issueUrl: response.data.notionPageUrl,
           title: response.data.title,
           gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
           branchName: response.data.branchName,
@@ -264,7 +264,7 @@ export class ConnectService implements IConnectService {
         }
       );
       return {
-        issueUrl: response.data.workspaceIssueUrl,
+        issueUrl: response.data.notionPageUrl,
         title: response.data.title,
         gitIssueUrl: `${gitRepoUrl}/issues/${response.data.issueNumber}`,
         labels: [],
