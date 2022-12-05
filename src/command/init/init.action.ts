@@ -37,19 +37,23 @@ export const initAction = async () => {
     "release",
     foundReleaseBrances
   );
+  //console.log(developBranchName, mainBranchName, releaseBranchName);
   await initGitRepo();
+  //console.log(developBranchName, mainBranchName, releaseBranchName);
   await gitPlatformService.checkoutToBranchWithoutReset(mainBranchName);
-  const initialConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
-  initialConfig.branchNames = {
-    develop: developBranchName,
-    main: mainBranchName,
-    release: releaseBranchName,
-    issueBranchTemplate: initialConfig.branchNames.issueBranchTemplate,
-  };
-  await configService.createLocalConfig(initialConfig);
+  // const initialConfig = JSON.parse(JSON.stringify(defaultLocalConfig));
+  // console.log("with init default values", initialConfig);
+  // const promptBranchNames = {
+  //   develop: developBranchName,
+  //   main: mainBranchName,
+  //   release: releaseBranchName,
+  // };
+  //console.log("with the prompt values", promptBranchNames);
+  await configService.createLocalConfig(developBranchName, mainBranchName, releaseBranchName);
   await gitPlatformService.stageAllChanges();
   await gitPlatformService.commitWithMessage("Add .fikarc for fika configuration");
   await initFixedBranch(mainBranchName);
   await initFixedBranch(releaseBranchName);
   await initFixedBranch(developBranchName);
+  //console.log(developBranchName, mainBranchName, releaseBranchName);
 };

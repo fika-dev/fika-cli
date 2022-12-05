@@ -6,8 +6,9 @@ import { ObjectType } from "src/domain/entity/dev_object.entity";
 export const issueNumberTag = "<ISSUE_NUMBER>";
 
 export const defaultConfig: Config = {
-  workspace: "NOT_CONNECTED",
+  workspaces: "NOT_CONNECTED",
   fikaToken: "UN_AUTHENTICATED",
+  currentWorkspaceId: "NOT_CONNECTED",
   addOns: [
     {
       name: "Repo.Analyzer",
